@@ -1,0 +1,2671 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math
+{
+    /// <summary>
+    /// A four dimensional vector of genetic type.
+    /// </summary>
+    [Serializable]
+    public struct @ClassName : IComparable, IComparable<@ClassName>, IEquatable<@ClassName>
+    {
+
+        #region Public Members
+
+        /// <summary>
+        /// A vector processor delegate. Used at many places, like solver etc. Processor
+        /// is a kind of @ClassName transformator.
+        /// </summary>
+        /// <param name="input">Input, as vector.</param>
+        /// <returns>Vector output.</returns>
+        public delegate @ClassName Processor(@ClassName input);
+
+        /// <summary>
+        /// The X component of the vector.
+        /// </summary>
+        public @TypeName X;
+
+        /// <summary>
+        /// The Y component of the vector.
+        /// </summary>
+        public @TypeName Y;
+
+        /// <summary>
+        /// The Z component of the vector.
+        /// </summary>
+        public @TypeName Z;
+
+        /// <summary>
+        /// The W component of the vector.
+        /// </summary>
+        public @TypeName W;
+
+        #endregion
+
+        #region Static Members
+
+        //#ifdef NaN
+
+        /// <summary>
+        /// The NaN vector.
+        /// </summary>
+        public static @ClassName NaN
+        {
+            get { return new @ClassName(@NaN, @NaN, @NaN, @NaN); }
+        }
+
+        //#ifdef IsNaN
+
+        /// <summary>
+        /// Is the vector NaN. Vector is NaN, if any component is NaN.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsNaN(@ClassName v)
+        {
+            return @IsNaN(v.X) || @IsNaN(v.Y) || @IsNaN(v.Z) || @IsNaN(v.W);
+        }
+
+        //#endif
+
+        //#endif
+
+
+        /// <summary>
+        /// Index access to vector.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public @TypeName this[uint index]
+        {
+            get
+            {
+                if (index == 0) return X;
+                if (index == 1) return Y;
+                if (index == 2) return Z;
+                if (index == 3) return W;
+                throw new ArgumentException("Invalid index for 4D vector.");
+            }
+            set
+            {
+                if (index == 0) X = value;
+                else if (index == 1) Y = value;
+                else if (index == 2) Z = value;
+                else if (index == 3) W = value;
+                else throw new ArgumentException("Invalid index for 4D vector.");
+            }
+        }
+
+        /// <summary>
+        /// A zero vector.
+        /// </summary>
+        public static @ClassName Zero
+        {
+            get { return new @ClassName(@Zero, @Zero, @Zero, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis X.
+        /// </summary>
+        public static @ClassName AxisX
+        {
+            get { return new @ClassName(@One, @Zero, @Zero, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis y.
+        /// </summary>
+        public static @ClassName AxisY
+        {
+            get { return new @ClassName(@Zero, @One, @Zero, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis z.
+        /// </summary>
+        public static @ClassName AxisZ
+        {
+            get { return new @ClassName(@Zero, @Zero, @One, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis w.
+        /// </summary>
+        public static @ClassName AxisW
+        {
+            get { return new @ClassName(@Zero, @Zero, @Zero, @One); }
+        }
+
+        //#ifdef UniformRandomSupply
+
+        /// <summary>
+        /// Unit random vector property.
+        /// </summary>
+        public static @ClassName UnitRandom
+        {
+            get
+            {
+                @ClassName vec = new @ClassName(@UniformRandomSupply, @UniformRandomSupply,
+                                            @UniformRandomSupply, @UniformRandomSupply);
+                return vec.Normal;
+            }
+        }
+
+        //#endif
+        
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Checks if vectors are nearly equal.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <param name="eps">The maximum difference in one component.</param>
+        /// <returns>Are vectors equal indicator.</returns>
+        public static bool NearEqual(@ClassName v1, @ClassName v2, @TypeName eps)
+        {
+            if (!@NearEqual(v1.X, v2.X, eps)) return false;
+            if (!@NearEqual(v1.Y, v2.Y, eps)) return false;
+            if (!@NearEqual(v1.Z, v2.Z, eps)) return false;
+            if (!@NearEqual(v1.W, v2.W, eps)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Near equal using default epsilon.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result indicator.</returns>
+        public static bool NearEqual(@ClassName v1, @ClassName v2)
+        {
+            if (!@NearEqual(v1.X, v2.X)) return false;
+            if (!@NearEqual(v1.Y, v2.Y)) return false;
+            if (!@NearEqual(v1.Z, v2.Z)) return false;
+            if (!@NearEqual(v1.W, v2.W)) return false;
+            return true;
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Multiplication by components.
+        /// </summary>
+        public static @ClassName ComponentMultiply(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X * v2.X, v1.Y * v2.Y, v1.Z * v2.Z, v1.W * v2.W);
+        }
+
+        /// <summary>
+        /// Division by components.
+        /// </summary>
+        public static @ClassName ComponentDivision(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X / v2.X, v1.Y / v2.Y, v1.Z / v2.Z, v1.W / v2.W);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Outputs vector in (X,Y) form.
+        /// </summary>
+        /// <returns>Vector converted to string.</returns>
+        public override string ToString()
+        {
+            return "(" + X.ToString() + " ," + Y.ToString() + " ," + Z.ToString() + " ," + W.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Checks if objects equal.
+        /// </summary>
+        /// <param name="obj">The other object.</param>
+        /// <returns>Do objects equal.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return this == (@ClassName)obj;
+            return false;
+        }
+
+        /// <summary>
+        /// Obtain the hash code.
+        /// </summary>
+        /// <returns>The hash code.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Overloadable addition.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of addition.</returns>
+        public static @ClassName operator +(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z, v1.W + v2.W);
+        }
+
+        /// <summary>
+        /// Overloadable substraction.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of substraction.</returns>
+        public static @ClassName operator -(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z, v1.W - v2.W);
+        }
+
+        /// <summary>
+        /// Overloadable multiplication, or so called dot product. Result is a scalar.
+        /// Dot product can be interpretered as:
+        /// <code>this * other == this.Length * other.Length * this.AngleTo(other)</code>
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of substraction.</returns>
+        public static @TypeName operator *(@ClassName v1, @ClassName v2)
+        {
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z + v1.W * v2.W;
+        }
+
+        /// <summary>
+        /// Vector multiplication with scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator *(@ClassName v1, @TypeName f)
+        {
+            return new @ClassName(v1.X * f, v1.Y * f, v1.Z * f, v1.W * f);
+        }
+
+        /// <summary>
+        /// Vector multiplication with scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator *(@TypeName f, @ClassName v1)
+        {
+            return new @ClassName(v1.X * f, v1.Y * f, v1.Z * f, v1.W * f);
+        }
+
+        /// <summary>
+        /// Vector divided by scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator /(@ClassName v1, @TypeName f)
+        {
+            return new @ClassName(v1.X / f, v1.Y / f, v1.Z / f, v1.W / f);
+        }
+
+        /// <summary>
+        /// Negation operator.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <returns>Negated vector (direction flipped).</returns>
+        public static @ClassName operator -(@ClassName v)
+        {
+            return v * -@One;
+        }
+
+
+
+        /// <summary>
+        /// Checks if vectors are equal. This check is precise and may not give desirable
+        /// result if small errors occur due to precission errors.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Are vectorrs equal.</returns>
+        public static bool operator ==(@ClassName v1, @ClassName v2)
+        {
+            return (v1.X == v2.X) && (v1.Y == v2.Y) && (v1.Z == v2.Z) && (v1.W == v2.W);
+        }
+
+        /// <summary>
+        /// Returns if vectors are different.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Are vectors different.</returns>
+        public static bool operator !=(@ClassName v1, @ClassName v2)
+        {
+            return !(v1 == v2);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The obsolete x-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName x
+        {
+            get { return X; }
+            set { X = value; }
+        }
+
+        /// <summary>
+        /// The obsolete y-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName y
+        {
+            get { return Y; }
+            set { Y = value; }
+        }
+
+        /// <summary>
+        /// The obsolete z-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName z
+        {
+            get { return Z; }
+            set { Z = value; }
+        }
+
+        /// <summary>
+        /// The obsolete w-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName w
+        {
+            get { return W; }
+            set { W = value; }
+        }
+
+
+
+        //#ifdef Vector2ClassName
+
+        /// <summary>
+        /// A two dimensional vector.
+        /// </summary>
+        public @Vector2ClassName Vec2
+        {
+            set { X = value.X; Y = value.Y; Z = @Zero; W = @Zero; }
+            get { return new @Vector2ClassName(X, Y); }
+        }
+
+        //#endif
+
+        //#ifdef Vector3ClassName
+
+        /// <summary>
+        /// A three dimensional vector.
+        /// </summary>
+        public @Vector3ClassName Vec3
+        {
+            set { X = value.X; Y = value.Y; Z = value.Z; W = @Zero; }
+            get { return new @Vector3ClassName(X, Y, Z); }
+        }
+
+        /// <summary>
+        /// Gets or sets the homohenous point 3D.
+        /// </summary>
+        /// <value>The point3DD.</value>
+        public @Vector3ClassName Point3D
+        {
+            get
+            {
+                if (W == @Zero)
+                {
+                    // Point in infinity.
+                    throw new ArithmeticException("Cannot convert a homogenous 4D point to 3D point, it is point in infinity.");
+                }
+                @TypeName w_inv = @One / W;
+                return new @Vector3ClassName(X * w_inv, Y * w_inv, Z * w_inv);
+            }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+                Z = value.Z;
+                W = @One;
+            }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Are all components positive.
+        /// </summary>
+        public bool AllPositive
+        {
+            get
+            {
+                if (X >= @Zero && Y >= @Zero && Z >= @Zero && W >= @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components positive, strictly speaking.
+        /// </summary>
+        public bool AllPositiveStrict
+        {
+            get
+            {
+                if (X > @Zero && Y > @Zero && Z > @Zero && W > @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components negative.
+        /// </summary>
+        public bool AllNegative
+        {
+            get
+            {
+                if (X <= @Zero && Y <= @Zero && Z <= @Zero && W <= @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components negative.
+        /// </summary>
+        public bool AllNegativeStrict
+        {
+            get
+            {
+                if (X < @Zero && Y < @Zero && Z < @Zero && W < @Zero) return true;
+                return false;
+            }
+        }
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// The length of vector.
+        /// </summary>
+        public @TypeName Length
+        {
+            get { return @Sqrt(this * this); }
+            set { this = this * value / @Sqrt((this * this)); }
+        }
+
+        /// <summary>
+        /// Normal vector, always length of 1.
+        /// </summary>
+        public @ClassName Normal
+        {
+            get { return this / Length; }
+        }
+
+        /// <summary>
+        /// Normalized direction.
+        /// </summary>
+        public @ClassName Direction
+        {
+            get { return this / Length; }
+            set { this = value * Length; }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Length squared.
+        /// </summary>
+        public @TypeName Length2
+        {
+            get { return this * this; }
+            set { this = this * value / (this * this); }
+        }
+
+        #endregion
+
+        #region Swizzles
+
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXXX
+        {
+            get { return new @ClassName(X, X, X, X); }
+            set { X = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXXY
+        {
+            get { return new @ClassName(X, X, X, Y); }
+            set { X = value.Z; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXXZ
+        {
+            get { return new @ClassName(X, X, X, Z); }
+            set { X = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXXW
+        {
+            get { return new @ClassName(X, X, X, W); }
+            set { X = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXYX
+        {
+            get { return new @ClassName(X, X, Y, X); }
+            set { X = value.W; Y = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXYY
+        {
+            get { return new @ClassName(X, X, Y, Y); }
+            set { X = value.Y; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXYZ
+        {
+            get { return new @ClassName(X, X, Y, Z); }
+            set { X = value.Y; Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXYW
+        {
+            get { return new @ClassName(X, X, Y, W); }
+            set { X = value.Y; Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXZX
+        {
+            get { return new @ClassName(X, X, Z, X); }
+            set { X = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXZY
+        {
+            get { return new @ClassName(X, X, Z, Y); }
+            set { X = value.Y; Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXZZ
+        {
+            get { return new @ClassName(X, X, Z, Z); }
+            set { X = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXZW
+        {
+            get { return new @ClassName(X, X, Z, W); }
+            set { X = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXWX
+        {
+            get { return new @ClassName(X, X, W, X); }
+            set { X = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXWY
+        {
+            get { return new @ClassName(X, X, W, Y); }
+            set { X = value.Y; Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXWZ
+        {
+            get { return new @ClassName(X, X, W, Z); }
+            set { X = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XXWW
+        {
+            get { return new @ClassName(X, X, W, W); }
+            set { X = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYXX
+        {
+            get { return new @ClassName(X, Y, X, X); }
+            set { X = value.W; Y = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYXY
+        {
+            get { return new @ClassName(X, Y, X, Y); }
+            set { X = value.Z; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYXZ
+        {
+            get { return new @ClassName(X, Y, X, Z); }
+            set { X = value.Z; Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYXW
+        {
+            get { return new @ClassName(X, Y, X, W); }
+            set { X = value.Z; Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYYX
+        {
+            get { return new @ClassName(X, Y, Y, X); }
+            set { X = value.W; Y = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYYY
+        {
+            get { return new @ClassName(X, Y, Y, Y); }
+            set { X = value.X; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYYZ
+        {
+            get { return new @ClassName(X, Y, Y, Z); }
+            set { X = value.X; Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYYW
+        {
+            get { return new @ClassName(X, Y, Y, W); }
+            set { X = value.X; Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYZX
+        {
+            get { return new @ClassName(X, Y, Z, X); }
+            set { X = value.W; Y = value.Y; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYZY
+        {
+            get { return new @ClassName(X, Y, Z, Y); }
+            set { X = value.X; Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYZZ
+        {
+            get { return new @ClassName(X, Y, Z, Z); }
+            set { X = value.X; Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYZW
+        {
+            get { return new @ClassName(X, Y, Z, W); }
+            set { X = value.X; Y = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYWX
+        {
+            get { return new @ClassName(X, Y, W, X); }
+            set { X = value.W; Y = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYWY
+        {
+            get { return new @ClassName(X, Y, W, Y); }
+            set { X = value.X; Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYWZ
+        {
+            get { return new @ClassName(X, Y, W, Z); }
+            set { X = value.X; Y = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XYWW
+        {
+            get { return new @ClassName(X, Y, W, W); }
+            set { X = value.X; Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZXX
+        {
+            get { return new @ClassName(X, Z, X, X); }
+            set { X = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZXY
+        {
+            get { return new @ClassName(X, Z, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZXZ
+        {
+            get { return new @ClassName(X, Z, X, Z); }
+            set { X = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZXW
+        {
+            get { return new @ClassName(X, Z, X, W); }
+            set { X = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZYX
+        {
+            get { return new @ClassName(X, Z, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZYY
+        {
+            get { return new @ClassName(X, Z, Y, Y); }
+            set { X = value.X; Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZYZ
+        {
+            get { return new @ClassName(X, Z, Y, Z); }
+            set { X = value.X; Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZYW
+        {
+            get { return new @ClassName(X, Z, Y, W); }
+            set { X = value.X; Y = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZZX
+        {
+            get { return new @ClassName(X, Z, Z, X); }
+            set { X = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZZY
+        {
+            get { return new @ClassName(X, Z, Z, Y); }
+            set { X = value.X; Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZZZ
+        {
+            get { return new @ClassName(X, Z, Z, Z); }
+            set { X = value.X; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZZW
+        {
+            get { return new @ClassName(X, Z, Z, W); }
+            set { X = value.X; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZWX
+        {
+            get { return new @ClassName(X, Z, W, X); }
+            set { X = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZWY
+        {
+            get { return new @ClassName(X, Z, W, Y); }
+            set { X = value.X; Y = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZWZ
+        {
+            get { return new @ClassName(X, Z, W, Z); }
+            set { X = value.X; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XZWW
+        {
+            get { return new @ClassName(X, Z, W, W); }
+            set { X = value.X; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWXX
+        {
+            get { return new @ClassName(X, W, X, X); }
+            set { X = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWXY
+        {
+            get { return new @ClassName(X, W, X, Y); }
+            set { X = value.Z; Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWXZ
+        {
+            get { return new @ClassName(X, W, X, Z); }
+            set { X = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWXW
+        {
+            get { return new @ClassName(X, W, X, W); }
+            set { X = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWYX
+        {
+            get { return new @ClassName(X, W, Y, X); }
+            set { X = value.W; Y = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWYY
+        {
+            get { return new @ClassName(X, W, Y, Y); }
+            set { X = value.X; Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWYZ
+        {
+            get { return new @ClassName(X, W, Y, Z); }
+            set { X = value.X; Y = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWYW
+        {
+            get { return new @ClassName(X, W, Y, W); }
+            set { X = value.X; Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWZX
+        {
+            get { return new @ClassName(X, W, Z, X); }
+            set { X = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWZY
+        {
+            get { return new @ClassName(X, W, Z, Y); }
+            set { X = value.X; Y = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWZZ
+        {
+            get { return new @ClassName(X, W, Z, Z); }
+            set { X = value.X; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWZW
+        {
+            get { return new @ClassName(X, W, Z, W); }
+            set { X = value.X; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWWX
+        {
+            get { return new @ClassName(X, W, W, X); }
+            set { X = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWWY
+        {
+            get { return new @ClassName(X, W, W, Y); }
+            set { X = value.X; Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWWZ
+        {
+            get { return new @ClassName(X, W, W, Z); }
+            set { X = value.X; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName XWWW
+        {
+            get { return new @ClassName(X, W, W, W); }
+            set { X = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXXX
+        {
+            get { return new @ClassName(Y, X, X, X); }
+            set { X = value.W; Y = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXXY
+        {
+            get { return new @ClassName(Y, X, X, Y); }
+            set { X = value.Z; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXXZ
+        {
+            get { return new @ClassName(Y, X, X, Z); }
+            set { X = value.Z; Y = value.X; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXXW
+        {
+            get { return new @ClassName(Y, X, X, W); }
+            set { X = value.Z; Y = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXYX
+        {
+            get { return new @ClassName(Y, X, Y, X); }
+            set { X = value.W; Y = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXYY
+        {
+            get { return new @ClassName(Y, X, Y, Y); }
+            set { X = value.Y; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXYZ
+        {
+            get { return new @ClassName(Y, X, Y, Z); }
+            set { X = value.Y; Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXYW
+        {
+            get { return new @ClassName(Y, X, Y, W); }
+            set { X = value.Y; Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXZX
+        {
+            get { return new @ClassName(Y, X, Z, X); }
+            set { X = value.W; Y = value.X; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXZY
+        {
+            get { return new @ClassName(Y, X, Z, Y); }
+            set { X = value.Y; Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXZZ
+        {
+            get { return new @ClassName(Y, X, Z, Z); }
+            set { X = value.Y; Y = value.X; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXZW
+        {
+            get { return new @ClassName(Y, X, Z, W); }
+            set { X = value.Y; Y = value.X; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXWX
+        {
+            get { return new @ClassName(Y, X, W, X); }
+            set { X = value.W; Y = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXWY
+        {
+            get { return new @ClassName(Y, X, W, Y); }
+            set { X = value.Y; Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXWZ
+        {
+            get { return new @ClassName(Y, X, W, Z); }
+            set { X = value.Y; Y = value.X; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YXWW
+        {
+            get { return new @ClassName(Y, X, W, W); }
+            set { X = value.Y; Y = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYXX
+        {
+            get { return new @ClassName(Y, Y, X, X); }
+            set { X = value.W; Y = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYXY
+        {
+            get { return new @ClassName(Y, Y, X, Y); }
+            set { X = value.Z; Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYXZ
+        {
+            get { return new @ClassName(Y, Y, X, Z); }
+            set { X = value.Z; Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYXW
+        {
+            get { return new @ClassName(Y, Y, X, W); }
+            set { X = value.Z; Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYYX
+        {
+            get { return new @ClassName(Y, Y, Y, X); }
+            set { X = value.W; Y = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYYY
+        {
+            get { return new @ClassName(Y, Y, Y, Y); }
+            set { Y = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYYZ
+        {
+            get { return new @ClassName(Y, Y, Y, Z); }
+            set { Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYYW
+        {
+            get { return new @ClassName(Y, Y, Y, W); }
+            set { Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYZX
+        {
+            get { return new @ClassName(Y, Y, Z, X); }
+            set { X = value.W; Y = value.Y; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYZY
+        {
+            get { return new @ClassName(Y, Y, Z, Y); }
+            set { Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYZZ
+        {
+            get { return new @ClassName(Y, Y, Z, Z); }
+            set { Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYZW
+        {
+            get { return new @ClassName(Y, Y, Z, W); }
+            set { Y = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYWX
+        {
+            get { return new @ClassName(Y, Y, W, X); }
+            set { X = value.W; Y = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYWY
+        {
+            get { return new @ClassName(Y, Y, W, Y); }
+            set { Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYWZ
+        {
+            get { return new @ClassName(Y, Y, W, Z); }
+            set { Y = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YYWW
+        {
+            get { return new @ClassName(Y, Y, W, W); }
+            set { Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZXX
+        {
+            get { return new @ClassName(Y, Z, X, X); }
+            set { X = value.W; Y = value.X; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZXY
+        {
+            get { return new @ClassName(Y, Z, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZXZ
+        {
+            get { return new @ClassName(Y, Z, X, Z); }
+            set { X = value.Z; Y = value.X; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZXW
+        {
+            get { return new @ClassName(Y, Z, X, W); }
+            set { X = value.Z; Y = value.X; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZYX
+        {
+            get { return new @ClassName(Y, Z, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZYY
+        {
+            get { return new @ClassName(Y, Z, Y, Y); }
+            set { Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZYZ
+        {
+            get { return new @ClassName(Y, Z, Y, Z); }
+            set { Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZYW
+        {
+            get { return new @ClassName(Y, Z, Y, W); }
+            set { Y = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZZX
+        {
+            get { return new @ClassName(Y, Z, Z, X); }
+            set { X = value.W; Y = value.X; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZZY
+        {
+            get { return new @ClassName(Y, Z, Z, Y); }
+            set { Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZZZ
+        {
+            get { return new @ClassName(Y, Z, Z, Z); }
+            set { Y = value.X; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZZW
+        {
+            get { return new @ClassName(Y, Z, Z, W); }
+            set { Y = value.X; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZWX
+        {
+            get { return new @ClassName(Y, Z, W, X); }
+            set { X = value.W; Y = value.X; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZWY
+        {
+            get { return new @ClassName(Y, Z, W, Y); }
+            set { Y = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZWZ
+        {
+            get { return new @ClassName(Y, Z, W, Z); }
+            set { Y = value.X; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YZWW
+        {
+            get { return new @ClassName(Y, Z, W, W); }
+            set { Y = value.X; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWXX
+        {
+            get { return new @ClassName(Y, W, X, X); }
+            set { X = value.W; Y = value.X; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWXY
+        {
+            get { return new @ClassName(Y, W, X, Y); }
+            set { X = value.Z; Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWXZ
+        {
+            get { return new @ClassName(Y, W, X, Z); }
+            set { X = value.Z; Y = value.X; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWXW
+        {
+            get { return new @ClassName(Y, W, X, W); }
+            set { X = value.Z; Y = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWYX
+        {
+            get { return new @ClassName(Y, W, Y, X); }
+            set { X = value.W; Y = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWYY
+        {
+            get { return new @ClassName(Y, W, Y, Y); }
+            set { Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWYZ
+        {
+            get { return new @ClassName(Y, W, Y, Z); }
+            set { Y = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWYW
+        {
+            get { return new @ClassName(Y, W, Y, W); }
+            set { Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWZX
+        {
+            get { return new @ClassName(Y, W, Z, X); }
+            set { X = value.W; Y = value.X; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWZY
+        {
+            get { return new @ClassName(Y, W, Z, Y); }
+            set { Y = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWZZ
+        {
+            get { return new @ClassName(Y, W, Z, Z); }
+            set { Y = value.X; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWZW
+        {
+            get { return new @ClassName(Y, W, Z, W); }
+            set { Y = value.X; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWWX
+        {
+            get { return new @ClassName(Y, W, W, X); }
+            set { X = value.W; Y = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWWY
+        {
+            get { return new @ClassName(Y, W, W, Y); }
+            set { Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWWZ
+        {
+            get { return new @ClassName(Y, W, W, Z); }
+            set { Y = value.X; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName YWWW
+        {
+            get { return new @ClassName(Y, W, W, W); }
+            set { Y = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXXX
+        {
+            get { return new @ClassName(Z, X, X, X); }
+            set { X = value.W; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXXY
+        {
+            get { return new @ClassName(Z, X, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXXZ
+        {
+            get { return new @ClassName(Z, X, X, Z); }
+            set { X = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXXW
+        {
+            get { return new @ClassName(Z, X, X, W); }
+            set { X = value.Z; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXYX
+        {
+            get { return new @ClassName(Z, X, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXYY
+        {
+            get { return new @ClassName(Z, X, Y, Y); }
+            set { X = value.Y; Y = value.W; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXYZ
+        {
+            get { return new @ClassName(Z, X, Y, Z); }
+            set { X = value.Y; Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXYW
+        {
+            get { return new @ClassName(Z, X, Y, W); }
+            set { X = value.Y; Y = value.Z; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXZX
+        {
+            get { return new @ClassName(Z, X, Z, X); }
+            set { X = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXZY
+        {
+            get { return new @ClassName(Z, X, Z, Y); }
+            set { X = value.Y; Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXZZ
+        {
+            get { return new @ClassName(Z, X, Z, Z); }
+            set { X = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXZW
+        {
+            get { return new @ClassName(Z, X, Z, W); }
+            set { X = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXWX
+        {
+            get { return new @ClassName(Z, X, W, X); }
+            set { X = value.W; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXWY
+        {
+            get { return new @ClassName(Z, X, W, Y); }
+            set { X = value.Y; Y = value.W; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXWZ
+        {
+            get { return new @ClassName(Z, X, W, Z); }
+            set { X = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZXWW
+        {
+            get { return new @ClassName(Z, X, W, W); }
+            set { X = value.Y; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYXX
+        {
+            get { return new @ClassName(Z, Y, X, X); }
+            set { X = value.W; Y = value.Y; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYXY
+        {
+            get { return new @ClassName(Z, Y, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYXZ
+        {
+            get { return new @ClassName(Z, Y, X, Z); }
+            set { X = value.Z; Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYXW
+        {
+            get { return new @ClassName(Z, Y, X, W); }
+            set { X = value.Z; Y = value.Y; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYYX
+        {
+            get { return new @ClassName(Z, Y, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYYY
+        {
+            get { return new @ClassName(Z, Y, Y, Y); }
+            set { Y = value.W; Z = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYYZ
+        {
+            get { return new @ClassName(Z, Y, Y, Z); }
+            set { Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYYW
+        {
+            get { return new @ClassName(Z, Y, Y, W); }
+            set { Y = value.Z; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYZX
+        {
+            get { return new @ClassName(Z, Y, Z, X); }
+            set { X = value.W; Y = value.Y; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYZY
+        {
+            get { return new @ClassName(Z, Y, Z, Y); }
+            set { Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYZZ
+        {
+            get { return new @ClassName(Z, Y, Z, Z); }
+            set { Y = value.Y; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYZW
+        {
+            get { return new @ClassName(Z, Y, Z, W); }
+            set { Y = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYWX
+        {
+            get { return new @ClassName(Z, Y, W, X); }
+            set { X = value.W; Y = value.Y; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYWY
+        {
+            get { return new @ClassName(Z, Y, W, Y); }
+            set { Y = value.W; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYWZ
+        {
+            get { return new @ClassName(Z, Y, W, Z); }
+            set { Y = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZYWW
+        {
+            get { return new @ClassName(Z, Y, W, W); }
+            set { Y = value.Y; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZXX
+        {
+            get { return new @ClassName(Z, Z, X, X); }
+            set { X = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZXY
+        {
+            get { return new @ClassName(Z, Z, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZXZ
+        {
+            get { return new @ClassName(Z, Z, X, Z); }
+            set { X = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZXW
+        {
+            get { return new @ClassName(Z, Z, X, W); }
+            set { X = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZYX
+        {
+            get { return new @ClassName(Z, Z, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZYY
+        {
+            get { return new @ClassName(Z, Z, Y, Y); }
+            set { Y = value.W; Z = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZYZ
+        {
+            get { return new @ClassName(Z, Z, Y, Z); }
+            set { Y = value.Z; Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZYW
+        {
+            get { return new @ClassName(Z, Z, Y, W); }
+            set { Y = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZZX
+        {
+            get { return new @ClassName(Z, Z, Z, X); }
+            set { X = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZZY
+        {
+            get { return new @ClassName(Z, Z, Z, Y); }
+            set { Y = value.W; Z = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZZZ
+        {
+            get { return new @ClassName(Z, Z, Z, Z); }
+            set { Z = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZZW
+        {
+            get { return new @ClassName(Z, Z, Z, W); }
+            set { Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZWX
+        {
+            get { return new @ClassName(Z, Z, W, X); }
+            set { X = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZWY
+        {
+            get { return new @ClassName(Z, Z, W, Y); }
+            set { Y = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZWZ
+        {
+            get { return new @ClassName(Z, Z, W, Z); }
+            set { Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZZWW
+        {
+            get { return new @ClassName(Z, Z, W, W); }
+            set { Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWXX
+        {
+            get { return new @ClassName(Z, W, X, X); }
+            set { X = value.W; Z = value.X; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWXY
+        {
+            get { return new @ClassName(Z, W, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.X; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWXZ
+        {
+            get { return new @ClassName(Z, W, X, Z); }
+            set { X = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWXW
+        {
+            get { return new @ClassName(Z, W, X, W); }
+            set { X = value.Z; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWYX
+        {
+            get { return new @ClassName(Z, W, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.X; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWYY
+        {
+            get { return new @ClassName(Z, W, Y, Y); }
+            set { Y = value.W; Z = value.X; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWYZ
+        {
+            get { return new @ClassName(Z, W, Y, Z); }
+            set { Y = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWYW
+        {
+            get { return new @ClassName(Z, W, Y, W); }
+            set { Y = value.Z; Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWZX
+        {
+            get { return new @ClassName(Z, W, Z, X); }
+            set { X = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWZY
+        {
+            get { return new @ClassName(Z, W, Z, Y); }
+            set { Y = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWZZ
+        {
+            get { return new @ClassName(Z, W, Z, Z); }
+            set { Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWZW
+        {
+            get { return new @ClassName(Z, W, Z, W); }
+            set { Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWWX
+        {
+            get { return new @ClassName(Z, W, W, X); }
+            set { X = value.W; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWWY
+        {
+            get { return new @ClassName(Z, W, W, Y); }
+            set { Y = value.W; Z = value.X; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWWZ
+        {
+            get { return new @ClassName(Z, W, W, Z); }
+            set { Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName ZWWW
+        {
+            get { return new @ClassName(Z, W, W, W); }
+            set { Z = value.X; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXXX
+        {
+            get { return new @ClassName(W, X, X, X); }
+            set { X = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXXY
+        {
+            get { return new @ClassName(W, X, X, Y); }
+            set { X = value.Z; Y = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXXZ
+        {
+            get { return new @ClassName(W, X, X, Z); }
+            set { X = value.Z; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXXW
+        {
+            get { return new @ClassName(W, X, X, W); }
+            set { X = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXYX
+        {
+            get { return new @ClassName(W, X, Y, X); }
+            set { X = value.W; Y = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXYY
+        {
+            get { return new @ClassName(W, X, Y, Y); }
+            set { X = value.Y; Y = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXYZ
+        {
+            get { return new @ClassName(W, X, Y, Z); }
+            set { X = value.Y; Y = value.Z; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXYW
+        {
+            get { return new @ClassName(W, X, Y, W); }
+            set { X = value.Y; Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXZX
+        {
+            get { return new @ClassName(W, X, Z, X); }
+            set { X = value.W; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXZY
+        {
+            get { return new @ClassName(W, X, Z, Y); }
+            set { X = value.Y; Y = value.W; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXZZ
+        {
+            get { return new @ClassName(W, X, Z, Z); }
+            set { X = value.Y; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXZW
+        {
+            get { return new @ClassName(W, X, Z, W); }
+            set { X = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXWX
+        {
+            get { return new @ClassName(W, X, W, X); }
+            set { X = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXWY
+        {
+            get { return new @ClassName(W, X, W, Y); }
+            set { X = value.Y; Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXWZ
+        {
+            get { return new @ClassName(W, X, W, Z); }
+            set { X = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WXWW
+        {
+            get { return new @ClassName(W, X, W, W); }
+            set { X = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYXX
+        {
+            get { return new @ClassName(W, Y, X, X); }
+            set { X = value.W; Y = value.Y; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYXY
+        {
+            get { return new @ClassName(W, Y, X, Y); }
+            set { X = value.Z; Y = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYXZ
+        {
+            get { return new @ClassName(W, Y, X, Z); }
+            set { X = value.Z; Y = value.Y; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYXW
+        {
+            get { return new @ClassName(W, Y, X, W); }
+            set { X = value.Z; Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYYX
+        {
+            get { return new @ClassName(W, Y, Y, X); }
+            set { X = value.W; Y = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYYY
+        {
+            get { return new @ClassName(W, Y, Y, Y); }
+            set { Y = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYYZ
+        {
+            get { return new @ClassName(W, Y, Y, Z); }
+            set { Y = value.Z; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYYW
+        {
+            get { return new @ClassName(W, Y, Y, W); }
+            set { Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYZX
+        {
+            get { return new @ClassName(W, Y, Z, X); }
+            set { X = value.W; Y = value.Y; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYZY
+        {
+            get { return new @ClassName(W, Y, Z, Y); }
+            set { Y = value.W; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYZZ
+        {
+            get { return new @ClassName(W, Y, Z, Z); }
+            set { Y = value.Y; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYZW
+        {
+            get { return new @ClassName(W, Y, Z, W); }
+            set { Y = value.Y; Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYWX
+        {
+            get { return new @ClassName(W, Y, W, X); }
+            set { X = value.W; Y = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYWY
+        {
+            get { return new @ClassName(W, Y, W, Y); }
+            set { Y = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYWZ
+        {
+            get { return new @ClassName(W, Y, W, Z); }
+            set { Y = value.Y; Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WYWW
+        {
+            get { return new @ClassName(W, Y, W, W); }
+            set { Y = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZXX
+        {
+            get { return new @ClassName(W, Z, X, X); }
+            set { X = value.W; Z = value.Y; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZXY
+        {
+            get { return new @ClassName(W, Z, X, Y); }
+            set { X = value.Z; Y = value.W; Z = value.Y; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZXZ
+        {
+            get { return new @ClassName(W, Z, X, Z); }
+            set { X = value.Z; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZXW
+        {
+            get { return new @ClassName(W, Z, X, W); }
+            set { X = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZYX
+        {
+            get { return new @ClassName(W, Z, Y, X); }
+            set { X = value.W; Y = value.Z; Z = value.Y; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZYY
+        {
+            get { return new @ClassName(W, Z, Y, Y); }
+            set { Y = value.W; Z = value.Y; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZYZ
+        {
+            get { return new @ClassName(W, Z, Y, Z); }
+            set { Y = value.Z; Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZYW
+        {
+            get { return new @ClassName(W, Z, Y, W); }
+            set { Y = value.Z; Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZZX
+        {
+            get { return new @ClassName(W, Z, Z, X); }
+            set { X = value.W; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZZY
+        {
+            get { return new @ClassName(W, Z, Z, Y); }
+            set { Y = value.W; Z = value.Z; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZZZ
+        {
+            get { return new @ClassName(W, Z, Z, Z); }
+            set { Z = value.W; W = value.X; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZZW
+        {
+            get { return new @ClassName(W, Z, Z, W); }
+            set { Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZWX
+        {
+            get { return new @ClassName(W, Z, W, X); }
+            set { X = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZWY
+        {
+            get { return new @ClassName(W, Z, W, Y); }
+            set { Y = value.W; Z = value.Y; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZWZ
+        {
+            get { return new @ClassName(W, Z, W, Z); }
+            set { Z = value.W; W = value.Z; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WZWW
+        {
+            get { return new @ClassName(W, Z, W, W); }
+            set { Z = value.Y; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWXX
+        {
+            get { return new @ClassName(W, W, X, X); }
+            set { X = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWXY
+        {
+            get { return new @ClassName(W, W, X, Y); }
+            set { X = value.Z; Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWXZ
+        {
+            get { return new @ClassName(W, W, X, Z); }
+            set { X = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWXW
+        {
+            get { return new @ClassName(W, W, X, W); }
+            set { X = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWYX
+        {
+            get { return new @ClassName(W, W, Y, X); }
+            set { X = value.W; Y = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWYY
+        {
+            get { return new @ClassName(W, W, Y, Y); }
+            set { Y = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWYZ
+        {
+            get { return new @ClassName(W, W, Y, Z); }
+            set { Y = value.Z; Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWYW
+        {
+            get { return new @ClassName(W, W, Y, W); }
+            set { Y = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWZX
+        {
+            get { return new @ClassName(W, W, Z, X); }
+            set { X = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWZY
+        {
+            get { return new @ClassName(W, W, Z, Y); }
+            set { Y = value.W; Z = value.Z; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWZZ
+        {
+            get { return new @ClassName(W, W, Z, Z); }
+            set { Z = value.W; W = value.Y; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWZW
+        {
+            get { return new @ClassName(W, W, Z, W); }
+            set { Z = value.Z; W = value.W; }
+        }
+        /// <summary>
+        /// The swizzle mask.
+        /// </summary>
+        public @ClassName WWWX
+        {
+            get { return new @ClassName(W, W, W, X); }
+            set { X = value.W; W = value.Z; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor with arguments.
+        /// </summary>
+        /// <param name="x">The x component.</param>
+        /// <param name="y">The y component.</param>
+        /// <param name="z">The z component.</param>
+        /// <param name="w">The w component.</param>
+        public @ClassName(@TypeName x, @TypeName y, @TypeName z, @TypeName w)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
+            this.W = w;
+        }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="r">The vector to copy.</param>
+        public @ClassName(@ClassName r)
+        {
+            X = r.X;
+            Y = r.Y;
+            Z = r.Z;
+            W = r.W;
+        }
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// Construction with magnitude and direction.
+        /// </summary>
+        /// <param name="magnitude">The magnitude, or length of vector.</param>
+        /// <param name="direction">Direction of vector.</param>
+        public @ClassName(@TypeName magnitude, @ClassName direction)
+        {
+            this = magnitude * direction.Normal;
+        }
+
+        //#endif
+
+        #endregion
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return CompareTo((@ClassName)obj);
+            throw new Exception("Cannot compare incompatible types.");
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = X.CompareTo(other.X);
+            if (cmp != 0) return cmp;
+            cmp = Y.CompareTo(other.Y);
+            if (cmp != 0) return cmp;
+            cmp = Z.CompareTo(other.Z);
+            if (cmp != 0) return cmp;
+            return W.CompareTo(other.W);
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        #region Conversions
+
+        //#ifdef Vector3ClassName
+
+        public static explicit operator @Vector3ClassName(@ClassName v)
+        {
+            return new @Vector3ClassName(v.X, v.Y, v.Z);
+        }
+
+        //#endif
+        //#ifdef Vector2ClassName
+
+        public static explicit operator @Vector2ClassName(@ClassName v)
+        {
+            return new @Vector2ClassName(v.X, v.Y);
+        }
+
+        //#endif
+
+        #endregion
+    }
+
+}

@@ -1,0 +1,7 @@
+.. Game computes frame, resulting in modifications to the Scene
+.. Game calls Render() on the SceneManager
+.. SceneManager locks the Scene and "renders" all of the Scene into statistics gathering fake device
+.. SceneManager unlocks the Scene, submits frame information to worker threads and returns
+.. Game returns to processing another frame
+.. SceneManager worker threads compute an optimal plan to render the frame previously submitted
+.. SceneManager worker threads render the render plan (using instancing, shared states, textures, shaders, constants...)

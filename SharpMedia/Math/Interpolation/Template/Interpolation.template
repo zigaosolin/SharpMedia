@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Stepper interfaces -->
+  <TemplateSet Name="UniformStepperf" Extends="Float,MathCore">
+    <Template Name="UniformStepper" Value="IUniformStepperf" />
+  </TemplateSet>
+  <TemplateSet Name="UniformStepperd" Extends="Double,MathCore">
+    <Template Name="UniformStepper" Value="IUniformStepperd" />
+  </TemplateSet>
+  
+  <!-- Polynomial interpolation -->
+  <TemplateSet Name="PolynomialInterpolation" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Float" Extends="Float" />
+      <TemplateSet Name="Double" Extends="Double" />
+    </TemplateSet>
+  </TemplateSet>
+  
+  <!-- Rational interpolation -->
+  <TemplateSet Name="RationalInterpolation" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Float" Extends="Float" />
+      <TemplateSet Name="Double" Extends="Double" />
+    </TemplateSet>
+  </TemplateSet>
+  
+  <!-- Smooth step -->
+  <TemplateSet Name="SmoothStepf" Extends="UniformStepperf">
+    <Template Name="ClassName" Value="SmoothStepf" />
+  </TemplateSet>
+  <TemplateSet Name="SmoothStepd" Extends="UniformStepperd">
+    <Template Name="ClassName" Value="SmoothStepd" />
+  </TemplateSet>
+  
+  <!-- Common steppers -->
+  <TemplateSet Name="CommonSteppersf" Extends="UniformStepperf">
+    <Template Name="LinearStepper" Value="LinearStepperf" />
+    <Template Name="RationalStepper" Value="RationalStepperf" />
+  </TemplateSet>
+  <TemplateSet Name="CommonSteppersd" Extends="UniformStepperd">
+    <Template Name="LinearStepper" Value="LinearStepperd" />
+    <Template Name="RationalStepper" Value="RationalStepperd" />
+  </TemplateSet>
+
+</TemplateSets>

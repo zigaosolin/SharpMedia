@@ -1,0 +1,34 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Interpolation
+{
+    /// <summary>
+    /// A smooth step interpolator.
+    /// </summary>
+    public sealed class @ClassName : @UniformStepper
+    {
+        #region Public Members
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        #endregion
+
+        #region @UniformStepper Members
+
+        public @TypeName Interpolate(@TypeName t)
+        {
+            // We do it using the sin function.
+            return (@TypeName)0.5 + (@TypeName)0.5 * @Sin(t * (@TypeName)MathHelper.PI 
+                - (@TypeName)MathHelper.PI / 2.0f);
+        }
+
+        #endregion
+    }
+}

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="Bezier Demo"
+	friendly=""
+	id="71801DE0-AEA6-4767-84C0-2EED8C93EE45"
+	root="Main"
+	type="CommandLine">
+
+  <!-- Replication of the application descriptor -->
+  <Components>
+    <Component
+			Id="Main"
+			Type="SharpMedia.Graphics.Vector.Demo.Bezier">
+      <Parameters>
+        <Service>${SharpMedia.Graphics.GraphicsService:Default}</Service>
+      </Parameters>
+    </Component>
+  </Components>
+</Application>

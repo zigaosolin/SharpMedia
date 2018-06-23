@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="ConfigureTool"
+	friendly="A configure tool application"
+	id="B836DC60-9222-4cf9-A066-A586CCBBCB48"
+	root="Main"
+	type="SingleDocument">
+
+  <!-- Replication of the application descriptor -->
+  <Components>
+    <Component
+			Id="Main"
+			Type="SharpMedia.Tools.ConfigureTool">
+    </Component>
+  </Components>
+</Application>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<InstallPackage
+	xversion ="1.0.0"
+	name     ="Direct 3D 10 Graphics Driver"
+	id       ="F87FAEEC-BB7A-11DC-8FC2-3FD255D89593"
+	publisher="SharpMedia">
+  
+  <PreInstallCheck>
+    <!-- Requires: Base System-->
+    <FailIfNotInstalled InstalledPackages="A0B61AB8-84E1-11DC-A6DF-B5C056D89593" />
+    <!-- Requires: Graphics Library -->
+    <FailIfNotInstalled InstalledPackages="C7DC42BC-F39B-4ee3-806D-49924C8D455E" />
+    <!-- Prohibits: Self -->
+    <FailIfInstalled InstalledPackages="F87FAEEC-BB7A-11DC-8FC2-3FD255D89593" />
+  </PreInstallCheck>
+
+  <Installation>
+    <!-- Create required directories -->
+    <DirNodeCreate  DestinationListName="PreCreateDirectories" />
+    
+    <!-- Copy D3D10 Assembly -->
+    <CopySourceList SourceListName="Assemblies" DestinationListName="Assemblies" />
+
+    <!-- Register the application as a service -->
+    <RegisterService ApplicationPath="System/Runtime/Services/Direct3D10Driver" Name="Direct3D10 Graphics Driver" AutoStart="true"/>
+
+    <!-- Copy D3D10 Service -->
+    <InstallApplication SourceListName="Application" DestinationListName="Application" />
+    <InstallApplication SourceListName="Test" DestinationListName="Test" />
+  </Installation>
+
+  <Sources>
+    <Assemblies>
+      <AssemblySource Unmanaged="true">
+        <PackageContained Relative="../SharpMedia.Graphics.Driver.Direct3D10.dll" Type="BinaryRaw" />
+      </AssemblySource>
+
+      <AssemblySource>
+        <PackageContained Relative="../SharpMedia.Graphics.Driver.Direct3D10.Test.exe" Type="BinaryRaw" />
+      </AssemblySource>
+    </Assemblies>
+
+    <Application>
+      <ApplicationDescriptorSource>
+        <PackageContained Relative="Direct3D10Service.appxml" Type="XML"/>
+      </ApplicationDescriptorSource>
+    </Application>
+
+    <Test>
+      <ApplicationDescriptorSource>
+        <PackageContained Relative="Direct3D10Test.appxml" Type="XML"/>
+      </ApplicationDescriptorSource>
+    </Test>
+  </Sources>
+
+  <Destinations>
+    <PreCreateDirectories>
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Graphics/Driver" />
+    </PreCreateDirectories>
+    
+    <Assemblies>
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Graphics/Driver/Direct3D10" />
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Graphics/Driver/Direct3D10/Test" />
+    </Assemblies>
+
+    <Application>
+      <InstallRelative Relative="System/Runtime/Services/Direct3D10Driver" />
+    </Application>
+
+    <Test>
+      <InstallRelative Relative="System/Applications/D3D10Test" />
+    </Test>
+  </Destinations>
+</InstallPackage>

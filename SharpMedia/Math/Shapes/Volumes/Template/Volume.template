@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Volume interfaces -->
+  <TemplateSet Name="VolumeInterfacesf" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="Volume" Value="IVolumef" />
+  </TemplateSet>
+  <TemplateSet Name="VolumeInterfacesd" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="Volume" Value="IVolumed" />
+  </TemplateSet>
+  
+  <!-- AA Box-->
+  <TemplateSet Name="AABoxf" Extends="VolumeInterfacesf">
+    <Template Name="ClassName" Value="AABoxf" />
+  </TemplateSet>
+  <TemplateSet Name="AABoxd" Extends="VolumeInterfacesd">
+    <Template Name="ClassName" Value="AABoxd" />
+  </TemplateSet>
+
+  <!-- Sphere-->
+  <TemplateSet Name="Spheref" Extends="VolumeInterfacesf">
+    <Template Name="ClassName" Value="Spheref" />
+  </TemplateSet>
+  <TemplateSet Name="Sphered" Extends="VolumeInterfacesd">
+    <Template Name="ClassName" Value="Sphered" />
+  </TemplateSet>
+
+  <!-- Voxel grid-->
+  <TemplateSet Name="VoxelGridf" Extends="VolumeInterfacesf">
+    <Template Name="ClassName" Value="VoxelGridf" />
+  </TemplateSet>
+  <TemplateSet Name="VoxelGridd" Extends="VolumeInterfacesd">
+    <Template Name="ClassName" Value="VoxelGridd" />
+  </TemplateSet>
+
+
+</TemplateSets>

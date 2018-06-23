@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- A storage access members. -->
+  <TemplateSet Name="StorageAccess" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <!-- A vector 2f interface.-->
+      <TemplateSet Name="Vector2f" Extends="CoreMath">
+        <Template Name="TriangleAccess" Value="ITriangleAccess2f" />
+        <Template Name="LineAccess" Value="ILineAccess2f" />
+        <Template Name="LineSegment" Value="LineSegment2f" />
+        <Template Name="Triangle" Value="Triangle2f" />
+      </TemplateSet>
+
+      <!-- A vector 2d interface.-->
+      <TemplateSet Name="Vector2d" Extends="CoreMath">
+        <Template Name="TriangleAccess" Value="ITriangleAccess2d" />
+        <Template Name="LineAccess" Value="ILineAccess2d" />
+        <Template Name="LineSegment" Value="LineSegment2d" />
+        <Template Name="Triangle" Value="Triangle2d" />
+      </TemplateSet>
+
+      <!-- A vector 3f interface.-->
+      <TemplateSet Name="Vector3f" Extends="CoreMath">
+        <Template Name="TriangleAccess" Value="ITriangleAccess3f" />
+        <Template Name="LineAccess" Value="ILineAccess3f" />
+        <Template Name="LineSegment" Value="LineSegment3f" />
+        <Template Name="Triangle" Value="Triangle3f" />
+      </TemplateSet>
+
+      <!-- A vector 3d interface.-->
+      <TemplateSet Name="Vector3d" Extends="CoreMath">
+        <Template Name="TriangleAccess" Value="ITriangleAccess3d" />
+        <Template Name="LineAccess" Value="ILineAccess3d" />
+        <Template Name="LineSegment" Value="LineSegment3d" />
+        <Template Name="Triangle" Value="Triangle3d" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+  
+  
+  <TemplateSet Name="ControlPointFormatTypes">
+    
+    <!-- Single types -->
+    <TemplateSet Name="Half">
+      <Template Name="Get" Value="Geth" />
+      <Template Name="TypeName" Value="Half" />
+    </TemplateSet>
+    <TemplateSet Name="Byte">
+      <Template Name="Get" Value="Getb" />
+      <Template Name="TypeName" Value="byte" />
+    </TemplateSet>
+    <TemplateSet Name="Short">
+      <Template Name="Get" Value="Gets" />
+      <Template Name="TypeName" Value="short" />
+    </TemplateSet>
+
+
+    <!-- An integer -->
+    <TemplateSet Name="Integer">
+      <Template Name="Get" Value="Geti" />
+      <Template Name="TypeName" Value="int" />
+    </TemplateSet>
+    <TemplateSet Name="Vector2i">
+      <Template Name="Get" Value="Get2i" />
+      <Template Name="TypeName" Value="Vector2i" />
+    </TemplateSet>
+    <TemplateSet Name="Vector3i">
+      <Template Name="Get" Value="Get3i" />
+      <Template Name="TypeName" Value="Vector3i" />
+    </TemplateSet>
+    <TemplateSet Name="Vector4i">
+      <Template Name="Get" Value="Get4i" />
+      <Template Name="TypeName" Value="Vector4i" />
+    </TemplateSet>
+
+    <!-- A float -->
+    <TemplateSet Name="Float">
+      <Template Name="Get" Value="Getf" />
+      <Template Name="TypeName" Value="float" />
+    </TemplateSet>
+    <TemplateSet Name="Vector2f">
+      <Template Name="Get" Value="Get2f" />
+      <Template Name="TypeName" Value="Vector2f" />
+    </TemplateSet>
+    <TemplateSet Name="Vector3f">
+      <Template Name="Get" Value="Get3f" />
+      <Template Name="TypeName" Value="Vector3f" />
+    </TemplateSet>
+    <TemplateSet Name="Vector4f">
+      <Template Name="Get" Value="Get4f" />
+      <Template Name="TypeName" Value="Vector4f" />
+    </TemplateSet>
+
+    <!-- A double -->
+    <TemplateSet Name="Double">
+      <Template Name="Get" Value="Getd" />
+      <Template Name="TypeName" Value="double" />
+    </TemplateSet>
+    <TemplateSet Name="Vector2d">
+      <Template Name="Get" Value="Get2d" />
+      <Template Name="TypeName" Value="Vector2d" />
+    </TemplateSet>
+    <TemplateSet Name="Vector3d">
+      <Template Name="Get" Value="Get3d" />
+      <Template Name="TypeName" Value="Vector3d" />
+    </TemplateSet>
+    <TemplateSet Name="Vector4d">
+      <Template Name="Get" Value="Get4d" />
+      <Template Name="TypeName" Value="Vector4d" />
+    </TemplateSet>
+  </TemplateSet>
+  
+  <!-- A Control point format view generator -->
+  <TemplateSet Name="ControlPointBufferView" Extends="CoreMath">
+    <TemplateLink Name="Types" Link="ControlPointFormatTypes" />
+  </TemplateSet>
+  
+  <!-- A control point query generator -->
+  <TemplateSet Name="ControlPointQuery" Extends="CoreMath">
+    <TemplateLink Name="Types" Link="ControlPointFormatTypes" />
+  </TemplateSet>
+  
+  <!-- Shape index buffer view -->
+  <TemplateSet Name="ShapeIndexBufferView" Extends="CoreMath" >
+    <TemplateSet Name="Types">
+      <TemplateSet Name="ByteSafe">
+        <Template Name="Set" Value="SetSafe" />
+        <Template Name="GetX" Value="GetSafe" />
+        <Template Name="Get" Value="GetSafeb" />
+        <Template Name="TypeName" Value="byte" />
+        <Template Name="TypeSafe" Value="true" />
+      </TemplateSet>
+      <TemplateSet Name="Byte">
+        <Template Name="Set" Value="Set" />
+        <Template Name="GetX" Value="Get" />
+        <Template Name="Get" Value="Getb" />
+        <Template Name="TypeName" Value="byte" />
+      </TemplateSet>
+      <TemplateSet Name="UShortSafe">
+        <Template Name="Set" Value="SetSafe" />
+        <Template Name="GetX" Value="GetSafe" />
+        <Template Name="Get" Value="GetSafeus" />
+        <Template Name="TypeName" Value="ushort" />
+        <Template Name="TypeSafe" Value="true" />
+      </TemplateSet>
+      <TemplateSet Name="UShort">
+        <Template Name="Set" Value="Set" />
+        <Template Name="GetX" Value="Get" />
+        <Template Name="Get" Value="Getus" />
+        <Template Name="TypeName" Value="ushort" />
+      </TemplateSet>
+      <TemplateSet Name="UIntSafe">
+        <Template Name="Set" Value="SetSafe" />
+        <Template Name="GetX" Value="GetSafe" />
+        <Template Name="Get" Value="GetSafeui" />
+        <Template Name="TypeName" Value="uint" />
+        <Template Name="TypeSafe" Value="true" />
+      </TemplateSet>
+      <TemplateSet Name="UInt">
+        <Template Name="Set" Value="Set" />
+        <Template Name="GetX" Value="Get" />
+        <Template Name="Get" Value="Getui" />
+        <Template Name="TypeName" Value="uint" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+  
+  
+  <!-- Triangle soup -->
+  <TemplateSet Name="GraphicsTriangleSoup">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Float2">
+        <Template Name="Triangle" Value="Triangle2f" />
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Get" Value="Get2f" />
+      </TemplateSet>
+      <TemplateSet Name="Double2">
+        <Template Name="Triangle" Value="Triangle2d" />
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Get" Value="Get2d" />
+      </TemplateSet>
+      <TemplateSet Name="Float3">
+        <Template Name="Triangle" Value="Triangle3f" />
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Get" Value="Get3f" />
+      </TemplateSet>
+      <TemplateSet Name="Double3">
+        <Template Name="Triangle" Value="Triangle3d" />
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="Get" Value="Get3d" />
+      </TemplateSet>
+      <!-- TODO: add other class when available -->
+    </TemplateSet>
+    
+  </TemplateSet>
+  
+  <!-- Line soup -->
+  <TemplateSet Name="GraphicsLineSoup">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Float2">
+        <Template Name="Line" Value="LineSegment2f" />
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Get" Value="Get2f" />
+      </TemplateSet>
+      <TemplateSet Name="Double2">
+        <Template Name="Line" Value="LineSegment2d" />
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Get" Value="Get2d" />
+      </TemplateSet>
+      <TemplateSet Name="Float3">
+        <Template Name="Line" Value="LineSegment3f" />
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Get" Value="Get3f" />
+      </TemplateSet>
+      <TemplateSet Name="Double3">
+        <Template Name="Line" Value="LineSegment3d" />
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="Get" Value="Get3d" />
+      </TemplateSet>
+      <!-- TODO: add other class when available-->
+    </TemplateSet>
+  </TemplateSet>
+  
+  
+  <!-- Triangle soups -->
+  <TemplateSet Name="TriangleSoup2f" Extends="Float,CoreMath">
+    <Template Name="Triangle" Value="Triangle2f" />
+    <Template Name="Builder" Value="ITriangleBuilder2f" />
+    <Template Name="Vector" Value="Vector2f" />
+    <Template Name="TriangleAccess" Value="ITriangleAccess2f" />
+    <Template Name="ClassName" Value="TriangleSoup2f" />
+  </TemplateSet>
+  <TemplateSet Name="TriangleSoup2d" Extends="Double,CoreMath">
+    <Template Name="Triangle" Value="Triangle2d" />
+    <Template Name="Builder" Value="ITriangleBuilder2d" />
+    <Template Name="Vector" Value="Vector2d" />
+    <Template Name="TriangleAccess" Value="ITriangleAccess2d" />
+    <Template Name="ClassName" Value="TriangleSoup2d" />
+  </TemplateSet>
+  <TemplateSet Name="TriangleSoup3f" Extends="Float,CoreMath">
+    <Template Name="Triangle" Value="Triangle3f" />
+    <Template Name="Builder" Value="ITriangleBuilder3f" />
+    <Template Name="Vector" Value="Vector3f" />
+    <Template Name="TriangleAccess" Value="ITriangleAccess3f" />
+    <Template Name="ClassName" Value="TriangleSoup3f" />
+  </TemplateSet>
+  <TemplateSet Name="TriangleSoup3d" Extends="Double,CoreMath">
+    <Template Name="Triangle" Value="Triangle3d" />
+    <Template Name="Builder" Value="ITriangleBuilder3d" />
+    <Template Name="Vector" Value="Vector3d" />
+    <Template Name="TriangleAccess" Value="ITriangleAccess3d" />
+    <Template Name="ClassName" Value="TriangleSoup3d" />
+  </TemplateSet>
+
+
+  <!-- Line strips -->
+  <TemplateSet Name="LineStrip2f" Extends="Float,CoreMath">
+    <Template Name="Line" Value="LineSegment2f" />
+    <Template Name="Builder" Value="ILineBuilder2f" />
+    <Template Name="Vector" Value="Vector2f" />
+    <Template Name="LineAccess" Value="ILineAccess2f" />
+    <Template Name="ClassName" Value="LineStrip2f" />
+  </TemplateSet>
+  <TemplateSet Name="LineStrip2d" Extends="Double,CoreMath">
+    <Template Name="Line" Value="LineSegment2d" />
+    <Template Name="Builder" Value="ILineBuilder2d" />
+    <Template Name="Vector" Value="Vector2d" />
+    <Template Name="LineAccess" Value="ILineAccess2d" />
+    <Template Name="ClassName" Value="LineStrip2d" />
+  </TemplateSet>
+  <TemplateSet Name="LineStrip3f" Extends="Float,CoreMath">
+    <Template Name="Line" Value="LineSegment3f" />
+    <Template Name="Builder" Value="ILineBuilder3f" />
+    <Template Name="Vector" Value="Vector3f" />
+    <Template Name="LineAccess" Value="ILineAccess3f" />
+    <Template Name="ClassName" Value="LineStrip3f" />
+  </TemplateSet>
+  <TemplateSet Name="LineStrip3d" Extends="Double,CoreMath">
+    <Template Name="Line" Value="LineSegment3d" />
+    <Template Name="Builder" Value="ILineBuilder3d" />
+    <Template Name="Vector" Value="Vector3d" />
+    <Template Name="LineAccess" Value="ILineAccess3d" />
+    <Template Name="ClassName" Value="LineStrip3d" />
+  </TemplateSet>
+
+</TemplateSets>

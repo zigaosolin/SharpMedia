@@ -1,0 +1,502 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.Math.Matrix;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// Polygon in @Dim space.
+    /// </summary>
+    [Serializable]
+    public sealed class @ClassName :
+        @AreaD, @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The points of polygon.
+        /// </summary>
+        public @Vector[] Points;
+
+        #endregion
+
+        #region Private Helpers
+
+        /// <summary>
+        /// Splits line, by adding beginning and possibly middle point, but omitting last point.
+        /// </summary>
+        /// <param name="v1"></param>
+        /// <param name="v2"></param>
+        /// <param name="resolution"></param>
+        /// <param name="data"></param>
+        void SplitLine(@Vector v1, @Vector v2, @TypeName resolution, List<@Vector> data)
+        {
+            if ((v1 - v2).Length2 > resolution * resolution)
+            {
+                @TypeName count = @Floor((v1 - v2).Length / resolution);
+
+                for (@TypeName i = 1; i < count; i += @One)
+                {
+                    @TypeName t = (@TypeName)(i - 1) / (@TypeName)count;
+                    data.Add((@One - t) * v1 + t * v2);
+                }
+            }
+            else
+            {
+                data.Add(v1);
+            }
+
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// An array accessor.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public @Vector this[uint index]
+        {
+            get
+            {
+                return Points[(int)index];
+            }
+            set
+            {
+                Points[(int)index] = value;
+            }
+        }
+
+        /// <summary>
+        /// The center point.
+        /// </summary>
+        public @Vector Center
+        {
+            get
+            {
+                @Vector center = @Vector.Zero;
+                for (int i = 0; i < Points.Length; i++)
+                {
+                    center += Points[i];
+                }
+
+                center /= (@TypeName)Points.Length;
+                return center;
+            }
+        }
+
+        /// <summary>
+        /// Is the polygon convex.
+        /// </summary>
+        public bool IsConvex
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        /// <summary>
+        /// Is the polygon clockwise.
+        /// </summary>
+        public bool IsClockwise
+        {
+            get
+            {
+                // We check winding order.
+                @TypeName area = @Zero;
+                for (int j = 1; j < Points.Length; j++)
+                {
+                    // FIXME: this is Z projection assumed.
+                    area += Points[j - 1].X * Points[j].Y - Points[j - 1].Y * Points[j].X;
+                }
+
+                return area <= @Zero;
+            }
+        }
+
+        /// <summary>
+        /// Is the polygon anticlockwise.
+        /// </summary>
+        public bool IsAntiClockwise
+        {
+            get
+            {
+                return !IsClockwise;
+            }
+        }
+
+        /// <summary>
+        /// The bounding region.
+        /// </summary>
+        public @RegionClassName BoundingRegion
+        {
+            get
+            {
+                return @RegionClassName.MinMax(Points);
+            }
+        }
+
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Reverses the order of control points, e.g. 
+        /// the converts clockwise to anticlockwise and vice versa.
+        /// </summary>
+        public void Reverse()
+        {
+            int n = Points.Length / 2;
+            for (int i = 0; i < n; i++)
+            {
+                @Vector t = Points[i];
+                Points[i] = Points[n - i - 1];
+                Points[n - i - 1] = t;
+            }
+        }
+
+        /// <summary>
+        /// Converts a polygon to line list, given a resolution.
+        /// </summary>
+        /// <param name="resolution">The resolution, negative means adaptive.</param>
+        /// <returns></returns>
+        public @Vector[] ConvertToList(@TypeName resolution)
+        {
+            return ConvertToList(resolution, false);
+        }
+
+        /// <summary>
+        /// Converts a polygon to line list, given a resolution.
+        /// </summary>
+        /// <param name="resolution">The resolution, negative means adaptive.</param>
+        /// <param name="duplicateFirst">Is the first point duplicated.</param>
+        /// <returns></returns>
+        public @Vector[] ConvertToList(@TypeName resolution, bool duplicateFirst)
+        {
+            @Vector[] points = Points;
+
+            if (resolution > @Zero)
+            {
+                List<@Vector> list = new List<@Vector>(Points.Length);
+
+                for (int i = 1; i < Points.Length; i++)
+                {
+                    SplitLine(Points[i - 1], Points[i], resolution, list);
+                }
+                SplitLine(Points[Points.Length - 1], Points[0], resolution, list);
+
+                if (duplicateFirst)
+                {
+                    list.Add(Points[0]);
+                }
+
+                points = list.ToArray();
+            }
+            else if(duplicateFirst)
+            {
+                points = new @Vector[Points.Length + 1];
+                Points.CopyTo(points, 0);
+                points[points.Length - 1] = points[0];
+            }
+
+            return points;
+        }
+
+        /// <summary>
+        /// Obtains a line length.
+        /// </summary>
+        /// <param name="index">The line index, from control point 'index' to 'index+1'.</param>
+        /// <returns></returns>
+        public @TypeName GetLineLength(uint index)
+        {
+            if (index >= Points.Length) throw new ArgumentException("Index out of range.");
+            uint nextIndex = index + 1 >= Points.Length ? 0 : index + 1;
+            return (Points[nextIndex] - Points[index]).Length;
+        }
+
+        //#ifdef 2D
+
+        /// <summary>
+        /// Tesselates outline.
+        /// </summary>
+        /// <param name="resolution"></param>
+        /// <param name="?"></param>
+        public void TesselateOutline(float resolution, Algorithms.OutlineTesselation.@OutlineTesselationOptions options,
+            Storage.Builders.@TriangleBuilder builder)
+        {
+
+            // We tesselate.
+            Algorithms.OutlineTesselation.Tesselate(ConvertToList(resolution, true), options, builder);
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Polygon constructor.
+        /// </summary>
+        /// <param name="points">Points of polygon.</param>
+        public @ClassName(params @Vector[] points)
+        {
+            this.Points = points;
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.Append("Polygon : {");
+            for (int i = 0; i < Points.Length; i++)
+            {
+                builder.AppendLine(Points[i].ToString());
+            }
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName)
+            {
+                return this.Equals((@ClassName)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get
+            {
+                return @NaN;
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            @Vector[] points = this.ConvertToList(resolution);
+
+            // We now tesselate points.
+            List<@Vector[]> polygons = new List<@Vector[]>();
+            polygons.Add(points);
+
+            Algorithms.PolygonTesselation.Tesselate(polygons, builder);
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            uint point = (uint)(t * (@TypeName)Points.Length);
+
+            // We calculate interpolation ratio.
+            @TypeName intRatio = t * Points.Length - t * (@TypeName)point;
+
+            uint nextPoint = point + 1 >= Points.Length ? 0 : point + 1;
+
+            // We return linear interpolation.
+            return (@One - intRatio) * Points[point] + intRatio * Points[nextPoint];
+
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            @Vector[] points = this.ConvertToList(resolution);
+
+            if (points.Length == 0) return;
+
+            builder.AddLineStrip(true, points);
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get
+            {
+                @TypeName length = @Zero;
+                for (int i = 1; i < Points.Length; i++)
+                {
+                    length += (Points[i - 1] - Points[i]).Length;
+                }
+                length += (Points[Points.Length - 1] - Points[0]).Length;
+                return length;
+            }
+
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return Points;
+            }
+            set
+            {
+                Points = value;
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            Points[(int)index] = cp;
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            return Points[(int)index];
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return (uint)Points.Length; }
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector point)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                Points[i] = matrix * Points[i];
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                yield return Points[i];
+            }
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                yield return Points[i];
+            }
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            for (int i = 0; i < Points.Length; i++)
+            {
+                if (!@Vector.NearEqual(this.Points[i], other.Points[i])) return false;
+            }
+            return true;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(Points.Clone() as @Vector[]);
+        }
+
+        #endregion
+
+        #region IComparable<Triangled> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = Points.Length.CompareTo(other.Points.Length);
+            if (cmp != 0) return cmp;
+
+            for (int i = 0; i < Points.Length; i++)
+            {
+                cmp = Points[i].CompareTo(other.Points[i]);
+                if (cmp != 0) return cmp;
+            }
+            return 0;
+        }
+
+        #endregion
+    }
+
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        [CorrectnessTest]
+        public void Construction()
+        {
+            
+        }
+
+       
+
+    }
+#endif
+}

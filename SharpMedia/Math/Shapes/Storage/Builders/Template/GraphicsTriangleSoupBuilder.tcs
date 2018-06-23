@@ -1,0 +1,195 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace SharpMedia.Math.Shapes.Storage.Builders
+{
+
+    /// <summary>
+    /// A triangle soup builder.
+    /// </summary>
+    public class GraphicsTriangleSoupBuilder : BaseTopologySet, ITopologySetBuilder<GraphicsTriangleSoup>,
+        ITriangleBuilder2f, ITriangleBuilder2d, ITriangleBuilder3f, ITriangleBuilder3d
+    {
+        #region Private Members
+        uint vertexCount = 0;
+        bool isMapped = false;
+        #endregion
+
+        #region Helper Methods
+
+        void AssertMapped()
+        {
+            AssertNotDisposed();
+            if (!isMapped) throw new InvalidOperationException("Method expects buffers to be mapped.");
+        }
+
+        void AssertUnMapped()
+        {
+            AssertNotDisposed();
+            if (isMapped) throw new InvalidOperationException("Method expects buffers to be un-mapped.");
+        }
+
+        void AssertNotDisposed()
+        {
+            if (query == null) throw new ObjectDisposedException("Object was already 'disposed' using finish, invalid call.");
+        }
+
+        #endregion
+
+        #region ITopologySetBuilder<TriangleSoup> Members
+
+        public uint MaxControlPoints
+        {
+            get
+            {
+                AssertMapped();
+                return query.MaxControlPoints;
+            }
+        }
+
+        public GraphicsTriangleSoup Finish()
+        {
+            AssertUnMapped();
+            ControlPointQuery q = query;
+            ShapeIndexBufferView i = indexBuffer;
+            query = null;
+            return new GraphicsTriangleSoup(q, i, shapeCount);
+        }
+
+        #endregion
+
+        #region ITopologySet Members
+
+        public override uint ControlPointsPerShape
+        {
+            get { return 3; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="indexBuffer"></param>
+        public GraphicsTriangleSoupBuilder(ControlPointQuery query, ShapeIndexBufferView indexBuffer)
+        {
+            this.query = query;
+            this.indexBuffer = indexBuffer;
+        }
+
+        #endregion
+
+        #region Vertex Control
+
+        //#foreach VertexTypes
+
+        /// <summary>
+        /// Adds a control point at new index.
+        /// </summary>
+        /// <param name="controlPoint">The control point position.</param>
+        /// <remarks>This is not performance-wise function call.</remarks>
+        /// <returns>The index of control point.</returns>
+        public uint AddControlPoint(@TypeName controlPoint)
+        {
+            return AddControlPoint(CommonComponents.Position, controlPoint);
+        }
+
+        /// <summary>
+        /// Adds a control point at new index.
+        /// </summary>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="controlPoint">The control point position</param>
+        /// <remarks>This is not performance wise function call.</remarks>
+        /// <returns>The index of control point.</returns>
+        public uint AddControlPoint(string positionComponent, @TypeName controlPoint)
+        {
+            AssertMapped();
+
+            query.Set(positionComponent, vertexCount, controlPoint);
+            return vertexCount++;
+        }
+
+        /// <summary>
+        /// Adds control points.
+        /// </summary>
+        /// <param name="controlPoints">Control points.</param>
+        /// <returns>The index of first control points, all others follow.</returns>
+        public uint AddControlPoints(params @TypeName[] controlPoints)
+        {
+            return AddControlPoints(CommonComponents.Position, controlPoints);
+        }
+
+        /// <summary>
+        /// Adds control points.
+        /// </summary>
+        /// <param name="controlPoints">Control points.</param>
+        /// <returns>The index of first control points, all others follow.</returns>
+        public uint AddControlPoints(string positionComponent, params @TypeName[] controlPoints)
+        {
+            AssertMapped();
+
+            uint tmp = vertexCount;
+            query.Set(positionComponent, vertexCount, controlPoints);
+            vertexCount += (uint)controlPoints.Length;
+
+            return tmp;
+        }
+
+        //#endfor
+
+        #endregion
+
+        #region Shape Control
+
+        //#foreach IndexTypes
+
+        /// <summary>
+        /// Adds an indexed triangle.
+        /// </summary>
+        /// <param name="id1">First control point index.</param>
+        /// <param name="id2">Second control point index.</param>
+        /// <param name="id3">Third control point index.</param>
+        public void AddIndexedTriangle(@TypeName id1, @TypeName id2, @TypeName id3)
+        {
+            AssertMapped();
+            if (indexBuffer == null)
+            {
+                throw new InvalidOperationException("Index buffer not bound, cannot add indexed triangle.");
+            }
+
+            indexBuffer.Set(shapeCount * 3, new @TypeName[] { id1, id2, id3 });
+            shapeCount++;
+        }
+
+        /// <summary>
+        /// Adds indexed triangles.
+        /// </summary>
+        /// <param name="indices">The indices to use.</param>
+        public void AddIndexedTriangles(params @TypeName[] indices)
+        {
+            AssertMapped();
+            if (indexBuffer == null)
+            {
+                throw new InvalidOperationException("Index buffer not bound, cannot add indexed triangle.");
+            }
+
+            if (indices.Length % 3 != 0)
+            {
+                throw new ArgumentException("Indices count must be multiple of 3 in order to use triangles.");
+            }
+
+            indexBuffer.Set(shapeCount * 3, indices);
+            shapeCount += (uint)indices.Length / 3;
+        }
+
+        //#endfor
+
+        #endregion
+
+    }
+}

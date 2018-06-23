@@ -1,0 +1,186 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes.Storage
+{
+
+    /// <summary>
+    /// Represents a collection of lines, in graphics's compatible format.
+    /// </summary>
+    /// <remarks>This is generic storage oriented format. You can use mesh version's for
+    /// processing oriented formats (located in compounds).
+    /// </remarks>
+    [Serializable]
+    public class GraphicsLineSoup : BaseTopologySet, 
+        ILineAccess2f, ILineAccess3f, ILineAccess2d, ILineAccess3d
+    {
+        #region Overrides
+
+        public override uint ControlPointsPerShape
+        {
+            get
+            {
+                return 2;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// The line soup constructor.
+        /// </summary>
+        /// <remarks>Use the builder class to obtain "validated" versions.</remarks>
+        /// <param name="query"></param>
+        /// <param name="indexBuffer"></param>
+        /// <param name="shapeCount"></param>
+        public GraphicsLineSoup(ControlPointQuery query, ShapeIndexBufferView indexBuffer, uint shapeCount)
+        {
+            this.query = query;
+            this.indexBuffer = indexBuffer;
+            this.shapeCount = shapeCount;
+        }
+
+        #endregion
+
+        #region Query Members
+
+        //#foreach Types
+
+        /// <summary>
+        /// Gets line.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        /// <returns></returns>
+        public @Line @Get(uint index)
+        {
+            @Line t = new @Line();
+            Get(CommonComponents.Position, index, t);
+            return t;
+        }
+
+        /// <summary>
+        /// Gets line.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <param name="positionComponent">The component where we look for position, must be
+        /// correct format.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        public @Line @Get(string positionComponent, uint index)
+        {
+            @Line t = new @Line();
+            Get(positionComponent, index, t);
+            return t;
+        }
+
+        /// <summary>
+        /// Gets line.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <param name="positionComponent">The component where we look for position, must be
+        /// Vector2f format.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        public void Get(uint index, @Line storage)
+        {
+            Get(CommonComponents.Position, index, storage);
+        }
+
+        /// <summary>
+        /// Gets triangle.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <remarks>This accessor is not to be used in performance critical parts of applications.</remarks>
+        /// <returns></returns>
+        public void Get(string positionComponent, uint index, @Line storage)
+        {
+            if (index >= shapeCount)
+                throw new ArgumentException("Index out of range, not that many triangles.");
+
+            if (indexBuffer != null)
+            {
+                uint[] indices = indexBuffer.Getui(index * 2, 2);
+
+                storage.A = query.@Get(positionComponent, indices[0]);
+                storage.B = query.@Get(positionComponent, indices[1]);
+            }
+            else
+            {
+                storage.A = query.@Get(positionComponent, index * 2);
+                storage.B = query.@Get(positionComponent, index * 2 + 1);
+            }
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="lineIndex">The  line index offset.</param>
+        /// <param name="storage">Where to store result.</param>
+        public void Get(uint lineIndex, @Line[] storage)
+        {
+            Get(CommonComponents.Position, lineIndex, storage);
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="lineIndex">The  line index offset.</param>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="storage">Where to store result.</param>
+        public void Get(string positionComponent, uint lineIndex, @Line[] storage)
+        {
+            if (lineIndex + storage.Length >= shapeCount)
+                throw new ArgumentException("Index out of range, not that many triangles.");
+
+            if (indexBuffer != null)
+            {
+                uint[] indices = indexBuffer.Getui(lineIndex * 2, (uint)storage.Length * 2);
+                @Vector[] data = query.@Get(positionComponent, indices);
+
+                for (int i = 0; i < storage.Length; i++)
+                {
+                    storage[i] = new @Line(data[i * 2], data[i * 2 + 1]);
+                }
+            }
+            else
+            {
+                @Vector[] data = query.@Get(positionComponent, lineIndex * 2, (uint)storage.Length * 2);
+
+                for (int i = 0; i < storage.Length; i++)
+                {
+                    storage[i] = new @Line(data[i * 2], data[i * 2 + 1]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="lineIndex">The line index offset.</param>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="count">Number of triangles.</param>
+        public @Line[] @Get(string positionComponent, uint lineIndex, uint count)
+        {
+            @Line[] data = new @Line[count];
+            Get(positionComponent, lineIndex, data);
+            return data;
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="lineIndex">The line index offset.</param>
+        /// <param name="count">Number of triangles.</param>
+        public @Line[] @Get(uint lineIndex, uint count)
+        {
+            return @Get(CommonComponents.Position, lineIndex, count);
+        }
+
+        //#endfor
+
+
+        #endregion
+    }
+}

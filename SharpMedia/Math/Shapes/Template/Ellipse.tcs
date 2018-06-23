@@ -1,0 +1,458 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.AspectOriented;
+using SharpMedia.Math.Shapes.Volumes;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// An @Dim ellipse.
+    /// </summary>
+    [Serializable]
+    public class @ClassName :
+        @AreaD, @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+        //#ifdef 3D
+        , @AABoxBoundable, @SphereBoundable
+        //#endif
+
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The first axis, length is the radius of ellipse in that direction.
+        /// </summary>
+        /// <remarks>Must be perpendicular to AxisV.</remarks>
+        public @Vector AxisU;
+
+        /// <summary>
+        /// The second axis, length is the radius of ellipse in that direction.
+        /// </summary>
+        /// <remarks>Must be perpendicular to AxisU.</remarks>
+        public @Vector AxisV;
+
+        /// <summary>
+        /// The center of ellipse.
+        /// </summary>
+        public @Vector Center;
+
+        #endregion
+
+        #region Constuctors
+
+        /// <summary>
+        /// Constructor of ellipse in central position.
+        /// </summary>
+        /// <param name="axisU">Radius in x axis.</param>
+        /// <param name="axisV">Radius in y axis.</param>
+        public @ClassName(@Vector axisU, @Vector axisV)
+        {
+            AxisU = axisU;
+            AxisV = axisV;
+        }
+
+        /// <summary>
+        /// Displaced ellipse.
+        /// </summary>
+        /// <param name="axisU">Radius in x axis.</param>
+        /// <param name="axisV">Radius in y axis.</param>
+        /// <param name="center">Displacement.</param>
+        public @ClassName(@Vector axisU, @Vector axisV, @Vector center)
+            : this(axisU, axisV)
+        {
+            Center = center;
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The radius in u direction.
+        /// </summary>
+        public @TypeName A
+        {
+            get { return AxisU.Length; }
+            set { AxisU.Length = value; }
+        }
+
+        /// <summary>
+        /// Radius in v direction.
+        /// </summary>
+        public @TypeName B
+        {
+            get { return AxisV.Length; }
+            set { AxisV.Length = value; }
+        }
+
+        /// <summary>
+        /// The eccentricity.
+        /// </summary>
+        public @TypeName E
+        {
+            get
+            {
+                if (AxisU.Length2 > AxisV.Length2) return @Sqrt(AxisU.Length2 - AxisV.Length2);
+                return @Sqrt(AxisV.Length2 - AxisU.Length2);
+            }
+        }
+
+        /// <summary>
+        /// The left/bottom focus of ellipse.
+        /// </summary>
+        public @Vector Focus1
+        {
+            get
+            {
+                if (AxisU.Length2 > AxisV.Length2)
+                {
+                    return Center - AxisU.Normal * E;
+                }
+                else
+                {
+                    return Center - AxisV.Normal * E;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The right/top focus of ellipse.
+        /// </summary>
+        public @Vector Focus2
+        {
+            get
+            {
+                if (AxisU.Length2 > AxisV.Length2)
+                {
+                    return Center + AxisU.Normal * E;
+                }
+                else
+                {
+                    return Center + AxisV.Normal * E;
+                }
+            }
+        }
+
+        /// <summary>
+        ///  The Eccentricity, or how much the ellipse is squized.
+        /// </summary>
+        public @TypeName Eccentricity
+        {
+            get
+            {
+                if (AxisU.Length2 > AxisV.Length2)
+                {
+                    return @Sqrt(@One - (AxisV.Length2) / (AxisU.Length2));
+                }
+                else
+                {
+                    return @Sqrt(@One - (AxisU.Length2) / (AxisV.Length2));
+                }
+            }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.Append("Ellipse : {");
+            builder.Append(Center.ToString());
+            builder.Append(", AxisU:");
+            builder.Append(AxisU.ToString());
+            builder.Append(", AxisV:");
+            builder.Append(AxisV.ToString());
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName)
+            {
+                return this.Equals((@ClassName)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get
+            {
+                return (@TypeName)MathHelper.PI * AxisU.Length * AxisV.Length;
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            t *= (@TypeName)(2.0 * MathHelper.PI);
+            //#ifdef 2D
+            @Vector sample = new @Vector(@Cos(t), @Sin(t));
+
+            // We transform by axis.
+            Matrix.@Matrix2x2ClassName transform = 
+                new Matrix.@Matrix2x2ClassName(AxisU.X, AxisV.X,
+                                               AxisU.Y, AxisV.Y);
+            sample = transform * sample;
+
+            // We return transformed position.
+            return Center + sample;
+
+            //#else
+            @Vector sample = new @Vector(@Cos(t), @Sin(t), @Zero);
+
+            // We transform by axis.
+            @Vector other = AxisU ^ AxisV;
+            Matrix.@Matrix3x3ClassName transform = 
+                                     new Matrix.@Matrix3x3ClassName(AxisU.X, AxisV.X, other.X,
+                                                                    AxisU.Y, AxisV.Y, other.Y,
+                                                                    AxisU.Z, AxisV.Z, other.Z);
+            sample = transform * sample;
+
+            // We return transformed position.
+            return Center + sample;
+            //#endif
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            // Adaptive and normal sampling the same (curvative either way).
+            if (resolution < @Zero) resolution = -resolution;
+
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get
+            {
+                @TypeName a = A, b = B;
+                @TypeName tmp = (@TypeName)3.0 * ((a-b)*(a-b))/((a+b)*(a+b));
+
+                // We provide an approximation (source: http://en.wikipedia.org/wiki/Ellipse).
+                return (@TypeName)MathHelper.PI * (A + B) *
+                    (@One + tmp / ((@TypeName)10.0 + @Sqrt((@TypeName)4.0 - tmp)));
+
+            }
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { Center };
+            }
+            set
+            {
+                if (value.Length != 1) throw new ArgumentException("One control points expected.");
+                Center = value[0];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch (index)
+            {
+                case 0:
+                    Center = cp;
+                    break;
+
+                default:
+                    throw new ArgumentException("Index out of range, must be 0 for ellpise.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return Center;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0 for ellipse.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 1; }
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector point)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            Center = matrix * Center;
+        }
+
+        #endregion
+
+        //#ifdef 3D
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                return new @Sphere(Center, MathHelper.Max(A, B));
+            }
+        }
+
+        #endregion
+
+        //#endif
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return Center;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return Center;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector.NearEqual(Center, other.Center) &&
+                @Vector.NearEqual(AxisU, other.AxisU) &&
+                @Vector.NearEqual(AxisV, other.AxisV))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(AxisU, AxisV, Center);
+        }
+
+        #endregion
+
+        #region IComparable<Triangled> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            @TypeName a1 = Area, a2 = other.Area;
+            if (a1 < a2) return -1;
+            else if (a1 == a2) return 0;
+            return 1;
+        }
+
+        #endregion
+
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        /*
+        [CorrectnessTest]
+        public void Properties()
+        {
+            @ClassName el = new @ClassName(10.0, 8.0);
+            Assert.AreEqual(10.0, el.A);
+            Assert.AreEqual(8.0, el.B);
+            Assert.AreEqual(MathHelper.PI * 10.0 * 8.0, el.Area);
+            Assert.AreEqual(6.0 / 10.0, el.Eccentricity);
+            Assert.AreEqual(@Vector.Zero, el.Center);
+        }
+
+        [CorrectnessTest]
+        public void Tesselation()
+        {
+            @ClassName el = new @ClassName(10.0, 8.0);
+            TriangleMeshd result = el.TriangleTesselation(10);
+            //Assert.AreEqual(10, result.Count);
+
+        }*/
+    }
+#endif
+}

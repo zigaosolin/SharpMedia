@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- A 2D vector description. -->
+  <TemplateSet Name="Vector2f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector2f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector2d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector2d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector2i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector2i"/>
+  </TemplateSet>
+  
+  <!-- A 3D vector description. -->
+  <TemplateSet Name="Vector3f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector3f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector3d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector3d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector3i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector3i"/>
+  </TemplateSet>
+
+  <!-- A 4D vector description. -->
+  <TemplateSet Name="Vector4f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector4f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector4d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector4d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector4i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector4i"/>
+  </TemplateSet>
+
+</TemplateSets>

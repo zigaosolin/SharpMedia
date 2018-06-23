@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <TemplateSet Name="CoreMath">
+    <Template Name="Namespace" Value="SharpMedia.Math" />
+    <Template Name="Licence" Value="// File under licence" />
+    <Template Name="sharpmedia" Value="@sharpmedia" />
+  </TemplateSet>
+
+  <!-- A float/double enumerator-->
+  <TemplateSet Name="FloatDouble">
+    <TemplateLink Name="Float" Link="Float" />
+    <TemplateLink Name="Double" Link="Double" />
+  </TemplateSet>
+  
+  <!-- 32 bit integere description -->
+  <TemplateSet Name="Integer">
+    <Template Name="TextName" Value="Integer" />
+    <Template Name="TypeName" Value="int" />
+    <Template Name="ExactPrecission" Value="true" />
+    <Template Name="Min" Value="int.MinValue" />
+    <Template Name="Max" Value="int.MaxValue" />
+    <Template Name="Zero" Value="0" />
+    <Template Name="One" Value="1" />
+    
+    <!-- Operators defined -->
+    <Template Name="Abs" Value="MathHelper.Abs" />
+
+    <!-- Types defined on this base type -->
+    <Template Name="VectorClassName" Value="Vectori" />
+    <Template Name="Vector2ClassName" Value="Vector2i" />
+    <Template Name="Vector3ClassName" Value="Vector3i" />
+    <Template Name="Vector4ClassName" Value="Vector4i" />
+  </TemplateSet>
+
+  <!-- A floating point description -->
+  <TemplateSet Name="Float">
+    <Template Name="TextName" Value="Float" />
+    <Template Name="TypeName" Value="float" />
+    <Template Name="FloatingPrecission" Value="true" />
+    <Template Name="Min" Value="float.NegativeInfinity" />
+    <Template Name="Max" Value="float.PositiveInfinity" />
+    <Template Name="NaN" Value="float.NaN" />
+    <Template Name="Zero" Value="0.0f" />
+    <Template Name="One" Value="1.0f" />
+
+    <!-- Operations defined -->
+    <Template Name="Sqrt" Value="MathHelper.Sqrt" />
+    <Template Name="Sin" Value="MathHelper.Sin" />
+    <Template Name="Cos" Value="MathHelper.Cos" />
+    <Template Name="Atan" Value="MathHelper.ATan" />
+    <Template Name="Abs" Value="MathHelper.Abs" />
+    <Template Name="Exp" Value="MathHelper.Exp" />
+    <Template Name="Pow" Value="MathHelper.Pow" />
+    <Template Name="Asin" Value="MathHelper.ASin" />
+    <Template Name="Acos" Value="MathHelper.ACos" />
+    <Template Name="Ln" Value="MathHelper.Ln" />
+    <Template Name="NearEqual" Value="MathHelper.NearEqual" />
+    <Template Name="Floor" Value="MathHelper.Floor" />
+    <Template Name="Ceil" Value="MathHelper.Ceil" />
+    <Template Name="UniformRandomSupply" Value="(float)MathHelper.UniformRandom()" />
+    <Template Name="IsNaN" Value="float.IsNaN" />
+    <Template Name="ToDegrees" Value="MathHelper.ToDegrees" />
+
+    <!-- Types defined on this base type -->
+    <Template Name="IntervalClassName" Value="Intervalf" />
+    <Template Name="VectorClassName" Value="Vectorf" />
+    <Template Name="Vector2ClassName" Value="Vector2f" />
+    <Template Name="Vector3ClassName" Value="Vector3f" />
+    <Template Name="Vector4ClassName" Value="Vector4f" />
+    <Template Name="ComplexClassName" Value="Complexf" />
+    <Template Name="SphericalClassName" Value="Sphericalf" />
+    <Template Name="PolarClassName" Value="Polarf" />
+    <Template Name="CylindricalClassName" Value="Cylindricalf" />
+    <Template Name="Region2ClassName" Value="Region2f" />
+    <Template Name="Region3ClassName" Value="Region3f" />
+    <Template Name="QuaternionClassName" Value="Quaternionf" />
+    <Template Name="DenseMatrixClassName" Value="DenseMatrixf" />
+    <Template Name="Matrix2x2ClassName" Value="Matrix2x2f" />
+    <Template Name="Matrix3x3ClassName" Value="Matrix3x3f" />
+    <Template Name="Matrix4x4ClassName" Value="Matrix4x4f" />
+    <Template Name="FunctionDelegateClassName" Value="Functionf" />
+    <Template Name="ComplexFunctionDelegateClassName" Value="ComplexFunctionf" />
+
+  </TemplateSet>
+
+  <!-- A double point description -->
+  <TemplateSet Name="Double">
+    <Template Name="TextName" Value="Double" />
+    <Template Name="TypeName" Value="double" />
+    <Template Name="FloatingPrecission" Value="true" />
+    <Template Name="Min" Value="double.NegativeInfinity" />
+    <Template Name="Max" Value="double.PositiveInfinity" />
+    <Template Name="NaN" Value="double.NaN" />
+    <Template Name="Zero" Value="0.0" />
+    <Template Name="One" Value="1.0" />
+
+    <!-- Operations defined -->
+    <Template Name="Sqrt" Value="MathHelper.Sqrt" />
+    <Template Name="Sin" Value="MathHelper.Sin" />
+    <Template Name="Cos" Value="MathHelper.Cos" />
+    <Template Name="Atan" Value="MathHelper.ATan" />
+    <Template Name="Abs" Value="MathHelper.Abs" />
+    <Template Name="Exp" Value="MathHelper.Exp" />
+    <Template Name="Pow" Value="MathHelper.Pow" />
+    <Template Name="Asin" Value="MathHelper.ASin" />
+    <Template Name="Acos" Value="MathHelper.ACos" />
+    <Template Name="Ln" Value="MathHelper.Ln" />
+    <Template Name="NearEqual" Value="MathHelper.NearEqual" />
+    <Template Name="Floor" Value="MathHelper.Floor" />
+    <Template Name="Ceil" Value="MathHelper.Ceil" />
+    <Template Name="UniformRandomSupply" Value="MathHelper.UniformRandom()" />
+    <Template Name="IsNaN" Value="double.IsNaN" />
+    <Template Name="ToDegrees" Value="MathHelper.ToDegrees" />
+
+    <!-- Types defined on this base type -->
+    <Template Name="IntervalClassName" Value="Intervald" />
+    <Template Name="VectorClassName" Value="Vectord" />
+    <Template Name="Vector2ClassName" Value="Vector2d" />
+    <Template Name="Vector3ClassName" Value="Vector3d" />
+    <Template Name="Vector4ClassName" Value="Vector4d" />
+    <Template Name="ComplexClassName" Value="Complexd" />
+    <Template Name="SphericalClassName" Value="Sphericald" />
+    <Template Name="PolarClassName" Value="Polard" />
+    <Template Name="CylindricalClassName" Value="Cylindricald" />
+    <Template Name="Region2ClassName" Value="Region2d" />
+    <Template Name="Region3ClassName" Value="Region3d" />
+    <Template Name="QuaternionClassName" Value="Quaterniond" />
+    <Template Name="DenseMatrixClassName" Value="DenseMatrixd" />
+    <Template Name="Matrix2x2ClassName" Value="Matrix2x2d" />
+    <Template Name="Matrix3x3ClassName" Value="Matrix3x3d" />
+    <Template Name="Matrix4x4ClassName" Value="Matrix4x4d" />
+    <Template Name="FunctionDelegateClassName" Value="Functiond" />
+    <Template Name="ComplexFunctionDelegateClassName" Value="ComplexFunctiond" />
+  </TemplateSet>
+
+</TemplateSets>

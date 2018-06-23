@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+
+<!-- A math automatic code generation project -->
+<TemplateProject>
+
+  <!-- Sources for out project -->
+  <Sources>
+    <!-- Base math structure sources: Math.* -->
+    <Source Name="Vector2" Path="Vector2.tcs" />
+    <Source Name="Vector3" Path="Vector3.tcs" />
+    <Source Name="Vector4" Path="Vector4.tcs" />
+    <Source Name="Complex" Path="Complex.tcs" />
+    <Source Name="Cylindrical" Path="Cylindrical.tcs" />
+    <Source Name="Quaternion" Path="Quaternion.tcs" />
+    <Source Name="Polar" Path="Polar.tcs" />
+    <Source Name="SparseVector" Path="SparseVector.tcs" />
+    <Source Name="Spherical" Path="Spherical.tcs" />
+    <Source Name="Region2" Path="Region2.tcs" />
+    <Source Name="Region3" Path="Region3.tcs" />
+    <Source Name="Interval" Path="Interval.tcs" />
+    <Source Name="Vector" Path="Vector.tcs" />
+    
+    <!-- Transforms: Math.Transforms.* -->
+    <Source Name="DFT" Path="../Transform/Template/DFT.tcs" />
+    <Source Name="DWT" Path="../Transform/Template/DWT.tcs" />
+    <Source Name="Linear" Path="../Transform/Template/Linear.tcs" />
+    
+    <!-- Matrix: Math.Matrix.* -->
+    <Source Name="MatrixInterface" Path="../Matrix/Template/MatrixInterface.tcs" />
+    <Source Name="DenseMatrix" Path="../Matrix/Template/DenseMatrix.tcs" />
+    <Source Name="Matrix2x2" Path="../Matrix/Template/Matrix2x2.tcs" />
+    <Source Name="Matrix3x3" Path="../Matrix/Template/Matrix3x3.tcs" />
+    <Source Name="Matrix4x4" Path="../Matrix/Template/Matrix4x4.tcs" />
+    <Source Name="GaussJordan" Path="../Matrix/Algorithms/Template/GaussJordan.tcs" />
+    <Source Name="Cholesky" Path="../Matrix/Algorithms/Template/Cholesky.tcs" />
+    <Source Name="Iterative" Path="../Matrix/Algorithms/Template/Iterative.tcs" />
+    <Source Name="LU" Path="../Matrix/Algorithms/Template/LU.tcs" />
+    <Source Name="SingularValue" Path="../Matrix/Algorithms/Template/SingularValue.tcs" />
+    <Source Name="EigenValue" Path="../Matrix/Algorithms/Template/EigenValue.tcs" />
+    <Source Name="BandMatrix" Path="../Matrix/Sparse/Template/BandMatrix.tcs" />
+    <Source Name="LTMatrix" Path="../Matrix/Sparse/Template/LTMatrix.tcs" />
+    <Source Name="UTMatrix" Path="../Matrix/Sparse/Template/UTMatrix.tcs" />
+    
+    <!-- Shapes: Math.Shapes.* -->
+    <Source Name="ShapeInterfaces" Path="../Shapes/Template/ShapeInterfaces.tcs" />
+    <Source Name="Triangle" Path="../Shapes/Template/Triangle.tcs" />
+    <Source Name="LineSegment" Path="../Shapes/Template/LineSegment.tcs" />
+    <Source Name="Line" Path="../Shapes/Template/Line.tcs" />
+    <Source Name="Quad" Path="../Shapes/Template/Quad.tcs" />
+    <Source Name="Ray" Path="../Shapes/Template/Ray.tcs" />
+    <Source Name="Ellipse" Path="../Shapes/Template/Ellipse.tcs" />
+    <Source Name="Bezier" Path="../Shapes/Template/Bezier.tcs" />
+    <Source Name="Polygon" Path="../Shapes/Template/Polygon.tcs" />
+    <Source Name="Plane" Path="../Shapes/Template/Plane.tcs" />
+  
+    <Source Name="ControlPointBufferView" Path="../Shapes/Storage/Template/ControlPointBufferView.tcs" />
+    <Source Name="ControlPointQuery" Path="../Shapes/Storage/Template/ControlPointQuery.tcs" />
+    <Source Name="ShapeIndexBufferView" Path="../Shapes/Storage/Template/ShapeIndexBufferView.tcs" />
+    <Source Name="GraphicsTriangleSoup" Path="../Shapes/Storage/Template/GraphicsTriangleSoup.tcs" />
+    <Source Name="GraphicsLineSoup" Path="../Shapes/Storage/Template/GraphicsLineSoup.tcs" />
+    <Source Name="StorageAccess" Path="../Shapes/Storage/Template/StorageAccess.tcs" />
+    <Source Name="TriangleSoup" Path="../Shapes/Storage/Template/TriangleSoup.tcs" />
+    <Source Name="LineStrip" Path="../Shapes/Storage/Template/LineStrip.tcs" />
+
+    <Source Name="BuilderInterfaces" Path="../Shapes/Storage/Builders/Template/Builders.tcs" />
+    <Source Name="GraphicsTriangleSoupBuilder" Path="../Shapes/Storage/Builders/Template/GraphicsTriangleSoupBuilder.tcs" />
+    <Source Name="GraphicsLineSoupBuilder" Path="../Shapes/Storage/Builders/Template/GraphicsLineSoupBuilder.tcs" />
+
+    <Source Name="OutlineCompund" Path="../Shapes/Compounds/Template/OutlineCompound.tcs" />
+
+    <Source Name="Intersection" Path="../Shapes/Algorithms/Template/Intersection.tcs" />
+    <Source Name="Extrude" Path="../Shapes/Algorithms/Template/Extrude.tcs" />
+    <Source Name="PolygonTesselation" Path="../Shapes/Algorithms/Template/PolygonTesselation.tcs" />
+    <Source Name="Tesselation" Path="../Shapes/Algorithms/Template/Tesselation.tcs" />
+    <Source Name="OutlineTesselation" Path="../Shapes/Algorithms/Template/OutlineTesselation.tcs" />
+
+    <Source Name="BinarySpacePartioning" Path="../Shapes/Spatial/Template/BinarySpacePartioning.tcs" />
+    <Source Name="OctreeSpacePartioning" Path="../Shapes/Spatial/Template/OctreeSpacePartioning.tcs" />
+
+    <Source Name="VolumeInterfaces" Path="../Shapes/Volumes/Template/VolumeInterfaces.tcs" />
+    <Source Name="AABox" Path="../Shapes/Volumes/Template/AABox.tcs" />
+    <Source Name="Sphere" Path="../Shapes/Volumes/Template/Sphere.tcs" />
+    <Source Name="VoxelGrid" Path="../Shapes/Volumes/Template/VoxelGrid.tcs" />
+    
+    <!-- Functions: Math.Functions.*-->
+    <Source Name="ArithmeticSeries" Path="../Functions/Series/Template/ArithmeticSeries.tcs" />
+    <Source Name="GeometricSeries" Path="../Functions/Series/Template/GeometricSeries.tcs" />
+    <Source Name="RecursiveSeries" Path="../Functions/Series/Template/RecursiveSeries.tcs" />
+    <Source Name="Series" Path="../Functions/Series/Template/Series.tcs" />
+    
+    
+    <!-- Integration: Math.Integration.* -->
+    <Source Name="Differentiator" Path="../Integration/Template/Differentiator.tcs" />
+    <Source Name="Integrator" Path="../Integration/Template/Integrator.tcs" />
+    <Source Name="MonteCarloIntegrator" Path="../Integration/Template/MonteCarloIntegrator.tcs" />
+    <Source Name="QuadraticIntegrator" Path="../Integration/Template/QuadraticIntegrator.tcs" />
+
+    <Source Name="ODEBase" Path="../Integration/ODE/Template/ODEBase.tcs" />
+    
+    
+    <!-- Interpolation: Math.Interpolation.* -->
+    <Source Name="CommonSteppers" Path="../Interpolation/Template/CommonSteppers.tcs" />
+    <Source Name="PolynomialInterpolation" Path="../Interpolation/Template/PolynomialInterpolation.tcs" />
+    <Source Name="RationalInterpolation" Path="../Interpolation/Template/RationalInterpolation.tcs" />
+    <Source Name="SmoothStep" Path="../Interpolation/Template/SmoothStep.tcs" />
+    <Source Name="UniformStepper" Path="../Interpolation/Template/UniformStepper.tcs" />
+    
+    <!-- Random: Math.Random.* -->
+    <Source Name="RandomGenerator" Path="../Random/Template/RandomGenerator.tcs" />
+  </Sources>
+  <Templates>
+    <Template Path="General.template" />
+    <Template Path="BasicStructures.template" />
+    <Template Path="../Matrix/Template/Matrix.template" />
+    <Template Path="../Shapes/Template/Shapes.template" />
+    <Template Path="../Shapes/Storage/Template/Storage.template" />
+    <Template Path="../Shapes/Storage/Builders/Template/Builders.template" />
+    <Template Path="../Shapes/Compounds/Template/Compounds.template" />
+    <Template Path="../Functions/Series/Template/Series.template" />
+    <Template Path="../Integration/Template/Integration.template" />
+    <Template Path="../Interpolation/Template/Interpolation.template" />
+    <Template Path="../Shapes/Algorithms/Template/Algorithms.template" />
+    <Template Path="../Transform/Template/Transforms.template" />
+    <Template Path="../Matrix/Algorithms/Template/Algorithms.template" />
+    <Template Path="../Random/Template/Random.template" />
+    <Template Path="../Matrix/Sparse/Template/Sparse.template" />
+    <Template Path="../Shapes/Spatial/Template/Spatial.template" />
+    <Template Path="../Shapes/Volumes/Template/Volume.template" />
+  </Templates>
+  
+  <Mappings>
+    <!-- Base math structures mappings: Math.*-->
+    <Mapping Source="Vector2" Template="Vector2f" OutputPath="../Vector2f.cs" />
+    <Mapping Source="Vector2" Template="Vector2d" OutputPath="../Vector2d.cs" />
+    <Mapping Source="Vector2" Template="Vector2i" OutputPath="../Vector2i.cs" />
+    <Mapping Source="Vector3" Template="Vector3f" OutputPath="../Vector3f.cs" />
+    <Mapping Source="Vector3" Template="Vector3d" OutputPath="../Vector3d.cs" />
+    <Mapping Source="Vector3" Template="Vector3i" OutputPath="../Vector3i.cs" />
+    <Mapping Source="Vector4" Template="Vector4f" OutputPath="../Vector4f.cs" />
+    <Mapping Source="Vector4" Template="Vector4d" OutputPath="../Vector4d.cs" />
+    <Mapping Source="Vector4" Template="Vector4i" OutputPath="../Vector4i.cs" />
+    <Mapping Source="Complex" Template="Complexd" OutputPath="../Complexd.cs" />
+    <Mapping Source="Complex" Template="Complexf" OutputPath="../Complexf.cs" />
+    <Mapping Source="Cylindrical" Template="Cylindricald" OutputPath="../Cylindricald.cs" />
+    <Mapping Source="Cylindrical" Template="Cylindricalf" OutputPath="../Cylindricalf.cs" />
+    <Mapping Source="Polar" Template="Polard" OutputPath="../Polard.cs" />
+    <Mapping Source="Polar" Template="Polarf" OutputPath="../Polarf.cs" />
+    <Mapping Source="Spherical" Template="Sphericald" OutputPath="../Sphericald.cs" />
+    <Mapping Source="Spherical" Template="Sphericalf" OutputPath="../Sphericalf.cs" />
+    <Mapping Source="Quaternion" Template="Quaterniond" OutputPath="../Quaterniond.cs" />
+    <Mapping Source="Quaternion" Template="Quaternionf" OutputPath="../Quaternionf.cs" />
+    <Mapping Source="Interval" Template="Intervald" OutputPath="../Intervald.cs" />
+    <Mapping Source="Interval" Template="Intervalf" OutputPath="../Intervalf.cs" />
+    <Mapping Source="Interval" Template="Intervali" OutputPath="../Intervali.cs" />
+    <Mapping Source="Region2" Template="Region2d" OutputPath="../Region2d.cs" />
+    <Mapping Source="Region2" Template="Region2f" OutputPath="../Region2f.cs" />
+    <Mapping Source="Region2" Template="Region2i" OutputPath="../Region2i.cs" />
+    <Mapping Source="Region3" Template="Region3d" OutputPath="../Region3d.cs" />
+    <Mapping Source="Region3" Template="Region3f" OutputPath="../Region3f.cs" />
+    <Mapping Source="Region3" Template="Region3i" OutputPath="../Region3i.cs" />
+    <Mapping Source="Vector" Template="Vectord" OutputPath="../Vectord.cs" />
+    <Mapping Source="Vector" Template="Vectorf" OutputPath="../Vectorf.cs" />
+    <Mapping Source="Vector" Template="Vectori" OutputPath="../Vectori.cs" />
+    <Mapping Source="SparseVector" Template="SparseVectord" OutputPath="../SparseVectord.cs" />
+    <Mapping Source="SparseVector" Template="SparseVectorf" OutputPath="../SparseVectorf.cs" />
+    <Mapping Source="SparseVector" Template="SparseVectori" OutputPath="../SparseVectori.cs" />
+    
+    <!-- Matrix math -->
+    <Mapping Source="MatrixInterface" Template="MatrixInterfacef" OutputPath="../Matrix/IMatrixf.cs" />
+    <Mapping Source="MatrixInterface" Template="MatrixInterfaced" OutputPath="../Matrix/IMatrixd.cs" />
+    <Mapping Source="DenseMatrix" Template="DenseMatrixd" OutputPath="../Matrix/DenseMatrixd.cs" />
+    <Mapping Source="DenseMatrix" Template="DenseMatrixf" OutputPath="../Matrix/DenseMatrixf.cs" />
+    <Mapping Source="Matrix2x2" Template="Matrix2x2d" OutputPath="../Matrix/Matrix2x2d.cs" />
+    <Mapping Source="Matrix2x2" Template="Matrix2x2f" OutputPath="../Matrix/Matrix2x2f.cs" />
+    <Mapping Source="Matrix3x3" Template="Matrix3x3d" OutputPath="../Matrix/Matrix3x3d.cs" />
+    <Mapping Source="Matrix3x3" Template="Matrix3x3f" OutputPath="../Matrix/Matrix3x3f.cs" />
+    <Mapping Source="Matrix4x4" Template="Matrix4x4d" OutputPath="../Matrix/Matrix4x4d.cs" />
+    <Mapping Source="Matrix4x4" Template="Matrix4x4f" OutputPath="../Matrix/Matrix4x4f.cs" />
+    
+    <!-- Matrix algorithms -->
+    <Mapping Source="GaussJordan" Template="GaussJordan" OutputPath="../Matrix/Algorithms/GaussJordan.cs" />
+    <Mapping Source="Cholesky" Template="Cholesky" OutputPath="../Matrix/Algorithms/Cholesky.cs" />
+    <Mapping Source="EigenValue" Template="Cholesky" OutputPath="../Matrix/Algorithms/EigenValue.cs" />
+    <Mapping Source="Iterative" Template="Cholesky" OutputPath="../Matrix/Algorithms/Iterative.cs" />
+    <Mapping Source="LU" Template="Cholesky" OutputPath="../Matrix/Algorithms/LU.cs" />
+    <Mapping Source="SingularValue" Template="Cholesky" OutputPath="../Matrix/Algorithms/SingularValue.cs" />
+    
+    <!-- Sparse matrix -->
+    <Mapping Source="BandMatrix" Template="BandMatrixf" OutputPath="../Matrix/Sparse/BandMatrixf.cs" />
+    <Mapping Source="BandMatrix" Template="BandMatrixd" OutputPath="../Matrix/Sparse/BandMatrixd.cs" />
+    <Mapping Source="LTMatrix" Template="LTMatrixf" OutputPath="../Matrix/Sparse/LTMatrixf.cs" />
+    <Mapping Source="LTMatrix" Template="LTMatrixd" OutputPath="../Matrix/Sparse/LTMatrixd.cs" />
+    <Mapping Source="UTMatrix" Template="UTMatrixf" OutputPath="../Matrix/Sparse/UTMatrixf.cs" />
+    <Mapping Source="UTMatrix" Template="UTMatrixd" OutputPath="../Matrix/Sparse/UTMatrixd.cs" />
+    
+    <!-- Shapes -->
+    <Mapping Source="ShapeInterfaces" Template="ShapeInterfacesd" OutputPath="../Shapes/ShapeInterfacesd.cs" />
+    <Mapping Source="ShapeInterfaces" Template="ShapeInterfacesf" OutputPath="../Shapes/ShapeInterfacesf.cs" />
+    <Mapping Source="Triangle" Template="Triangle2d" OutputPath="../Shapes/Triangle2d.cs" />
+    <Mapping Source="Triangle" Template="Triangle2f" OutputPath="../Shapes/Triangle2f.cs" />
+    <Mapping Source="Triangle" Template="Triangle3d" OutputPath="../Shapes/Triangle3d.cs" />
+    <Mapping Source="Triangle" Template="Triangle3f" OutputPath="../Shapes/Triangle3f.cs" />
+    <Mapping Source="LineSegment" Template="LineSegment2d" OutputPath="../Shapes/LineSegment2d.cs" />
+    <Mapping Source="LineSegment" Template="LineSegment2f" OutputPath="../Shapes/LineSegment2f.cs" />
+    <Mapping Source="LineSegment" Template="LineSegment3d" OutputPath="../Shapes/LineSegment3d.cs" />
+    <Mapping Source="LineSegment" Template="LineSegment3f" OutputPath="../Shapes/LineSegment3f.cs" />
+    <Mapping Source="Line" Template="Line2d" OutputPath="../Shapes/Line2d.cs" />
+    <Mapping Source="Line" Template="Line2f" OutputPath="../Shapes/Line2f.cs" />
+    <Mapping Source="Line" Template="Line3d" OutputPath="../Shapes/Line3d.cs" />
+    <Mapping Source="Line" Template="Line3f" OutputPath="../Shapes/Line3f.cs" />
+    <Mapping Source="Quad" Template="Quad2d" OutputPath="../Shapes/Quad2d.cs" />
+    <Mapping Source="Quad" Template="Quad2f" OutputPath="../Shapes/Quad2f.cs" />
+    <Mapping Source="Quad" Template="Quad3d" OutputPath="../Shapes/Quad3d.cs" />
+    <Mapping Source="Quad" Template="Quad3f" OutputPath="../Shapes/Quad3f.cs" />
+    <Mapping Source="Ray" Template="Ray2d" OutputPath="../Shapes/Ray2d.cs" />
+    <Mapping Source="Ray" Template="Ray2f" OutputPath="../Shapes/Ray2f.cs" />
+    <Mapping Source="Ray" Template="Ray3d" OutputPath="../Shapes/Ray3d.cs" />
+    <Mapping Source="Ray" Template="Ray3f" OutputPath="../Shapes/Ray3f.cs" />
+    <Mapping Source="Ellipse" Template="Ellipse2d" OutputPath="../Shapes/Ellipse2d.cs" />
+    <Mapping Source="Ellipse" Template="Ellipse2f" OutputPath="../Shapes/Ellipse2f.cs" />
+    <Mapping Source="Ellipse" Template="Ellipse3d" OutputPath="../Shapes/Ellipse3d.cs" />
+    <Mapping Source="Ellipse" Template="Ellipse3f" OutputPath="../Shapes/Ellipse3f.cs" />
+    <Mapping Source="Bezier" Template="Bezier2d" OutputPath="../Shapes/Bezier2d.cs" />
+    <Mapping Source="Bezier" Template="Bezier2f" OutputPath="../Shapes/Bezier2f.cs" />
+    <Mapping Source="Bezier" Template="Bezier3d" OutputPath="../Shapes/Bezier3d.cs" />
+    <Mapping Source="Bezier" Template="Bezier3f" OutputPath="../Shapes/Bezier3f.cs" />
+    <Mapping Source="Polygon" Template="Polygon2d" OutputPath="../Shapes/Polygon2d.cs" />
+    <Mapping Source="Polygon" Template="Polygon2f" OutputPath="../Shapes/Polygon2f.cs" />
+    <Mapping Source="Polygon" Template="Polygon3d" OutputPath="../Shapes/Polygon3d.cs" />
+    <Mapping Source="Polygon" Template="Polygon3f" OutputPath="../Shapes/Polygon3f.cs" />
+    <Mapping Source="Plane" Template="Plane3f" OutputPath="../Shapes/Plane3f.cs" />
+    <Mapping Source="Plane" Template="Plane3d" OutputPath="../Shapes/Plane3d.cs" />
+    
+    <!-- Shape storage -->
+    <Mapping Source="ControlPointBufferView" Template="ControlPointBufferView" OutputPath="../Shapes/Storage/ControlPointBufferView.cs" />
+    <Mapping Source="ControlPointQuery" Template="ControlPointQuery" OutputPath="../Shapes/Storage/ControlPointQuery.cs" />
+    <Mapping Source="ShapeIndexBufferView" Template="ShapeIndexBufferView" OutputPath="../Shapes/Storage/ShapeIndexBufferView.cs" />
+    <Mapping Source="GraphicsTriangleSoup" Template="GraphicsTriangleSoup" OutputPath="../Shapes/Storage/GraphicsTriangleSoup.cs" />
+    <Mapping Source="GraphicsLineSoup" Template="GraphicsLineSoup" OutputPath="../Shapes/Storage/GraphicsLineSoup.cs" />
+    <Mapping Source="StorageAccess" Template="StorageAccess" OutputPath="../Shapes/Storage/StorageAccess.cs" />
+    <Mapping Source="TriangleSoup" Template="TriangleSoup2f" OutputPath="../Shapes/Storage/TriangleSoup2f.cs" />
+    <Mapping Source="TriangleSoup" Template="TriangleSoup3f" OutputPath="../Shapes/Storage/TriangleSoup3f.cs" />
+    <Mapping Source="TriangleSoup" Template="TriangleSoup2d" OutputPath="../Shapes/Storage/TriangleSoup2d.cs" />
+    <Mapping Source="TriangleSoup" Template="TriangleSoup3d" OutputPath="../Shapes/Storage/TriangleSoup3d.cs" />
+    <Mapping Source="LineStrip" Template="LineStrip2f" OutputPath="../Shapes/Storage/LineStrip2f.cs" />
+    <Mapping Source="LineStrip" Template="LineStrip3f" OutputPath="../Shapes/Storage/LineStrip3f.cs" />
+    <Mapping Source="LineStrip" Template="LineStrip2d" OutputPath="../Shapes/Storage/LineStrip2d.cs" />
+    <Mapping Source="LineStrip" Template="LineStrip3d" OutputPath="../Shapes/Storage/LineStrip3d.cs" />
+    
+
+    <!-- Shape builders -->
+    <Mapping Source="BuilderInterfaces" Template="BuilderInterfaces" OutputPath="../Shapes/Storage/Builders/BuilderInterfaces.cs" /> 
+    <Mapping Source="GraphicsTriangleSoupBuilder" Template="GraphicsTriangleSoupBuilder" OutputPath="../Shapes/Storage/Builders/GraphicsTriangleSoupBuilder.cs" />
+    <Mapping Source="GraphicsLineSoupBuilder" Template="GraphicsLineSoupBuilder" OutputPath="../Shapes/Storage/Builders/GraphicsLineSoupBuilder.cs" />
+
+    <!-- Shape coumpounds -->
+    <Mapping Source="OutlineCompund" Template="OutlineCompound2f" OutputPath="../Shapes/Compounds/OutlineCompunds2f.cs" />
+    <Mapping Source="OutlineCompund" Template="OutlineCompound2d" OutputPath="../Shapes/Compounds/OutlineCompunds2d.cs" />
+    <Mapping Source="OutlineCompund" Template="OutlineCompound3f" OutputPath="../Shapes/Compounds/OutlineCompunds3f.cs" />
+    <Mapping Source="OutlineCompund" Template="OutlineCompound3d" OutputPath="../Shapes/Compounds/OutlineCompunds3d.cs" />
+
+    <!-- Shape algorithms -->
+    <Mapping Source="OutlineTesselation" Template="OutlineTesselation" OutputPath="../Shapes/Algorithms/OutlineTesselation.cs" />
+    <Mapping Source="Tesselation" Template="Tesselation" OutputPath="../Shapes/Algorithms/Tesselation.cs" />
+    <Mapping Source="PolygonTesselation" Template="PolygonTesselation" OutputPath="../Shapes/Algorithms/PolygonTesselation.cs" />
+    <Mapping Source="Intersection" Template="Intersection" OutputPath="../Shapes/Algorithms/Intersection.cs" />
+    <Mapping Source="Extrude" Template="Extrude" OutputPath="../Shapes/Algorithms/Extrude.cs" />
+
+    <!-- Spatial -->
+    <Mapping Source="BinarySpacePartioning" Template="BinarySpacePartioningf" OutputPath="../Shapes/Spatial/BinarySpacePartioningf.cs" />
+    <Mapping Source="BinarySpacePartioning" Template="BinarySpacePartioningd" OutputPath="../Shapes/Spatial/BinarySpacePartioningd.cs" />
+    <Mapping Source="OctreeSpacePartioning" Template="OctreeSpacePartioningf" OutputPath="../Shapes/Spatial/OctreeSpacePartioningf.cs" />
+    <Mapping Source="OctreeSpacePartioning" Template="OctreeSpacePartioningd" OutputPath="../Shapes/Spatial/OctreeSpacePartioningd.cs" />
+
+    <!-- Volumes -->
+    <Mapping Source="VolumeInterfaces" Template="VolumeInterfacesf" OutputPath="../Shapes/Volumes/VolumeInterfacesf.cs" />
+    <Mapping Source="VolumeInterfaces" Template="VolumeInterfacesd" OutputPath="../Shapes/Volumes/VolumeInterfacesd.cs" />
+    <Mapping Source="AABox" Template="AABoxf" OutputPath="../Shapes/Volumes/AABoxf.cs" />
+    <Mapping Source="AABox" Template="AABoxd" OutputPath="../Shapes/Volumes/AABoxd.cs" />
+    <Mapping Source="Sphere" Template="Spheref" OutputPath="../Shapes/Volumes/Spheref.cs" />
+    <Mapping Source="Sphere" Template="Sphered" OutputPath="../Shapes/Volumes/Sphered.cs" />
+    <Mapping Source="VoxelGrid" Template="VoxelGridf" OutputPath="../Shapes/Volumes/VoxelGridf.cs" />
+    <Mapping Source="VoxelGrid" Template="VoxelGridd" OutputPath="../Shapes/Volumes/VoxelGridd.cs" />
+
+    <!-- Functions -->
+    <Mapping Source="Series" Template="Seriesf" OutputPath="../Functions/Series/Seriesf.cs" />
+    <Mapping Source="GeometricSeries" Template="GeometricSeriesf" OutputPath="../Functions/Series/GeometricSeriesf.cs" />
+    <Mapping Source="ArithmeticSeries" Template="ArithmeticSeriesf" OutputPath="../Functions/Series/ArithmeticSeriesf.cs" />
+    <Mapping Source="RecursiveSeries" Template="RecursiveSeriesf" OutputPath="../Functions/Series/RecursiveSeriesf.cs" />
+    <Mapping Source="Series" Template="Seriesd" OutputPath="../Functions/Series/Seriesd.cs" />
+    <Mapping Source="GeometricSeries" Template="GeometricSeriesd" OutputPath="../Functions/Series/GeometricSeriesd.cs" />
+    <Mapping Source="ArithmeticSeries" Template="ArithmeticSeriesd" OutputPath="../Functions/Series/ArithmeticSeriesd.cs" />
+    <Mapping Source="RecursiveSeries" Template="RecursiveSeriesd" OutputPath="../Functions/Series/RecursiveSeriesd.cs" />
+    
+    <!-- Integration -->
+    <Mapping Source="Differentiator" Template="Differentiator" OutputPath="../Integration/Differentiator.cs" />
+    <Mapping Source="Integrator" Template="Integratorf" OutputPath="../Integration/Integratorf.cs" />
+    <Mapping Source="Integrator" Template="Integratord" OutputPath="../Integration/Integratord.cs" />
+    <Mapping Source="MonteCarloIntegrator" Template="MonteCarloIntegratorf" OutputPath="../Integration/MonteCarloIntegratorf.cs" />
+    <Mapping Source="MonteCarloIntegrator" Template="MonteCarloIntegratord" OutputPath="../Integration/MonteCarloIntegratord.cs" />
+    <Mapping Source="QuadraticIntegrator" Template="QuadraticIntegratorf" OutputPath="../Integration/QuadraticIntegratorf.cs" />
+    <Mapping Source="QuadraticIntegrator" Template="QuadraticIntegratord" OutputPath="../Integration/QuadraticIntegratord.cs" />
+
+    <Mapping Source="ODEBase" Template="ODEBasef" OutputPath="../Integration/ODE/ODEBasef.cs" />
+    <Mapping Source="ODEBase" Template="ODEBased" OutputPath="../Integration/ODE/ODEBased.cs" />
+    
+    
+    <!-- Interpolation -->
+    <Mapping Source="CommonSteppers" Template="CommonSteppersf" OutputPath="../Interpolation/CommonSteppersf.cs" />
+    <Mapping Source="CommonSteppers" Template="CommonSteppersd" OutputPath="../Interpolation/CommonSteppersd.cs" />
+    <Mapping Source="UniformStepper" Template="UniformStepperf" OutputPath="../Interpolation/UniformStepperf.cs" />
+    <Mapping Source="UniformStepper" Template="UniformStepperd" OutputPath="../Interpolation/UniformStepperd.cs" />
+    <Mapping Source="SmoothStep" Template="SmoothStepf" OutputPath="../Interpolation/SmoothStepf.cs" />
+    <Mapping Source="SmoothStep" Template="SmoothStepd" OutputPath="../Interpolation/SmoothStepd.cs" />
+
+    <Mapping Source="PolynomialInterpolation" Template="PolynomialInterpolation" OutputPath="../Interpolation/PolynomialInterpolation.cs" />
+    <Mapping Source="RationalInterpolation" Template="RationalInterpolation" OutputPath="../Interpolation/RationalInterpolation.cs" />
+    
+    <!-- Random -->
+    <Mapping Source="RandomGenerator" Template="RandomGeneratorf" OutputPath="../Random/RandomGeneratorf.cs" />
+    <Mapping Source="RandomGenerator" Template="RandomGeneratord" OutputPath="../Random/RandomGeneratord.cs" />
+    
+    
+    <!-- Transforms -->
+    <Mapping Source="DFT" Template="DFT" OutputPath="../Transform/DFT.cs" />
+    <Mapping Source="DWT" Template="DWT" OutputPath="../Transform/DWT.cs" />
+    <Mapping Source="Linear" Template="Linear" OutputPath="../Transform/Linear.cs" />
+  </Mappings>
+
+
+</TemplateProject>

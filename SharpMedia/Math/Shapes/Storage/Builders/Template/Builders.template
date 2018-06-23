@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Builder interfaces -->
+  <TemplateSet Name="BuilderInterfaces">
+    <TemplateSet Name="Types">
+      
+      <!-- A vector 2f interface.-->
+      <TemplateSet Name="Vector2f" Extends="CoreMath">
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2f" />
+        <Template Name="LineBuilder" Value="ILineBuilder2f" />
+        <Template Name="Vector" Value="Vector2f" />
+      </TemplateSet>
+
+      <!-- A vector 2d interface.-->
+      <TemplateSet Name="Vector2d" Extends="CoreMath">
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2d" />
+        <Template Name="LineBuilder" Value="ILineBuilder2d" />
+        <Template Name="Vector" Value="Vector2d" />
+      </TemplateSet>
+
+      <!-- A vector 3f interface.-->
+      <TemplateSet Name="Vector3f" Extends="CoreMath">
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder3f" />
+        <Template Name="LineBuilder" Value="ILineBuilder3f" />
+        <Template Name="Vector" Value="Vector3f" />
+      </TemplateSet>
+
+      <!-- A vector 3d interface.-->
+      <TemplateSet Name="Vector3d" Extends="CoreMath">
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder3d" />
+        <Template Name="LineBuilder" Value="ILineBuilder3d" />
+        <Template Name="Vector" Value="Vector3d" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+  
+  
+  <!-- A triangle soup builder -->
+  <TemplateSet Name="GraphicsTriangleSoupBuilder">
+    <TemplateSet Name="VertexTypes">
+      <TemplateSet Name="Vector2f">
+        <Template Name="TypeName" Value="Vector2f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3f">
+        <Template Name="TypeName" Value="Vector3f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector4f">
+        <Template Name="TypeName" Value="Vector4f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector2d">
+        <Template Name="TypeName" Value="Vector2d" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3d">
+        <Template Name="TypeName" Value="Vector3d" />
+      </TemplateSet>
+      <TemplateSet Name="Vector4d">
+        <Template Name="TypeName" Value="Vector4d" />
+      </TemplateSet>
+    </TemplateSet>
+
+    <TemplateSet Name="IndexTypes">
+      <TemplateSet Name="UInt32">
+        <Template Name="TypeName" Value="uint" />
+      </TemplateSet>
+      <TemplateSet Name="UInt16">
+        <Template Name="TypeName" Value="ushort" />
+      </TemplateSet>
+      <TemplateSet Name="Byte">
+        <Template Name="TypeName" Value="byte" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+
+  <!-- A line soup builder -->
+  <TemplateSet Name="GraphicsLineSoupBuilder">
+    <TemplateSet Name="VertexTypes">
+      <TemplateSet Name="Vector2f">
+        <Template Name="TypeName" Value="Vector2f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3f">
+        <Template Name="TypeName" Value="Vector3f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector4f">
+        <Template Name="TypeName" Value="Vector4f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector2d">
+        <Template Name="TypeName" Value="Vector2d" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3d">
+        <Template Name="TypeName" Value="Vector3d" />
+      </TemplateSet>
+      <TemplateSet Name="Vector4d">
+        <Template Name="TypeName" Value="Vector4d" />
+      </TemplateSet>
+    </TemplateSet>
+
+    <TemplateSet Name="IndexTypes">
+      <TemplateSet Name="UInt32">
+        <Template Name="TypeName" Value="uint" />
+      </TemplateSet>
+      <TemplateSet Name="UInt16">
+        <Template Name="TypeName" Value="ushort" />
+      </TemplateSet>
+      <TemplateSet Name="Byte">
+        <Template Name="TypeName" Value="byte" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+
+</TemplateSets>

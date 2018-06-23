@@ -1,0 +1,185 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes.Storage
+{
+
+    /// <summary>
+    /// Represents a collection of triangles, in graphics's compatible format.
+    /// </summary>
+    /// <remarks>This is generic storage oriented format. You can use mesh version's for
+    /// processing oriented formats (located in compounds).
+    /// </remarks>
+    [Serializable]
+    public class GraphicsTriangleSoup : BaseTopologySet,
+        ITriangleAccess2f, ITriangleAccess3f, ITriangleAccess2d, ITriangleAccess3d
+    {
+        #region ITopologySet Members
+
+        public override uint ControlPointsPerShape
+        {
+            get { return 2; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// The triangle soup constructor.
+        /// </summary>
+        /// <remarks>Use the builder class to obtain "validated" versions.</remarks>
+        /// <param name="query"></param>
+        /// <param name="indexBuffer"></param>
+        /// <param name="shapeCount"></param>
+        public GraphicsTriangleSoup(ControlPointQuery query, ShapeIndexBufferView indexBuffer, uint shapeCount)
+        {
+            this.query = query;
+            this.indexBuffer = indexBuffer;
+            this.shapeCount = shapeCount;
+        }
+
+        #endregion
+
+        #region Query Members
+
+        //#foreach Types
+
+        /// <summary>
+        /// Gets triangle.
+        /// </summary>
+        /// <param name="index">The triangle triangle index.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        /// <returns></returns>
+        public @Triangle @Get(uint index)
+        {
+            @Triangle t = new @Triangle();
+            Get(CommonComponents.Position, index, t);
+            return t;
+        }
+
+        /// <summary>
+        /// Gets triangle.
+        /// </summary>
+        /// <param name="index">The triangle index.</param>
+        /// <param name="positionComponent">The component where we look for position, must be
+        /// correct format.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        public @Triangle @Get(string positionComponent, uint index)
+        {
+            @Triangle t = new @Triangle();
+            Get(positionComponent, index, t);
+            return t;
+        }
+
+        /// <summary>
+        /// Gets triangle.
+        /// </summary>
+        /// <param name="index">The triangle index.</param>
+        /// <param name="positionComponent">The component where we look for position, must be
+        /// Vector2f format.</param>
+        /// <remarks>This is not performance wise getter.</remarks>
+        public void Get(uint index, @Triangle storage)
+        {
+            Get(CommonComponents.Position, index, storage);
+        }
+
+        /// <summary>
+        /// Gets triangle.
+        /// </summary>
+        /// <param name="index">The triangle triangle index.</param>
+        /// <remarks>This accessor is not to be used in performance critical parts of applications.</remarks>
+        /// <returns></returns>
+        public void Get(string positionComponent, uint index, @Triangle storage)
+        {
+            if (index >= shapeCount)
+                throw new ArgumentException("Index out of range, not that many triangles.");
+
+            if (indexBuffer != null)
+            {
+                uint[] indices = indexBuffer.Getui(index * 3, 3);
+
+                storage.A = query.@Get(positionComponent, indices[0]);
+                storage.B = query.@Get(positionComponent, indices[1]);
+                storage.C = query.@Get(positionComponent, indices[2]);
+            }
+            else
+            {
+                storage.A = query.@Get(positionComponent, index * 3);
+                storage.B = query.@Get(positionComponent, index * 3 + 1);
+                storage.C = query.@Get(positionComponent, index * 3 + 2);
+            }
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="triangleIndex">The  triangle index offset.</param>
+        /// <param name="storage">Where to store result.</param>
+        public void Get(uint triangleIndex, @Triangle[] storage)
+        {
+            Get(CommonComponents.Position, triangleIndex, storage);
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="triangleIndex">The  triangle index offset.</param>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="storage">Where to store result.</param>
+        public void Get(string positionComponent, uint triangleIndex, @Triangle[] storage)
+        {
+            if (triangleIndex + storage.Length >= shapeCount)
+                throw new ArgumentException("Index out of range, not that many triangles.");
+
+            if (indexBuffer != null)
+            {
+                uint[] indices = indexBuffer.Getui(triangleIndex * 3, (uint)storage.Length * 3);
+                @Vector[] data = query.@Get(positionComponent, indices);
+
+                for (int i = 0; i < storage.Length; i++)
+                {
+                    storage[i] = new @Triangle(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+                }
+            }
+            else
+            {
+                @Vector[] data = query.@Get(positionComponent, triangleIndex * 3, (uint)storage.Length * 3);
+
+                for (int i = 0; i < storage.Length; i++)
+                {
+                    storage[i] = new @Triangle(data[i * 3], data[i * 3 + 1], data[i * 3 + 2]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="triangleIndex">The triangle index offset.</param>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="count">Number of triangles.</param>
+        public @Triangle[] @Get(string positionComponent, uint triangleIndex, uint count)
+        {
+            @Triangle[] data = new @Triangle[count];
+            Get(positionComponent, triangleIndex, data);
+            return data;
+        }
+
+        /// <summary>
+        /// An array getter, optimized by reusing mappings.
+        /// </summary>
+        /// <param name="triangleIndex">The triangle index offset.</param>
+        /// <param name="count">Number of triangles.</param>
+        public @Triangle[] @Get(uint triangleIndex, uint count)
+        {
+            return @Get(CommonComponents.Position, triangleIndex, count);
+        }
+
+        //#endfor
+
+
+        #endregion
+    }
+}

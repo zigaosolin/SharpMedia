@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Series template -->
+  <TemplateSet Name="Seriesf" Extends="CoreMath,Float">
+    <Template Name="ClassName" Value="ISeriesf" />
+    <Template Name="GenericSeries" Value="GenericSeriesf" />
+    <Template Name="DiscreteFunction" Value="DiscreteFunctionf" />
+  </TemplateSet>
+  <TemplateSet Name="Seriesd" Extends="CoreMath,Double">
+    <Template Name="ClassName" Value="ISeriesd" />
+    <Template Name="GenericSeries" Value="GenericSeriesd" />
+    <Template Name="DiscreteFunction" Value="DiscreteFunctiond" />
+  </TemplateSet>
+  
+  <!-- Arithmetic series -->
+  <TemplateSet Name="ArithmeticSeriesf" Extends="Seriesf">
+    <Template Name="ClassName" Value="ArithmeticSeriesf" />
+    <Template Name="BaseClass" Value="ISeriesf" />
+  </TemplateSet>
+  <TemplateSet Name="ArithmeticSeriesd" Extends="Seriesd">
+    <Template Name="ClassName" Value="ArithmeticSeriesd" />
+    <Template Name="BaseClass" Value="ISeriesd" />
+  </TemplateSet>
+
+  <!-- Geometric series -->
+  <TemplateSet Name="GeometricSeriesf" Extends="Seriesf">
+    <Template Name="ClassName" Value="GeometricSeriesf" />
+    <Template Name="BaseClass" Value="ISeriesf" />
+  </TemplateSet>
+  <TemplateSet Name="GeometricSeriesd" Extends="Seriesd">
+    <Template Name="ClassName" Value="GeometricSeriesd" />
+    <Template Name="BaseClass" Value="ISeriesd" />
+  </TemplateSet>
+
+  <!-- Recursive series -->
+  <TemplateSet Name="RecursiveSeriesf" Extends="Seriesf">
+    <Template Name="ClassName" Value="RecursiveSeriesf" />
+    <Template Name="BaseClass" Value="ISeriesf" />
+    <Template Name="Function" Value="Functionf" />
+  </TemplateSet>
+  <TemplateSet Name="RecursiveSeriesd" Extends="Seriesd">
+    <Template Name="ClassName" Value="RecusriveSeriesd" />
+    <Template Name="BaseClass" Value="ISeriesd" />
+    <Template Name="Function" Value="Functiond" />
+  </TemplateSet>
+
+</TemplateSets>

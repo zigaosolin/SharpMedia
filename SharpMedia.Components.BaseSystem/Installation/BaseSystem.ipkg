@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--
+  This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+  and is licensed for your use under the conditions of the NDA or other legally binding contract
+  that you or a legal entity you represent has signed with the SharpMedia team.
+  In an event that you have received or obtained this file without such legally binding contract
+  in place, you MUST destroy all files and other content to which this lincese applies and
+  contact the SharpMedia team for further instructions at the internet mail address:
+
+    legal@sharpmedia.com
+-->
+<InstallPackage
+	xversion ="1.0.0"
+	name     ="Base System"
+	id       ="A0B61AB8-84E1-11DC-A6DF-B5C056D89593"
+	publisher="SharpMedia">
+
+	<!-- commands executed before installation commences -->
+	<PreInstallCheck>
+		<!-- fail if we are installed already -->
+		<FailIfInstalled InstalledPackages="A0B61AB8-84E1-11DC-A6DF-B5C056D89593" />
+	</PreInstallCheck>
+
+	<!-- commands executed on installation -->
+	<Installation>
+		<!-- creates directories -->
+		<DirNodeCreate  DestinationListName="PreCreateDirectories" />
+		
+		<!-- Installs assemblies (used for type loading and by libraries/applications ) -->
+		<CopySourceList SourceListName="Assemblies" DestinationListName="Assemblies" />
+		
+		<!-- Installs applications -->
+		<InstallApplication 
+			SourceListName     ="Applications"
+			DestinationListName="Applications" />
+    
+    <!-- Installs libraries -->
+    <CopySourceList SourceListName="Libraries"  DestinationListName="Libraries" />
+
+  </Installation>
+
+  <!-- commands executed for uninstallation are constructed automatically -->
+	<Uninstallation automatic="true" />
+
+	<!-- defines sources -->
+	<Sources>
+		<!-- BaseLib is a list of nodes with 1 entry,
+		     an assembly source which wraps a package contained source.
+			 The package contained source, when used with a Relative
+			 attribute yields an installation source that reads
+			 relatively from where the package has been loaded.
+			 The assembly source wraps a source that can serve binary
+			 data of any kind and presents it to the installation
+			 system like it was an assembly.
+		  -->
+		<Assemblies>
+			<AssemblySource>
+				<PackageContained Relative="../SharpMedia.dll"/>
+			</AssemblySource>
+			<AssemblySource>
+				<PackageContained Relative="../SharpMedia.Components.Kernel.dll"/>
+			</AssemblySource>
+			<AssemblySource>
+				<PackageContained Relative="../SharpMedia.Components.BaseSystem.dll"/>
+			</AssemblySource>
+		</Assemblies>
+
+		<!-- application descriptor source wraps XML sources and produces
+		     ApplicationDescriptor sources.
+		  -->
+		<Applications>
+			<ApplicationDescriptorSource>
+				<PackageContained Relative="Init.appxml"/>
+			</ApplicationDescriptorSource>
+			<ApplicationDescriptorSource>
+				<PackageContained Relative="TextShell.appxml"/>
+			</ApplicationDescriptorSource>
+      <ApplicationDescriptorSource>
+        <PackageContained Relative="TestRunner.appxml"/>
+      </ApplicationDescriptorSource>
+      <ApplicationDescriptorSource>
+        <PackageContained Relative="Eval.appxml" />
+      </ApplicationDescriptorSource>
+		</Applications>
+
+    <Libraries>
+      <LibrarySource>
+        <PackageContained Relative="SharpMedia.libxml" />
+      </LibrarySource>
+    </Libraries>
+	</Sources>
+
+	<!-- defines destinations -->
+	<Destinations>
+		<PreCreateDirectories>
+			<InstallRelative Relative="System" />
+      <InstallRelative Relative="System/Assemblies" />
+      <InstallRelative Relative="System/Assemblies/SharpMedia" />
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Components" />
+			<InstallRelative Relative="System/Libraries" />
+      <InstallRelative Relative="System/Libraries/SharpMedia" />
+			<InstallRelative Relative="System/Runtime" />
+			<InstallRelative Relative="System/Runtime/Installations" />
+      <InstallRelative Relative="System/Runtime/DocumentBindings" />
+      <InstallRelative Relative="System/Runtime/Services" />
+			<InstallRelative Relative="System/Documentation" />
+			<InstallRelative Relative="System/Applications" />
+			<InstallRelative Relative="System/Applications/Components" />
+		</PreCreateDirectories>
+
+		<Assemblies>
+			<!-- an install relative destination installs to a Path relative 
+			     of the installation destination medium. Paths may be absolute
+				 or relative.
+				 
+				 applications are just description files that order the OS to
+				 tie components from libraries and services together to create
+				 a working application/program where all requirements of all
+				 components have been met.
+			  -->
+			<InstallRelative Relative="System/Assemblies/SharpMedia" />
+			<InstallRelative Relative="System/Assemblies/SharpMedia/Components/Kernel" />
+			<InstallRelative Relative="System/Assemblies/SharpMedia/Components/BaseSystem" />
+		</Assemblies>
+
+		<Applications>
+			<InstallRelative Relative="System/Applications/Components/Init" />
+			<InstallRelative Relative="System/Applications/Components/TextShell" />
+      <InstallRelative Relative="System/Applications/Components/TestRunner" />
+      <InstallRelative Relative="System/Applications/Components/Eval" />
+		</Applications>
+
+    <Libraries>
+      <InstallRelative Relative="System/Libraries/SharpMedia" />
+    </Libraries>
+	</Destinations>
+</InstallPackage>

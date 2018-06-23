@@ -1,0 +1,265 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace SharpMedia.Math.Shapes.Storage.Builders
+{
+
+    /// <summary>
+    /// A triangle soup builder.
+    /// </summary>
+    public class GraphicsLineSoupBuilder : BaseTopologySet, ITopologySetBuilder<GraphicsLineSoup>,
+        ILineBuilder2f, ILineBuilder2d, ILineBuilder3f, ILineBuilder3d
+    {
+        #region Private Members
+        uint vertexCount = 0;
+        bool isMapped = false;
+        #endregion
+
+        #region Helper Methods
+
+        void AssertMapped()
+        {
+            AssertNotDisposed();
+            if (!isMapped) throw new InvalidOperationException("Method expects buffers to be mapped.");
+        }
+
+        void AssertUnMapped()
+        {
+            AssertNotDisposed();
+            if (isMapped) throw new InvalidOperationException("Method expects buffers to be un-mapped.");
+        }
+
+        void AssertNotDisposed()
+        {
+            if (query == null) throw new ObjectDisposedException("Object was already 'disposed' using finish, invalid call.");
+        }
+
+        #endregion
+
+        #region ITopologySetBuilder<GraphicsTriangleSoup> Members
+
+        public uint MaxControlPoints
+        {
+            get
+            {
+                AssertMapped();
+                return query.MaxControlPoints;
+            }
+        }
+
+        public GraphicsLineSoup Finish()
+        {
+            AssertUnMapped();
+            ControlPointQuery q = query;
+            ShapeIndexBufferView i = indexBuffer;
+            query = null;
+            return new GraphicsLineSoup(q, i, shapeCount);
+        }
+
+        #endregion
+
+        #region ITopologySet Members
+
+        public override uint ControlPointsPerShape
+        {
+            get { return 2; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="query"></param>
+        /// <param name="indexBuffer"></param>
+        public GraphicsLineSoupBuilder(ControlPointQuery query, ShapeIndexBufferView indexBuffer)
+        {
+            this.query = query;
+            this.indexBuffer = indexBuffer;
+        }
+
+        #endregion
+
+        #region Vertex Control
+
+        //#foreach VertexTypes
+
+        /// <summary>
+        /// Adds a control point at new index.
+        /// </summary>
+        /// <param name="controlPoint">The control point position.</param>
+        /// <remarks>This is not performance-wise function call.</remarks>
+        /// <returns>The index of control point.</returns>
+        public uint AddControlPoint(@TypeName controlPoint)
+        {
+            return AddControlPoint(CommonComponents.Position, controlPoint);
+        }
+
+        /// <summary>
+        /// Adds a control point at new index.
+        /// </summary>
+        /// <param name="positionComponent">The position component.</param>
+        /// <param name="controlPoint">The control point position</param>
+        /// <remarks>This is not performance wise function call.</remarks>
+        /// <returns>The index of control point.</returns>
+        public uint AddControlPoint(string positionComponent, @TypeName controlPoint)
+        {
+            AssertMapped();
+
+            query.Set(positionComponent, vertexCount, controlPoint);
+            return vertexCount++;
+        }
+
+        /// <summary>
+        /// Adds control points.
+        /// </summary>
+        /// <param name="controlPoints">Control points.</param>
+        /// <returns>The index of first control points, all others follow.</returns>
+        public uint AddControlPoints(params @TypeName[] controlPoints)
+        {
+            return AddControlPoints(CommonComponents.Position, controlPoints);
+        }
+
+        /// <summary>
+        /// Adds control points.
+        /// </summary>
+        /// <param name="controlPoints">Control points.</param>
+        /// <returns>The index of first control points, all others follow.</returns>
+        public uint AddControlPoints(string positionComponent, params @TypeName[] controlPoints)
+        {
+            AssertMapped();
+
+            uint tmp = vertexCount;
+            query.Set(positionComponent, vertexCount, controlPoints);
+            vertexCount += (uint)controlPoints.Length;
+
+            return tmp;
+        }
+
+        //#endfor
+
+        #endregion
+
+        #region Shape Control
+
+        //#foreach IndexTypes
+
+        /// <summary>
+        /// Adds an indexed triangle.
+        /// </summary>
+        /// <param name="id1">First control point index.</param>
+        /// <param name="id2">Second control point index.</param>
+        public void AddIndexedLine(@TypeName id1, @TypeName id2)
+        {
+            AssertMapped();
+            if (indexBuffer == null)
+            {
+                throw new InvalidOperationException("Index buffer not bound, cannot add indexed triangle.");
+            }
+
+            indexBuffer.Set(shapeCount * 2, new @TypeName[] { id1, id2 });
+            shapeCount++;
+        }
+
+        /// <summary>
+        /// Adds indexed triangles.
+        /// </summary>
+        /// <param name="indices">The indices to use.</param>
+        public void AddIndexedLines(params @TypeName[] indices)
+        {
+            AssertMapped();
+            if (indexBuffer == null)
+            {
+                throw new InvalidOperationException("Index buffer not bound, cannot add indexed triangle.");
+            }
+
+            if (indices.Length % 2 != 0)
+            {
+                throw new ArgumentException("Indices count must be multiple of 2 in order to use line segment.");
+            }
+
+            indexBuffer.Set(shapeCount * 2, indices);
+            shapeCount += (uint)indices.Length / 2;
+        }
+
+        //#endfor
+
+        #endregion
+
+        #region Strip Control
+
+        //#foreach VertexTypes
+
+        /// <summary>
+        /// Adds a line strip.
+        /// </summary>
+        /// <param name="linkFirstToLast">Should first be linked to last.</param>
+        /// <param name="data">The actual data.</param>
+        public void AddLineStrip(bool linkFirstToLast, params @TypeName[] data)
+        {
+            AddLineStrip(CommonComponents.Position, linkFirstToLast, data);
+        }
+
+        /// <summary>
+        /// Adds a line strip.
+        /// </summary>
+        /// <param name="positionComponent">The position component name.</param>
+        /// <param name="linkFirstToLast">Should first be linked to last.</param>
+        /// <param name="data">The actual data.</param>
+        public void AddLineStrip(string positionComponent, bool linkFirstToLast, params @TypeName[] data)
+        {
+            int length = linkFirstToLast ? data.Length * 2 : data.Length * 2 - 2;
+
+            if (IsIndexed)
+            {
+                uint baseIndex = AddControlPoints(positionComponent, data);
+
+                // We create indices.
+                uint[] indices = new uint[length];
+
+                // We set them.
+                for (int i = 0; i < data.Length - 1; i++)
+                {
+                    indices[2 * i] = (uint)(baseIndex + i);
+                    indices[2 * i] = (uint)(baseIndex + i + 1);
+                }
+
+                if (linkFirstToLast)
+                {
+                    indices[indices.Length - 2] = (uint)(baseIndex + data.Length - 1);
+                    indices[indices.Length - 1] = baseIndex;
+                }
+
+                AddIndexedLines(indices);
+            }
+            else
+            {
+                // We need to convert.
+                @TypeName[] newData = new @TypeName[length];
+
+                for (int i = 0; i < data.Length - 1; i++)
+                {
+                    newData[2*i] = data[i];
+                    newData[2 * i + 1] = data[i + 1];
+                }
+
+                if (linkFirstToLast)
+                {
+                    newData[newData.Length - 2] = data[data.Length - 1];
+                    newData[newData.Length - 1] = data[0];
+                }
+
+                AddControlPoints(newData);
+            }
+        }
+
+        //#endfor
+
+        #endregion
+
+    }
+}

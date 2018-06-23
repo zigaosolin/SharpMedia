@@ -1,0 +1,124 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.AspectOriented;
+using SharpMedia.Math.Functions.Discrete;
+
+namespace SharpMedia.Math.Functions.Series
+{
+
+    /// <summary>
+    /// A recursive series. Next value is computed from previous.
+    /// </summary>
+    public class @ClassName : @BaseClass
+    {
+        #region Private Members
+        @TypeName initial;
+        @Function f;
+        #endregion
+
+        #region Constructors
+
+        public @ClassName(@TypeName initial, [NotNull] @Function f)
+        {
+            this.initial = initial;
+            this.f = f;
+        }
+
+        #endregion
+
+        #region ISeriesd Members
+
+        public @DiscreteFunction Function
+        {
+            get
+            {
+                return delegate(uint n)
+                {
+                    @TypeName v = initial;
+                    for (int i = 1; i <= n; i++)
+                    {
+                        v = f(v);
+                    }
+                    return v;
+                };
+
+            }
+        }
+
+        public @DiscreteFunction SumFunction
+        {
+            get
+            {
+                return delegate(uint n)
+                {
+                    @TypeName sum = initial;
+                    @TypeName v = initial;
+                    for (int i = 1; i <= n; i++)
+                    {
+                        v = f(v);
+                        sum += v;
+                    }
+                    return sum;
+                };
+            }
+        }
+
+        public @TypeName[] Sample(uint begin, uint count)
+        {
+            @TypeName v = initial;
+            for (int i = 1; i < begin; i++)
+            {
+                v = f(v);
+            }
+
+            // We go through all values.
+            @TypeName[] results = new @TypeName[count];
+            for (int j = 0; j < count; j++)
+            {
+                v = f(v);
+                results[j] = v;
+            }
+            return results;
+        }
+
+        public @TypeName[] SampleSum(uint begin, uint count)
+        {
+            @TypeName v = initial, sum = 0; ;
+            for (int i = 1; i < begin; i++)
+            {
+                v = f(v);
+                sum += v;
+            }
+
+            // We go through all values.
+            @TypeName[] results = new @TypeName[count];
+            for (int j = 0; j < count; j++)
+            {
+                v = f(v);
+                sum += v;
+                results[j] = sum;
+            }
+
+            return results;
+        }
+
+        public @TypeName InfiniteSum
+        {
+            get { return @TypeName.NaN; }
+        }
+
+        #endregion
+    }
+
+
+}

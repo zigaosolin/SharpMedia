@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Library xversion="1.0.0">
+  <Components>
+    <Component Id  ="GraphicsService:Default"
+               Type="SharpMedia.Graphics.GraphicsService" />
+    
+    <!-- TODO: Add any custom Graphics Services here -->
+  </Components>
+</Library>

@@ -1,0 +1,786 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math.Matrix
+{
+    /// <summary>
+    /// An implementation of 4x4 matrix.
+    /// </summary>
+    [Serializable]
+    public class @ClassName : @BaseInterface<@ClassName, @ClassName>
+    {
+        #region Public Members
+        /// <summary>
+        /// Members of matrix.
+        /// </summary>
+        public @TypeName M00, M01, M02, M03,
+                       M10, M11, M12, M13,
+                       M20, M21, M22, M23,
+                       M30, M31, M32, M33;
+
+        #endregion
+
+        #region Row/Column
+
+        /// <summary>
+        /// The first row of matrix.
+        /// </summary>
+        public @Vector4ClassName Row1
+        {
+            get { return new @Vector4ClassName(M00, M01, M02, M03); }
+        }
+
+        /// <summary>
+        /// The second row od matrix.
+        /// </summary>
+        public @Vector4ClassName Row2
+        {
+            get { return new @Vector4ClassName(M10, M11, M12, M13); }
+        }
+
+        /// <summary>
+        /// The third row od matrix.
+        /// </summary>
+        public @Vector4ClassName Row3
+        {
+            get { return new @Vector4ClassName(M20, M21, M22, M23); }
+        }
+
+        /// <summary>
+        /// The forth row od matrix.
+        /// </summary>
+        public @Vector4ClassName Row4
+        {
+            get { return new @Vector4ClassName(M30, M31, M32, M33); }
+        }
+
+        /// <summary>
+        /// First coloum of matrix.
+        /// </summary>
+        public @Vector4ClassName Coloum1
+        {
+            get { return new @Vector4ClassName(M00, M10, M20, M30); }
+        }
+
+        /// <summary>
+        /// Second coloum of matrix.
+        /// </summary>
+        public @Vector4ClassName Coloum2
+        {
+            get { return new @Vector4ClassName(M01, M11, M21, M31); }
+        }
+
+        /// <summary>
+        /// Third coloum of matrix.
+        /// </summary>
+        public @Vector4ClassName Coloum3
+        {
+            get { return new @Vector4ClassName(M02, M12, M22, M32); }
+        }
+
+        /// <summary>
+        /// Forth coloum of matrix.
+        /// </summary>
+        public @Vector4ClassName Coloum4
+        {
+            get { return new @Vector4ClassName(M03, M13, M23, M33); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Matrix construction, supplying all constants.
+        /// </summary>
+        public @ClassName(@TypeName m00, @TypeName m01, @TypeName m02, @TypeName m03,
+                          @TypeName m10, @TypeName m11, @TypeName m12, @TypeName m13,
+                          @TypeName m20, @TypeName m21, @TypeName m22, @TypeName m23,
+                          @TypeName m30, @TypeName m31, @TypeName m32, @TypeName m33)
+        {
+            M00 = m00;
+            M01 = m01;
+            M02 = m02;
+            M03 = m03;
+
+            M10 = m10;
+            M11 = m11;
+            M12 = m12;
+            M13 = m13;
+
+            M20 = m20;
+            M21 = m21;
+            M22 = m22;
+            M23 = m23;
+
+            M30 = m30;
+            M31 = m31;
+            M32 = m32;
+            M33 = m33;
+        }
+
+        /// <summary>
+        /// Construction supplied by 2D array.
+        /// </summary>
+        /// <param name="array">Two dimension array, must be 4x4.</param>
+        public @ClassName(@TypeName[,] array)
+        {
+            if (array == null) throw new ArgumentNullException("Array must be nonnull.");
+            if (array.GetLength(0) != 4 || array.GetLength(1) != 4)
+            {
+                throw new ArgumentException("Array must be 4x4.");
+            }
+
+            M00 = array[0, 0];
+            M01 = array[0, 1];
+            M02 = array[0, 2];
+            M03 = array[0, 3];
+
+            M10 = array[1, 0];
+            M11 = array[1, 1];
+            M12 = array[1, 2];
+            M13 = array[1, 3];
+
+            M20 = array[2, 0];
+            M21 = array[2, 1];
+            M22 = array[2, 2];
+            M23 = array[2, 3];
+
+            M30 = array[3, 0];
+            M31 = array[3, 1];
+            M32 = array[3, 2];
+            M33 = array[3, 3];
+
+        }
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Matrix addition operation.
+        /// </summary>
+        /// <param name="first">First matrix.</param>
+        /// <param name="second">Second matrix.</param>
+        /// <returns>New instance of matrices added.</returns>
+        public static @ClassName operator +(@ClassName first, @ClassName second)
+        {
+            return new @ClassName(
+                first.M00 + second.M00, first.M01 + second.M01, first.M02 + second.M02, first.M03 + second.M03,
+                first.M10 + second.M10, first.M11 + second.M11, first.M12 + second.M12, first.M13 + second.M13,
+                first.M20 + second.M20, first.M21 + second.M21, first.M22 + second.M22, first.M23 + second.M23,
+                first.M30 + second.M30, first.M31 + second.M31, first.M32 + second.M32, first.M33 + second.M33);
+        }
+
+        /// <summary>
+        /// Matrix substraction operation.
+        /// </summary>
+        /// <param name="first">First matrix.</param>
+        /// <param name="second">Second matrix.</param>
+        /// <returns>New instance of matrices substracted.</returns>
+        public static @ClassName operator -(@ClassName first, @ClassName second)
+        {
+            return new @ClassName(
+                first.M00 - second.M00, first.M01 - second.M01, first.M02 - second.M02, first.M03 - second.M03,
+                first.M10 - second.M10, first.M11 - second.M11, first.M12 - second.M12, first.M13 - second.M13,
+                first.M20 - second.M20, first.M21 - second.M21, first.M22 - second.M22, first.M23 - second.M23,
+                first.M30 - second.M30, first.M31 - second.M31, first.M32 - second.M32, first.M33 - second.M33);
+        }
+
+        /// <summary>
+        /// Negation operation.
+        /// </summary>
+        /// <param name="mat">Matrix to be negated.</param>
+        /// <returns>Negated matrix.</returns>
+        public static @ClassName operator -(@ClassName mat)
+        {
+            return -@One * mat;
+        }
+
+        /// <summary>
+        /// Matric multiplication. It is not commutative.
+        /// </summary>
+        /// <param name="first">The first matrix.</param>
+        /// <param name="second">The second matrix.</param>
+        /// <returns></returns>
+        public static @ClassName operator *(@ClassName first, @ClassName second)
+        {
+            return new @ClassName(first.M00 * second.M00 + first.M01 * second.M10 + first.M02 * second.M20 + first.M03 * second.M30,
+                                  first.M00 * second.M01 + first.M01 * second.M11 + first.M02 * second.M21 + first.M03 * second.M31,
+                                  first.M00 * second.M02 + first.M01 * second.M12 + first.M02 * second.M22 + first.M03 * second.M32,
+                                  first.M00 * second.M03 + first.M01 * second.M13 + first.M02 * second.M23 + first.M03 * second.M33,
+
+                                  first.M10 * second.M00 + first.M11 * second.M10 + first.M12 * second.M20 + first.M13 * second.M30,
+                                  first.M10 * second.M01 + first.M11 * second.M11 + first.M12 * second.M21 + first.M13 * second.M31,
+                                  first.M10 * second.M02 + first.M11 * second.M12 + first.M12 * second.M22 + first.M13 * second.M32,
+                                  first.M10 * second.M03 + first.M11 * second.M13 + first.M12 * second.M23 + first.M13 * second.M33,
+
+                                  first.M20 * second.M00 + first.M21 * second.M10 + first.M22 * second.M20 + first.M23 * second.M30,
+                                  first.M20 * second.M01 + first.M21 * second.M11 + first.M22 * second.M21 + first.M23 * second.M31,
+                                  first.M20 * second.M02 + first.M21 * second.M12 + first.M22 * second.M22 + first.M23 * second.M32,
+                                  first.M20 * second.M03 + first.M21 * second.M13 + first.M22 * second.M23 + first.M23 * second.M33,
+
+                                  first.M30 * second.M00 + first.M31 * second.M10 + first.M32 * second.M20 + first.M33 * second.M30,
+                                  first.M30 * second.M01 + first.M31 * second.M11 + first.M32 * second.M21 + first.M33 * second.M31,
+                                  first.M30 * second.M02 + first.M31 * second.M12 + first.M32 * second.M22 + first.M33 * second.M32,
+                                  first.M30 * second.M03 + first.M31 * second.M13 + first.M32 * second.M23 + first.M33 * second.M33);
+        }
+
+        /// <summary>
+        /// Division by matrix.
+        /// </summary>
+        /// <param name="first">The first matrix.</param>
+        /// <param name="second">If not invertable, numeric exception is thrown.</param>
+        /// <returns>Result matrix.</returns>
+        public static @ClassName operator /(@ClassName first, @ClassName second)
+        {
+            return first * second.Inverse;
+        }
+
+
+        /// <summary>
+        /// Row-vector-matrix multiplication.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <param name="m">The matrix.</param>
+        /// <returns></returns>
+        public static @Vector4ClassName operator *(@Vector4ClassName v, @ClassName m)
+        {
+            return new @Vector4ClassName(v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + v.W * m.M30,
+                                v.X * m.M01 + v.Y * m.M11 + v.Z * m.M21 + v.W * m.M31,
+                                v.X * m.M02 + v.Y * m.M12 + v.Z * m.M22 + v.W * m.M32,
+                                v.X * m.M03 + v.Y * m.M13 + v.Z * m.M23 + v.W * m.M33);
+        }
+
+        /// <summary>
+        /// Matrix-column vector multiplication.
+        /// </summary>
+        /// <param name="m">The matrix.</param>
+        /// <param name="v">The vector.</param>
+        /// <returns>Transformed vector.</returns>
+        public static @Vector4ClassName operator *(@ClassName m, @Vector4ClassName v)
+        {
+            return new @Vector4ClassName(v.X * m.M00 + v.Y * m.M01 + v.Z * m.M02 + v.W * m.M03,
+                                v.X * m.M10 + v.Y * m.M11 + v.Z * m.M12 + v.W * m.M13,
+                                v.X * m.M20 + v.Y * m.M21 + v.Z * m.M22 + v.W * m.M23,
+                                v.X * m.M30 + v.Y * m.M31 + v.Z * m.M32 + v.W * m.M33);
+        }
+
+        /// <summary>
+        /// Row-vector-matrix multiplication, optimized for w = 1.
+        /// </summary>
+        /// <param name="v">The vector, the w component is 1.</param>
+        /// <param name="m">The matrix.</param>
+        /// <returns></returns>
+        public static @Vector3ClassName operator *(@Vector3ClassName v, @ClassName m)
+        {
+            @TypeName w_inv = @One / (v.X * m.M03 + v.Y * m.M13 + v.Z * m.M23 + m.M33);
+            return new @Vector3ClassName(v.X * m.M00 + v.Y * m.M10 + v.Z * m.M20 + m.M30,
+                                v.X * m.M01 + v.Y * m.M11 + v.Z * m.M21 + m.M31,
+                                v.X * m.M02 + v.Y * m.M12 + v.Z * m.M22 + m.M32) * w_inv;
+        }
+
+        /// <summary>
+        /// Matrix-column vector multiplication. optimized for w=1. 
+        /// </summary>
+        /// <param name="m">The matrix.</param>
+        /// <param name="v">The vector.</param>
+        /// <returns>Transformed vector.</returns>
+        public static @Vector3ClassName operator *(@ClassName m, @Vector3ClassName v)
+        {
+            @TypeName w_inv = @One / (v.X * m.M30 + v.Y * m.M31 + v.Z * m.M32 + m.M33);
+            return new @Vector3ClassName(v.X * m.M00 + v.Y * m.M01 + v.Z * m.M02 + m.M03,
+                                v.X * m.M10 + v.Y * m.M11 + v.Z * m.M12 + m.M13,
+                                v.X * m.M20 + v.Y * m.M21 + v.Z * m.M22 + m.M23) * w_inv;
+        }
+
+        /// <summary>
+        /// Matrix multiplied by scalar.
+        /// </summary>
+        /// <param name="mat">The matrix.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Resulting matrix.</returns>
+        public static @ClassName operator *(@ClassName mat, @TypeName f)
+        {
+            return f * mat;
+        }
+
+        /// <summary>
+        /// Division by scalar.
+        /// </summary>
+        /// <param name="mat">The matrix.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator /(@ClassName mat, @TypeName f)
+        {
+            return mat * (@One / f);
+        }
+
+        /// <summary>
+        /// Matrix multiplied by scalar.
+        /// </summary>
+        /// <param name="mat">The matrix.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Resulting matrix.</returns>
+        public static @ClassName operator *(@TypeName f, @ClassName mat)
+        {
+            return new @ClassName(mat.M00 * f, mat.M01 * f, mat.M02 * f, mat.M03 * f,
+                                  mat.M10 * f, mat.M11 * f, mat.M12 * f, mat.M13 * f,
+                                  mat.M20 * f, mat.M21 * f, mat.M22 * f, mat.M23 * f,
+                                  mat.M30 * f, mat.M31 * f, mat.M32 * f, mat.M33 * f);
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// The array form of matrix.
+        /// </summary>
+        public @TypeName[,] ArrayForm
+        {
+            get
+            {
+                return new @TypeName[4, 4] { { M00, M01, M02, M03 }, { M10, M11, M12, M13 }, 
+                                          { M20, M21, M22, M23 }, { M30, M31, M32, M33 } };
+            }
+        }
+
+        /// <summary>
+        /// Creates a rotational matrix.
+        /// </summary>
+        public static @ClassName CreateRotation(@TypeName angle, @Vector3ClassName axis)
+        {
+            return null;
+        }
+
+
+        /// <summary>
+        /// Creates a 2D rotation.
+        /// </summary>
+        public static @ClassName CreateRotation(@TypeName angle)
+        {
+            @TypeName sin, cos;
+            MathHelper.SinCos(angle, out sin, out cos);
+
+            return new @ClassName(cos, -sin, 0, 0,
+                                  sin, cos, 0, 0,
+                                  0, 0, 1, 0,
+                                  0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Creates a scale matrix.
+        /// </summary>
+        public static @ClassName CreateScale(@Vector3ClassName scale)
+        {
+            return new @ClassName(scale.X, 0, 0, 0,
+                                  0, scale.Y, 0, 0,
+                                  0, 0, scale.Z, 0,
+                                  0, 0, 0, 1);
+        }
+
+        /// <summary>
+        /// Create a 2D rotation with translation.
+        /// </summary>
+        public static @ClassName CreateRotationTranslate(@TypeName angle, @Vector3ClassName translate)
+        {
+            @TypeName sin, cos;
+            MathHelper.SinCos(angle, out sin, out cos);
+
+            return new @ClassName(cos, -sin, 0, 0,
+                                  sin, cos, 0, 0,
+                                  0, 0, 1, 0,
+                                  translate.X, translate.Y, translate.Z, 1);
+        }
+
+        /// <summary>
+        /// Creates a transform matrix.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static @ClassName CreateTranslate(@Vector3ClassName v)
+        {
+            return new @ClassName(1, 0, 0, 0,
+                                  0, 1, 0, 0,
+                                  0, 0, 1, 0,
+                                  v.X, v.Y, v.Z, 1);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(3 * 16 + 10);
+            builder.Append("( ");
+            builder.Append(M00);
+            builder.Append(" ,");
+            builder.Append(M01);
+            builder.Append(" ,");
+            builder.Append(M02);
+            builder.Append(" ,");
+            builder.Append(M03);
+            builder.Append(" )\n" + "( ");
+            builder.Append(M10);
+            builder.Append(" ,");
+            builder.Append(M11);
+            builder.Append(" ,");
+            builder.Append(M12);
+            builder.Append(" ,");
+            builder.Append(M13);
+            builder.Append(" )\n" + "( ");
+            builder.Append(M20);
+            builder.Append(" ,");
+            builder.Append(M21);
+            builder.Append(" ,");
+            builder.Append(M22);
+            builder.Append(" ,");
+            builder.Append(M23);
+            builder.Append(" )\n" + "( ");
+            builder.Append(M30);
+            builder.Append(" ,");
+            builder.Append(M31);
+            builder.Append(" ,");
+            builder.Append(M32);
+            builder.Append(" ,");
+            builder.Append(M33);
+            builder.Append(" )");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return base.Equals(obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Read-only Zero Matrix.
+        /// </summary>
+        public static readonly @ClassName Zero = new @ClassName(@Zero, @Zero, @Zero, @Zero,
+                                                                @Zero, @Zero, @Zero, @Zero,
+                                                                @Zero, @Zero, @Zero, @Zero,
+                                                                @Zero, @Zero, @Zero, @Zero);
+
+        /// <summary>
+        /// Read-only Identity Matrix.
+        /// </summary>
+        public static readonly @ClassName Identity = new @ClassName(@One, @Zero, @Zero, @Zero,
+                                                                    @Zero, @One, @Zero, @Zero,
+                                                                    @Zero, @Zero, @One, @Zero,
+                                                                    @Zero, @Zero, @Zero, @One);
+
+        /// <summary>
+        /// The same as normal multiplication, only that both matrices are garantied to have the
+        /// last column set to [0,0,0,1].
+        /// </summary>
+        /// <param name="first">The first matrix.</param>
+        /// <param name="second">The second matrix.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName Multiply4x3(@ClassName first, @ClassName second)
+        {
+            return new @ClassName(first.M00 * second.M00 + first.M01 * second.M10 + first.M02 * second.M20,
+                                  first.M00 * second.M01 + first.M01 * second.M11 + first.M02 * second.M21,
+                                  first.M00 * second.M02 + first.M01 * second.M12 + first.M02 * second.M22,
+                                  @Zero,
+
+                                  first.M10 * second.M00 + first.M11 * second.M10 + first.M12 * second.M20,
+                                  first.M10 * second.M01 + first.M11 * second.M11 + first.M12 * second.M21,
+                                  first.M10 * second.M02 + first.M11 * second.M12 + first.M12 * second.M22,
+                                  @Zero,
+
+                                  first.M20 * second.M00 + first.M21 * second.M10 + first.M22 * second.M20,
+                                  first.M20 * second.M01 + first.M21 * second.M11 + first.M22 * second.M21,
+                                  first.M20 * second.M02 + first.M21 * second.M12 + first.M22 * second.M22,
+                                  @Zero,
+
+                                  first.M30 * second.M00 + first.M31 * second.M10 + first.M32 * second.M20 + second.M30,
+                                  first.M30 * second.M01 + first.M31 * second.M11 + first.M32 * second.M21 + second.M31,
+                                  first.M30 * second.M02 + first.M31 * second.M12 + first.M32 * second.M22 + second.M32,
+                                  @One);
+        }
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Are matrices nearly equal (due to numeric errors).
+        /// </summary>
+        /// <param name="m">The other matrix.</param>
+        /// <returns>Are nearly equal</returns>
+        public static bool NearEqual(@ClassName first, @ClassName other)
+        {
+            if (@NearEqual(first.M00, other.M00) && @NearEqual(first.M01, other.M01) && @NearEqual(first.M02, other.M02) && @NearEqual(first.M03, other.M03) &&
+                @NearEqual(first.M10, other.M10) && @NearEqual(first.M11, other.M11) && @NearEqual(first.M12, other.M12) && @NearEqual(first.M13, other.M13) &&
+                @NearEqual(first.M20, other.M20) && @NearEqual(first.M21, other.M21) && @NearEqual(first.M22, other.M22) && @NearEqual(first.M23, other.M23) &&
+                @NearEqual(first.M30, other.M30) && @NearEqual(first.M31, other.M31) && @NearEqual(first.M32, other.M32) && @NearEqual(first.M33, other.M33)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Are matrices nearly equal (due to numeric errors).
+        /// </summary>
+        /// <param name="m">The other matrix.</param>
+        /// <returns>Are nearly equal</returns>
+        public static bool NearEqual(@ClassName first, @ClassName other, @TypeName eps)
+        {
+            if (@NearEqual(first.M00, other.M00, eps) && @NearEqual(first.M01, other.M01, eps) && @NearEqual(first.M02, other.M02, eps) && @NearEqual(first.M03, other.M03, eps) &&
+                @NearEqual(first.M10, other.M10, eps) && @NearEqual(first.M11, other.M11, eps) && @NearEqual(first.M12, other.M12, eps) && @NearEqual(first.M13, other.M13, eps) &&
+                @NearEqual(first.M20, other.M20, eps) && @NearEqual(first.M21, other.M21, eps) && @NearEqual(first.M22, other.M22, eps) && @NearEqual(first.M23, other.M23, eps) &&
+                @NearEqual(first.M30, other.M30, eps) && @NearEqual(first.M31, other.M31, eps) && @NearEqual(first.M32, other.M32, eps) && @NearEqual(first.M33, other.M33, eps)) return true;
+            return false;
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Creates matrix from position and orientation.
+        /// </summary>
+        /// <param name="position">The position.</param>
+        /// <param name="orientation">The orientation.</param>
+        /// <returns></returns>
+        public static @ClassName From(@Vector3ClassName position, @QuaternionClassName orientation)
+        {
+            @Matrix3x3ClassName mat = quat.ToMatrix();
+
+            return new @ClassName(mat.M00, mat.M01, mat.M02, @Zero,
+                                  mat.M10, mat.M11, mat.M12, @Zero,
+                                  mat.M20, mat.M21, mat.M22, @Zero,
+                                  position.X, position.Y, position.Z, @Zero);
+                                  
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            // Check reference first.
+            if (object.ReferenceEquals(this, other)) return true;
+
+            // Check for value equality.
+            if (!M00.Equals(other.M00)) return false;
+            if (!M10.Equals(other.M10)) return false;
+            if (!M20.Equals(other.M20)) return false;
+            if (!M30.Equals(other.M30)) return false;
+            if (!M01.Equals(other.M01)) return false;
+            if (!M11.Equals(other.M11)) return false;
+            if (!M21.Equals(other.M21)) return false;
+            if (!M31.Equals(other.M31)) return false;
+            if (!M02.Equals(other.M02)) return false;
+            if (!M12.Equals(other.M12)) return false;
+            if (!M22.Equals(other.M22)) return false;
+            if (!M32.Equals(other.M32)) return false;
+            if (!M03.Equals(other.M03)) return false;
+            if (!M13.Equals(other.M13)) return false;
+            if (!M23.Equals(other.M23)) return false;
+            if (!M33.Equals(other.M33)) return false;
+            return true;
+        }
+
+        #endregion
+
+        #region IMatrixd<@ClassName,@ClassName> Members
+
+        public @TypeName Determinant
+        {
+            get { return Algorithms.GaussJordan.Determinant(ArrayForm); }
+        }
+
+        public @ClassName Transpose
+        {
+            get
+            {
+                return new @ClassName(M00, M10, M20, M30,
+                                      M01, M11, M21, M31,
+                                      M02, M12, M22, M32,
+                                      M03, M13, M23, M33);
+            }
+        }
+
+        public @TypeName this[uint row, uint column]
+        {
+            get
+            {
+                uint index = row * 4 + column;
+                switch (index)
+                {
+                    case 0:
+                        return M00;
+                    case 1:
+                        return M01;
+                    case 2:
+                        return M02;
+                    case 3:
+                        return M03;
+                    case 4:
+                        return M10;
+                    case 5:
+                        return M11;
+                    case 6:
+                        return M12;
+                    case 7:
+                        return M13;
+                    case 8:
+                        return M20;
+                    case 9:
+                        return M21;
+                    case 10:
+                        return M22;
+                    case 11:
+                        return M23;
+                    case 12:
+                        return M30;
+                    case 13:
+                        return M31;
+                    case 14:
+                        return M32;
+                    case 15:
+                        return M33;
+                    default:
+                        throw new ArgumentException("Invalid index.");
+                }
+            }
+            set
+            {
+                uint index = row * 4 + column;
+                switch (index)
+                {
+                    case 0:
+                        M00 = value;
+                        break;
+                    case 1:
+                        M01 = value;
+                        break;
+                    case 2:
+                        M02 = value;
+                        break;
+                    case 3:
+                        M03 = value;
+                        break;
+                    case 4:
+                        M10 = value;
+                        break;
+                    case 5:
+                        M11 = value;
+                        break;
+                    case 6:
+                        M12 = value;
+                        break;
+                    case 7:
+                        M13 = value;
+                        break;
+                    case 8:
+                        M20 = value;
+                        break;
+                    case 9:
+                        M21 = value;
+                        break;
+                    case 10:
+                        M22 = value;
+                        break;
+                    case 11:
+                        M23 = value;
+                        break;
+                    case 12:
+                        M30 = value;
+                        break;
+                    case 13:
+                        M31 = value;
+                        break;
+                    case 14:
+                        M32 = value;
+                        break;
+                    case 15:
+                        M33 = value;
+                        break;
+                    default:
+                        throw new ArgumentException("Invalid indices.");
+                }
+            }
+        }
+
+        #endregion
+
+        #region IMatrix<@ClassName> Members
+
+        public @DenseMatrixClassName DenseForm
+        {
+            get { return new @DenseMatrixClassName(ArrayForm); }
+        }
+
+        public @ClassName Inverse
+        {
+            get { return new @ClassName(Algorithms.GaussJordan.Invert(ArrayForm)); }
+        }
+
+        public uint RowCount
+        {
+            get { return 4; }
+        }
+
+        public uint ColumnCount
+        {
+            get { return 4; }
+        }
+
+        public uint Rank
+        {
+            get { return Algorithms.GaussJordan.GetRank(ArrayForm); }
+        }
+
+        #endregion
+
+        #region ICloneable<@ClassName> Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(M00, M01, M02, M03,
+                                  M10, M11, M12, M13,
+                                  M20, M21, M22, M23,
+                                  M30, M31, M32, M33);
+        }
+
+        #endregion
+
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        [CorrectnessTest]
+        public void Determinant()
+        {
+            /*@ClassName m = new @ClassName(1, 0, -5, 5,
+                                          1, -1, -4, -5,
+                                          -4, -4, -2, -4,
+                                          3, 2, 4, -3);*/
+            // Determinant is 188.0
+        }
+    }
+#endif
+}

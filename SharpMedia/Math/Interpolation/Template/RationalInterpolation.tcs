@@ -1,0 +1,14 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Interpolation
+{
+
+    /// <summary>
+    /// Provides routine for rational interpolation.
+    /// </summary>
+    public static class RationalInterpolation
+    {
+    }
+}

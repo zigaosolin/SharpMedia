@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+  
+  <!-- A Gauss-Jordan algorithm -->
+  <TemplateSet Name="GaussJordan" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+  <!-- A Cholesky algorithm -->
+  <TemplateSet Name="Cholesky" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+  <!-- An iteratirve algorithm -->
+  <TemplateSet Name="Iterative" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+  <!-- A LU algorithm -->
+  <TemplateSet Name="LU" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+  <!-- A SingualrValue algorithm -->
+  <TemplateSet Name="SingularValue" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+  <!-- A EigenValue algorithm -->
+  <TemplateSet Name="EigenValue" Extends="CoreMath">
+    <!-- We want generator for float and double -->
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+</TemplateSets>

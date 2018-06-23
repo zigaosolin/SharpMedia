@@ -1,0 +1,1332 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes.Algorithms
+{
+    /// <summary>
+    /// Tesselation options.
+    /// </summary>
+    [Flags]
+    public enum TesselationOptions
+    {
+        None = 0,
+
+        /// <summary>
+        /// Holes are identified using bounding boxes. They have the same
+        /// orientation as other parts.
+        /// </summary>
+        BoundableHolesIdentify = 1,
+
+        /// <summary>
+        /// Holes are identified by having different orientation.
+        /// </summary>
+        HolesIdentifyOrientation = 8,
+
+        /// <summary>
+        /// Counter-clockwise polygon orientation.
+        /// </summary>
+        CCW = 2
+    }
+
+    /// <summary>
+    /// A tesselation edge type.
+    /// </summary>
+    internal enum TesselationVertexType
+    {
+        Regular,
+        Start,
+        End,
+        Split,
+        Merge
+    }
+
+    //#foreach Types
+
+    /// <summary>
+    /// A vertex class.
+    /// </summary>
+    internal class @TesselationVertex : IComparable<@TesselationVertex>
+    {
+        #region Helper Methods
+
+        /// <summary>
+        /// Checks if it is a left-turn vertex.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsLeftTurn()
+        {
+            return Angle(PreviousEdge.Vertex1.ProjectedPosition,
+                ProjectedPosition, NextEdge.Vertex2.ProjectedPosition) <= (@TypeName)MathHelper.PI;
+
+        }
+
+        /// <summary>
+        /// Identifies the vertex.
+        /// </summary>
+        public void IdentifyVertex()
+        {
+            bool leftTurn = IsLeftTurn(); //< Angle < 180 degrees
+
+
+            @Vector2ClassName
+                     p1 = PreviousEdge.Vertex1.ProjectedPosition,
+                     p2 = NextEdge.Vertex2.ProjectedPosition;
+
+            if (p1.Y <= ProjectedPosition.Y && p2.Y <= ProjectedPosition.Y)
+            {
+                VertexType = leftTurn ? TesselationVertexType.Start : TesselationVertexType.Split;
+            }
+            else if (p1.Y >= ProjectedPosition.Y && p2.Y >= ProjectedPosition.Y)
+            {
+                VertexType = leftTurn ? TesselationVertexType.End : TesselationVertexType.Merge;
+            }
+            else
+            {
+                VertexType = TesselationVertexType.Regular;
+            }
+        }
+
+        #endregion
+
+        #region Monotone Isolation Data
+
+        /// <summary>
+        /// Previous edge.
+        /// </summary>
+        public @TesselationEdge PreviousEdge;
+
+        /// <summary>
+        /// Current edge.
+        /// </summary>
+        public @TesselationEdge NextEdge;
+
+        /// <summary>
+        /// The vertex type.
+        /// </summary>
+        public TesselationVertexType VertexType;
+
+        /// <summary>
+        /// Projected position for tesselation.
+        /// </summary>
+        public @Vector2ClassName ProjectedPosition;
+
+        /// <summary>
+        /// Additional diagonals on vertex.
+        /// </summary>
+        public List<@TesselationEdge> AdditionalDiagonals;
+
+        /// <summary>
+        /// Number of times vertex was visited.
+        /// </summary>
+        public uint VisitCount = 0;
+
+        /// <summary>
+        /// Number of links.
+        /// </summary>
+        public uint Links
+        {
+            get
+            {
+                if (AdditionalDiagonals == null) return 1;
+                else return (uint)AdditionalDiagonals.Count + 1;
+            }
+        }
+
+        /// <summary>
+        /// Tries to visit it.
+        /// </summary>
+        /// <returns></returns>
+        public bool TryVisit()
+        {
+            if (!CanVisit) return false;
+
+            VisitCount++;
+            return true;
+        }
+
+        /// <summary>
+        /// Can is be visited.
+        /// </summary>
+        public bool CanVisit
+        {
+            get
+            {
+                if ((int)VisitCount >= Links)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Adds vertex to visited.
+        /// </summary>
+        /// <param name="toVisit"></param>
+        public void AddToVisits(Stack<@TesselationVertex> toVisit)
+        {
+            VisitCount++;
+
+            if ((int)VisitCount < Links)
+            {
+                toVisit.Push(this);
+            }
+        }
+
+        /// <summary>
+        /// Angle btween positions, in radians.
+        /// </summary>
+        /// <param name="prev"></param>
+        /// <param name="v"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public @TypeName Angle(@Vector2ClassName prev, @Vector2ClassName v, @Vector2ClassName next)
+        {
+            @Vector2ClassName v1 = v - prev;
+            @Vector2ClassName v2 = next - v;
+
+            // We compute cosine.
+            @TypeName cos = (v1 * v2) / (v1.Length * v2.Length);
+
+            // We compute sine.
+            @TypeName sinSign = ((new @Vector3ClassName(v1.X, v1.Y, @Zero)) ^ (new @Vector3ClassName(v2.X, v2.Y, @Zero))).Z;
+
+
+            @TypeName acos = @Acos(cos);
+
+            if (sinSign >= @Zero)
+            {
+                return (@TypeName)MathHelper.PI - acos;
+            }
+            else
+            {
+                return (@TypeName)MathHelper.PI + acos;
+            }
+        }
+
+        /// <summary>
+        /// Angle between vertices, in radians.
+        /// </summary>
+        /// <param name="prev"></param>
+        /// <param name="v"></param>
+        /// <param name="next"></param>
+        /// <returns></returns>
+        public @TypeName Angle(@TesselationVertex prev, @TesselationVertex v, @TesselationVertex next)
+        {
+            return Angle(prev.ProjectedPosition, v.ProjectedPosition, next.ProjectedPosition);
+        }
+
+        /// <summary>
+        /// Gets the new vertex in chain, or null if ended.
+        /// </summary>
+        /// <param name="ending"></param>
+        /// <returns></returns>
+        public @TesselationVertex NextVertex(@TesselationVertex prev)
+        {
+            // We find the next vertex that is most left turn.
+            @TesselationVertex next = null;
+
+            if (AdditionalDiagonals == null)
+            {
+                next = this.NextEdge.Vertex2;
+                return next;
+            }
+
+            // We turn to left, take leftmost.
+            @TypeName angle = (this.NextEdge.Vertex2 != prev && this.NextEdge.Vertex2.CanVisit) ?
+                this.NextEdge.Vertex2.Angle(prev, this, this.NextEdge.Vertex2) : (@TypeName)10.0;
+            next = angle == (@TypeName)10.0 ? null : this.NextEdge.Vertex2;
+
+            for (int i = 0; i < AdditionalDiagonals.Count; i++)
+            {
+                @TesselationVertex other = AdditionalDiagonals[i].Vertex1 == this ? AdditionalDiagonals[i].Vertex2 :
+                    AdditionalDiagonals[i].Vertex1;
+                if (other == prev) continue;
+
+
+
+                @TypeName angle2 = Angle(prev, this, other);
+
+                if (angle2 < angle)
+                {
+                    angle = angle2;
+                    next = other;
+                }
+            }
+
+            return next;
+        }
+
+        #endregion
+
+        #region Mesh Data
+
+        /// <summary>
+        /// The vertex index.
+        /// </summary>
+        public uint VertexIndex;
+
+        #endregion
+
+        #region IComparable<@TesselationVertex> Members
+
+        public int CompareTo(@TesselationVertex other)
+        {
+            int cmp = this.ProjectedPosition.Y.CompareTo(other.ProjectedPosition.Y);
+            if (cmp == 0)
+            {
+                return this.ProjectedPosition.X.CompareTo(other.ProjectedPosition.X);
+            }
+            return -cmp;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A tesselation edge.
+    /// </summary>
+    internal class @TesselationEdge
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The first vertex.
+        /// </summary>
+        public @TesselationVertex Vertex1;
+
+        /// <summary>
+        /// The second vertex.
+        /// </summary>
+        public @TesselationVertex Vertex2;
+
+        /// <summary>
+        /// Helper vertex of edge.
+        /// </summary>
+        public @TesselationVertex Helper;
+
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A sweep edge structure.
+    /// </summary>
+    internal class @TesselationSweepEdges
+    {
+        #region Private Members
+        List<@TesselationEdge> sweepEdges = new List<@TesselationEdge>();
+        #endregion
+
+        #region Private Methods
+
+        @TypeName Distance(@Vector2ClassName p, @TesselationEdge edge)
+        {
+            @Vector2ClassName p1 = edge.Vertex1.ProjectedPosition,
+                        p2 = edge.Vertex2.ProjectedPosition;
+
+            // Special case horizontal.
+            if (@NearEqual(p1.X, p2.X))
+            {
+                if (p1.X < p.X) return p.X - p1.X;
+                return @TypeName.PositiveInfinity;
+            }
+
+            // We have line.
+            @TypeName k = (p2.Y - p1.Y) / (p2.X - p1.X);
+            @TypeName n = p2.Y - k * p2.X;
+
+            @TypeName xInt = (p.Y - n) / k;
+
+            if (@NearEqual(xInt, p.X) || xInt < p.X) return p.X - xInt;
+            return @TypeName.PositiveInfinity;
+        }
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Deletes an edge.
+        /// </summary>
+        /// <param name="index"></param>
+        public void Delete(int index)
+        {
+            sweepEdges.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// Deletes an edge.
+        /// </summary>
+        /// <param name="edge"></param>
+        public void Delete(@TesselationEdge edge)
+        {
+            sweepEdges.Remove(edge);
+        }
+
+        /// <summary>
+        /// Adds an edge.
+        /// </summary>
+        /// <param name="edge"></param>
+        public void Add(@TesselationEdge edge)
+        {
+            sweepEdges.Add(edge);
+        }
+
+        /// <summary>
+        /// Checks if interior is to right.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public bool InteriorToRight(@Vector2ClassName p)
+        {
+            // We count number of edges to the right.
+            int c = 0;
+            for (int i = 0; i < sweepEdges.Count; i++)
+            {
+                if (Distance(p, sweepEdges[i]) == @TypeName.PositiveInfinity) c++;
+            }
+
+            return c % 2 == 1;
+        }
+
+        /// <summary>
+        /// Finds left edge.
+        /// </summary>
+        /// <param name="p"></param>
+        /// <returns></returns>
+        public int FindLeft(@Vector2ClassName p)
+        {
+            // We find edge that is the closest to left.
+            int bestMatch = 0;
+            @TypeName bestDist = Distance(p, sweepEdges[0]);
+
+            // Greedy search for best match.
+            for (int i = 1; i < sweepEdges.Count; i++)
+            {
+                @TypeName dist = Distance(p, sweepEdges[i]);
+                if (dist < bestDist)
+                {
+                    bestDist = dist;
+                    bestMatch = i;
+                }
+            }
+
+            return bestMatch;
+        }
+
+        /// <summary>
+        /// Obtains tesselation edge (indexed).
+        /// </summary>
+        /// <param name="idx"></param>
+        /// <returns></returns>
+        public @TesselationEdge this[int idx]
+        {
+            get { return sweepEdges[idx]; }
+        }
+
+        #endregion
+    }
+
+
+    //#endfor
+
+
+    /// <summary>
+    /// A polygon tesselator. Given a group of polygons (contours), a triangle mesh is generated.
+    /// </summary>
+    public static class PolygonTesselation
+    {
+        //#foreach Types
+
+        #region @Vector
+
+        #region Private Helpers
+
+        const @TypeName @RandomizationFactor = (@TypeName)1e-4;
+
+
+                /// <summary>
+        /// Is polygon clockwise in order.
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <returns></returns>
+        static bool IsClockwise(params @Vector[] positions)
+        {
+            // We check winding order.
+            @TypeName area = @Zero;
+            for (int j = 1; j < positions.Length; j++)
+            {
+                // FIXME: this is Z projection assumed.
+                area += positions[j - 1].X * positions[j].Y - positions[j - 1].Y * positions[j].X;
+            }
+
+            return area <= @Zero;
+
+        }
+
+        static void Reverse(@Vector[] positions)
+        {
+            int n = positions.Length;
+            for (int i = 0; i < n / 2; i++)
+            {
+                @Vector v = positions[i];
+                positions[i] = positions[n - i - 1];
+                positions[n - 1 - i] = v;
+            }
+        }
+
+        /// <summary>
+        /// Obtains first hole.
+        /// </summary>
+        /// <param name="polygons"></param>
+        /// <returns></returns>
+        static uint GetFirstHole(List<@Vector[]> polygons)
+        {
+            uint[] idx = GetBoundableHoles(polygons);
+            for (int i = 0; i < idx.Length; i++)
+            {
+                if (idx[i] != uint.MaxValue) return (uint)i;
+            }
+            return uint.MaxValue;
+        }
+
+        /// <summary>
+        /// Gets indices of polygons that are holes, together with bounding box of polygon.
+        /// </summary>
+        /// <param name="polygons"></param>
+        /// <returns></returns>
+        static uint[] GetBoundableHoles(List<@Vector[]> polygons)
+        {
+            uint[] holes = new uint[polygons.Count];
+            
+
+            // We compute all bounding boxes.
+            @Vector[] mins = new @Vector[polygons.Count];
+            @Vector[] maxs = new @Vector[polygons.Count];
+
+            for (int i = 0; i < polygons.Count; i++)
+            {
+                GetBoundingBox(polygons[i], out mins[i], out maxs[i]);
+            }
+
+            // We initialize holes.
+            for (int i = 0; i < polygons.Count; i++) holes[i] = uint.MaxValue;
+
+            // A hole is an element that is completely inside other polygon.
+            for (int i = 0; i < polygons.Count; i++)
+            {
+                for (int j = 0; j < polygons.Count; j++)
+                {
+                    if (i == j) continue;
+
+                    // We check if j is completelly inside i.
+                    //#ifdef 3D
+                    if (mins[j].X >= mins[i].Y && mins[j].Y >= mins[i].Y && mins[j].Z >= mins[i].Z &&
+                       maxs[j].X <= maxs[i].Y && maxs[j].Y <= maxs[i].Y && maxs[j].Z <= maxs[i].Z)
+                    //#else
+                        if (mins[j].X >= mins[i].Y && mins[j].Y >= mins[i].Y  &&
+                           maxs[j].X <= maxs[i].Y && maxs[j].Y <= maxs[i].Y)
+                    //#endif
+                    {
+                        holes[j] = (uint)i;
+                        break;
+                    }
+
+                    
+
+                }
+            }
+
+            return holes;
+        }
+
+
+
+        /// <summary>
+        /// Obtains bounding box of polygon.
+        /// </summary>
+        /// <param name="polygon"></param>
+        /// <param name="min"></param>
+        /// <param name="max"></param>
+        static void GetBoundingBox(@Vector[] polygon, out @Vector min, out @Vector max)
+        {
+            //#ifdef 3D
+            min = new @Vector(@TypeName.PositiveInfinity, @TypeName.PositiveInfinity, @TypeName.PositiveInfinity);
+            max = new @Vector(@TypeName.NegativeInfinity, @TypeName.NegativeInfinity, @TypeName.NegativeInfinity);
+            //#else
+            min = new @Vector(@TypeName.PositiveInfinity, @TypeName.PositiveInfinity);
+            max = new @Vector(@TypeName.NegativeInfinity, @TypeName.NegativeInfinity);
+            //#endif
+
+            for(int i = 0; i < polygon.Length; i++)
+            {
+                @Vector v = polygon[i];
+
+                min.X = min.X < v.X ? min.X : v.X;
+                min.Y = min.Y < v.Y ? min.Y : v.Y;
+                //#ifdef 3D
+                min.Z = min.Z < v.Z ? min.Z : v.Z;
+                //#endif
+
+                max.X = max.X > v.X ? max.X : v.X;
+                max.Y = max.Y > v.Y ? max.Y : v.Y;
+                //#ifdef 3D
+                max.Z = max.Z > v.Z ? max.Z : v.Z;
+                //#endif
+            }
+        }
+
+
+        /// <summary>
+        /// Is vertex left turn.
+        /// </summary>
+        static bool IsLeftTurn(@TesselationVertex vertex)
+        {
+            return vertex.IsLeftTurn();
+        }
+
+        /// <summary>
+        /// Is interior to right.
+        /// </summary>
+        static bool InteriorToRight(@TesselationVertex vertex)
+        {
+            // We check if point a bit to the right is contained in triangle.
+            @Vector2ClassName p1 = vertex.PreviousEdge.Vertex1.ProjectedPosition;
+            @Vector2ClassName p2 = vertex.NextEdge.Vertex2.ProjectedPosition;
+
+            bool isLeftTurn = IsLeftTurn(vertex);
+
+            // We intersect diagonals.
+
+            // Special case.
+            if (@NearEqual(p1.X, p2.X))
+            {
+                if (isLeftTurn)
+                {
+                    return vertex.ProjectedPosition.X <= p1.X;
+                }
+                else
+                {
+                    return vertex.ProjectedPosition.X >= p1.X;
+                }
+            }
+
+            // We now do intersection.
+            @TypeName k = (p2.Y - p1.Y) / (p2.X - p1.X);
+            @TypeName n = p1.Y - k * p1.X;
+
+            @TypeName x = (vertex.ProjectedPosition.Y - n) / k;
+
+
+            if (isLeftTurn)
+            {
+                return x >= vertex.ProjectedPosition.X;
+            }
+            else
+            {
+                return x < vertex.ProjectedPosition.X;
+            }
+
+        }
+
+        /// <summary>
+        /// Debugs a vertex.
+        /// </summary>
+        static void DebugVertices(@TesselationVertex root)
+        {
+
+            Console.WriteLine();
+            Console.WriteLine("=====");
+            @TesselationVertex v = root.NextEdge.Vertex2;
+
+            while (true)
+            {
+                Console.WriteLine("{0}, {1}", v.ProjectedPosition.X, v.ProjectedPosition.Y);
+
+                if (v == root) break;
+
+                @TesselationVertex t = v.NextEdge.Vertex2;
+                if (t.PreviousEdge.Vertex1 != v)
+                {
+                    Console.Write("Error link.");
+                }
+
+                v = t;
+                   
+            }
+        }
+
+        /// <summary>
+        /// Creates a linked list.
+        /// </summary>
+        static void CreateLinked(List<@Vector[]> polygons, List<@TesselationVertex> vertices, List<@TesselationVertex> beginning,
+            Storage.Builders.@TriangleBuilder builder, TesselationOptions options)
+        {
+            bool windingClockwise = (options & TesselationOptions.CCW) != 0 ? false : true;
+
+ 
+            uint[] holeParents = null;
+
+            // We may need to identify holes.
+            if ((options & TesselationOptions.BoundableHolesIdentify) != 0)
+            {
+                holeParents = GetBoundableHoles(polygons);
+
+                // We reverse those.
+                for (int i = 0; i < holeParents.Length; i++)
+                {
+                    if (holeParents[i] == uint.MaxValue) continue;
+                    Reverse(polygons[i]);
+                }
+            }
+            
+
+            // X-range compute.
+            @TypeName xmax = @TypeName.NegativeInfinity;
+            @TypeName xmin = @TypeName.PositiveInfinity;
+
+            int startPolygon = 0;
+            @TesselationEdge currentEdge = null;
+
+            // Seperate polygons.
+            @TesselationVertex[][] perPolygonData = new @TesselationVertex[polygons.Count][];
+
+
+            // We reverse them.
+            if (!windingClockwise)
+            {
+                for (int i = 0; i < polygons.Count; i++)
+                {
+                    Reverse(polygons[i]);
+                }
+            }
+
+            // We now identify all holes based on orientation
+            if ((options & TesselationOptions.HolesIdentifyOrientation) != 0)
+            {
+                holeParents = GetBoundableHoles(polygons);
+
+                // Some may not be holes, we should check this.
+            }
+
+            for (int j = 0; j < polygons.Count; j++)
+            {
+                @Vector[] positions = polygons[j];
+                perPolygonData[j] = new @TesselationVertex[positions.Length];
+
+                uint baseIndex = builder.AddControlPoints(positions);
+
+                for (int i = 0; i < positions.Length; i++)
+                {
+                    @Vector v = positions[i];
+
+                    // We compute bounding box.
+                    @Vector2ClassName projPosition;
+                    //#ifdef 3D
+                    projPosition = v.Vec2; //< For now this is projection, later we need to add "proper plane" projection.
+                    //#else
+                    projPosition = v;
+                    //#endif
+
+                    if (projPosition.X > xmax) xmax = projPosition.X;
+                    if (projPosition.X < xmin) xmin = projPosition.X;
+
+                    // Now we link appropriatelly.
+                    @TesselationVertex vertex = new @TesselationVertex();
+
+                    vertex.PreviousEdge = currentEdge;
+
+                    vertex.VertexIndex = (uint)(baseIndex + i);
+
+                    vertex.ProjectedPosition = projPosition;
+
+                    // We add vertex.
+                    vertices.Add(vertex);
+
+                    // We also link edge.
+                    if (currentEdge != null) currentEdge.Vertex2 = vertex;
+                    currentEdge = new @TesselationEdge();
+                    currentEdge.Vertex1 = vertex;
+                    vertex.NextEdge = currentEdge;
+
+                    perPolygonData[j][i] = vertex;
+
+                }
+
+                // We need for beginnings of polygons.
+                beginning.Add(vertices[startPolygon]);
+
+                // We end polygon.
+                currentEdge.Vertex2 = vertices[startPolygon];
+
+                vertices[startPolygon].PreviousEdge = currentEdge;
+
+                startPolygon = vertices.Count;
+                currentEdge = null;
+            }
+
+
+            // TODO: may add already sorted hint.
+
+            // We need to handle hole merge.
+            if (holeParents != null)
+            {
+                for (int i = 0; i < holeParents.Length; i++)
+                {
+                    if (holeParents[i] == uint.MaxValue) continue;
+
+                    uint parent = holeParents[i];
+
+                    @TesselationVertex[] parentData = perPolygonData[parent];
+                    @TesselationVertex[] holeData = perPolygonData[i];
+
+                    // We sort parent.
+                    Array.Sort(parentData);
+
+                    // We find top of hole.
+                    @TesselationVertex top = holeData[0];
+                    for (int j = 1; j < holeData.Length; j++)
+                    {
+                        if (holeData[j].ProjectedPosition.Y > top.ProjectedPosition.Y) top = holeData[j];
+                    }
+
+                    // We now find the shortest link that exists.
+                    int lower = ~Array.BinarySearch(parentData, top);
+
+                    // We find appropriate vertex.
+                    @TesselationVertex linkTo = parentData[lower-1];
+
+                    // TODO: we should check it does not intersect anything
+
+                    // We now link, new vertices have small y displacement.
+                    @TypeName disp = (xmax - xmin) * @RandomizationFactor;
+                    if (linkTo.ProjectedPosition.X < top.ProjectedPosition.X) disp *= -1.0f;
+
+                    @TesselationEdge diagTo = new @TesselationEdge();
+                    @TesselationEdge diagBack = new @TesselationEdge();
+
+                    // The link repl vertex.
+                    @TesselationVertex linkToRepl = new @TesselationVertex();
+                    linkToRepl.ProjectedPosition = linkTo.ProjectedPosition;
+                    linkToRepl.ProjectedPosition.Y -= disp;
+                    linkToRepl.VertexIndex = linkTo.VertexIndex;
+                    linkToRepl.PreviousEdge = linkTo.PreviousEdge;
+                    linkTo.PreviousEdge.Vertex2 = linkToRepl;
+                    linkToRepl.NextEdge = diagTo;
+
+
+                    vertices.Add(linkToRepl);
+
+                    // We create new vertex and link appropriatelly.
+                    @TesselationVertex topRepl = new @TesselationVertex();
+                    topRepl.ProjectedPosition = top.ProjectedPosition;
+                    topRepl.ProjectedPosition.Y -= disp;
+                    topRepl.VertexIndex = top.VertexIndex;
+                    topRepl.PreviousEdge = diagTo;
+                    topRepl.NextEdge = top.NextEdge;
+                    top.NextEdge.Vertex1 = topRepl;
+                    
+
+                    vertices.Add(topRepl);
+
+                    top.NextEdge = diagBack;
+                    linkTo.PreviousEdge = diagBack;
+
+                    // We also fill diagonals.
+                    diagTo.Vertex1 = linkToRepl;
+                    diagTo.Vertex2 = topRepl;
+
+                    diagBack.Vertex1 = top;
+                    diagBack.Vertex2 = linkTo;
+
+                    
+                    //DebugVertices(linkToRepl);
+                }
+            }
+
+            // We perform randomization, so no vertices have the same y coordinate.
+            // We allow maximum of 5 randomizations.
+            for (int z = 0; ; z++)
+            {
+                if (z >= 5) throw new Exception("Randomization failed.");
+
+
+                @TypeName scale = 2.0f * (xmax - xmin) * @RandomizationFactor;
+
+                // We randomize all of them.
+                for (int i = 0; i < vertices.Count; i++)
+                {
+                    vertices[i].ProjectedPosition.Y += scale * vertices[i].ProjectedPosition.X;
+                }
+
+                vertices.Sort();
+
+                // We check if ok.
+                bool randomized = true;
+                for (int i = 1; i < vertices.Count; i++)
+                {
+                    if (vertices[i].ProjectedPosition.Y == vertices[i - 1].ProjectedPosition.Y)
+                    {
+                        randomized = false;
+                        break;
+                    }
+                }
+
+                if (randomized) break;
+            }
+            
+
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                // We identify vertex.
+                vertices[i].IdentifyVertex();
+            }
+
+            
+        }
+
+
+
+        /// <summary>
+        /// Makes polygon monothone.
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <returns></returns>
+        static List<@TesselationEdge> MakeMonothone(List<@TesselationVertex> vertices)
+        {
+            // 1) Vertices are sorted.
+            @TesselationSweepEdges edges = new @TesselationSweepEdges();
+            List<@TesselationEdge> split = new List<@TesselationEdge>();
+
+            // 2) We now go top-bottom.
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                switch (vertices[i].VertexType)
+                {
+                    case TesselationVertexType.Regular:
+                        HandleRegularVertex(vertices[i], split, edges);
+                        break;
+                    case TesselationVertexType.Start:
+                        HandleStartVertex(vertices[i], split, edges);
+                        break;
+                    case TesselationVertexType.End:
+                        HandleEndVertex(vertices[i], split, edges);
+                        break;
+                    case TesselationVertexType.Split:
+                        HandleSplitVertex(vertices[i], split, edges);
+                        break;
+                    case TesselationVertexType.Merge:
+                        HandleMergeVertex(vertices[i], split, edges);
+                        break;
+                }
+            }
+
+            return split;
+        }
+
+        static void HandleStartVertex(@TesselationVertex vertex, List<@TesselationEdge> splits, @TesselationSweepEdges edges)
+        {
+            // We set helper to self.
+            vertex.NextEdge.Helper = vertex;
+
+            edges.Add(vertex.NextEdge);
+        }
+
+        static void HandleEndVertex(@TesselationVertex vertex, List<@TesselationEdge> splits, @TesselationSweepEdges edges)
+        {
+            // We handle merge vertex.
+            if (vertex.PreviousEdge.Helper != null &&
+                vertex.PreviousEdge.Helper.VertexType == TesselationVertexType.Merge)
+            {
+                @TesselationEdge diag = new @TesselationEdge();
+                diag.Vertex1 = vertex;
+                diag.Vertex2 = vertex.PreviousEdge.Helper;
+
+                splits.Add(diag);
+            }
+
+            edges.Delete(vertex.PreviousEdge);
+        }
+
+        static void HandleSplitVertex(@TesselationVertex vertex, List<@TesselationEdge> splits, @TesselationSweepEdges edges)
+        {
+            int edgeId =  edges.FindLeft(vertex.ProjectedPosition);
+
+            // We create diagonal
+            @TesselationEdge diag = new @TesselationEdge();
+            diag.Vertex1 = vertex;
+            diag.Vertex2 = edges[edgeId].Helper;
+            splits.Add(diag);
+            
+            // Adjust helpers.
+            edges[edgeId].Helper = vertex;
+
+            // Add additional helper.
+            vertex.NextEdge.Helper = vertex;
+            edges.Add(vertex.NextEdge);
+            
+        }
+
+        static void HandleMergeVertex(@TesselationVertex vertex, List<@TesselationEdge> splits, @TesselationSweepEdges edges)
+        {
+            // We first check for previos merge.
+            if (vertex.PreviousEdge.Helper != null &&
+                vertex.PreviousEdge.Helper.VertexType == TesselationVertexType.Merge)
+            {
+                @TesselationEdge diag = new @TesselationEdge();
+                diag.Vertex1 = vertex;
+                diag.Vertex2 = vertex.PreviousEdge.Helper;
+
+                splits.Add(diag);
+            }
+
+            // We delete previous edge.
+            edges.Delete(vertex.PreviousEdge);
+
+            // We find left edge.
+            int leftEdgeId = edges.FindLeft(vertex.ProjectedPosition);
+
+            if (edges[leftEdgeId].Helper.VertexType == TesselationVertexType.Merge)
+            {
+                @TesselationEdge diag = new @TesselationEdge();
+                diag.Vertex1 = vertex;
+                diag.Vertex2 = edges[leftEdgeId].Helper;
+
+                splits.Add(diag);
+            }
+
+            // We adjust helper.
+            edges[leftEdgeId].Helper = vertex;
+        }
+
+        static void HandleRegularVertex(@TesselationVertex vertex, List<@TesselationEdge> splits, @TesselationSweepEdges edges)
+        {
+            // We skip it if there is no interior to the right.
+            if (InteriorToRight(vertex))
+            {
+
+                if (vertex.PreviousEdge.Helper != null &&
+                    vertex.PreviousEdge.Helper.VertexType == TesselationVertexType.Merge)
+                {
+                    @TesselationEdge diag = new @TesselationEdge();
+                    diag.Vertex1 = vertex;
+                    diag.Vertex2 = vertex.PreviousEdge.Helper;
+
+                    splits.Add(diag);
+                }
+
+                // We delete previous edge.
+                edges.Delete(vertex.PreviousEdge);
+
+                // We insert new edge.
+                vertex.NextEdge.Helper = vertex;
+                edges.Add(vertex.NextEdge);
+
+            }
+            else
+            {
+                // We insert the merge vertex.
+                int edgeId = edges.FindLeft(vertex.ProjectedPosition);
+                if (edges[edgeId].Helper.VertexType == TesselationVertexType.Merge)
+                {
+                    @TesselationEdge diag = new @TesselationEdge();
+                    diag.Vertex1 = vertex;
+                    diag.Vertex2 = edges[edgeId].Helper;
+
+                    splits.Add(diag);
+                }
+
+                edges[edgeId].Helper = vertex;
+            }
+        }
+
+        static bool OnTheSameChain(@TesselationVertex current, @TesselationVertex top)
+        {
+            bool onTheSameChain = false;
+            if (current.NextEdge.Vertex2 == top || current.PreviousEdge.Vertex1 == top) onTheSameChain = true;
+            if (!onTheSameChain && current.AdditionalDiagonals != null)
+            {
+                for (int j = 0; j < current.AdditionalDiagonals.Count; j++)
+                {
+                    if (current.AdditionalDiagonals[j].Vertex1 == top ||
+                       current.AdditionalDiagonals[j].Vertex2 == top)
+                    {
+                        onTheSameChain = true;
+                        break;
+                    }
+                }
+            }
+            return onTheSameChain;
+        }
+
+        /// <summary>
+        /// Triangulates monotone polygon. Vertices are added to buffer.
+        /// </summary>
+        /// <param name="sortedMonothone"></param>
+        /// <param name="meshBuilder"></param>
+        static void TriangulateMonotone(List<@TesselationVertex> sorted, 
+            Storage.Builders.@TriangleBuilder meshBuilder)
+        {
+            // At least three vertices
+            if (sorted.Count < 3) return;
+
+            Stack<@TesselationVertex> stack = new Stack<@TesselationVertex>();
+
+            // Identifies vertices on left chain as true, false if right chain.
+            bool[] leftChain = new bool[sorted.Count];
+            {
+                // FIXME: are vertical beginings handled correctly. They do not arise
+                // commonly ... so we leave it for now
+
+                @TesselationVertex left;
+                if (sorted[0].ProjectedPosition.X <= sorted[1].ProjectedPosition.X)
+                {
+                    left = sorted[0];
+                    leftChain[0] = true;
+                    leftChain[1] = false;
+                }
+                else
+                {
+                    left = sorted[1];
+                    leftChain[0] = false;
+                    leftChain[1] = true;
+                }
+
+                // We now set the chains.
+                for (int i = 2; i < sorted.Count - 1; i++)
+                {
+                    @TesselationVertex current = sorted[i];
+
+                    if (OnTheSameChain(current, left))
+                    {
+                        leftChain[i] = true;
+                        left = current;
+                    }
+                    else
+                    {
+                        leftChain[i] = false;
+                    }
+                }
+            }
+
+
+            // We push first two vertices.
+            stack.Push(sorted[0]);
+            stack.Push(sorted[1]);
+
+            // We enter the loop.
+            for (int i = 2; i < sorted.Count - 1; i++)
+            {
+                @TesselationVertex current = sorted[i];
+                @TesselationVertex top = stack.Pop();
+
+                // We check if on the same side (same chain).
+
+
+
+                if (OnTheSameChain(current, top))
+                {
+                    // In this case, we generate diagonals with elements on stack as long as we can
+                    // (as long as they are legal).
+
+                    // We link to all vertices we can stack.
+                    @TesselationVertex p1 = top, p2 = null;
+                    uint curId = current.VertexIndex;
+
+                    while (stack.Count > 0)
+                    {
+                        p2 = stack.Pop();
+
+                        
+                        // We first check if it is possible (orientation of triangle).
+                        @Vector3ClassName normal = (p2.ProjectedPosition - p1.ProjectedPosition).Vec3 ^
+                            (current.ProjectedPosition - p1.ProjectedPosition).Vec3;
+
+                        bool isIrregular = leftChain[i] ? normal.Z > @Zero : normal.Z < @Zero;
+
+                        if (isIrregular)
+                        {
+                            stack.Push(p2);
+                            p2 = p1;
+                            break;
+                        }
+                        
+
+
+                        // We have a triangle, we may need to ensure vertices are added.
+                        uint p1Id = p1.VertexIndex;
+                        uint p2Id = p2.VertexIndex;
+
+                        // We add triangle and relink.
+                        meshBuilder.AddIndexedTriangles(new uint[] {curId, p2Id, p1Id});
+
+                        // We relink.
+                        p1 = p2;
+                    }
+
+                    // We push back to stack.
+                    stack.Push(p2);
+                    stack.Push(current);
+                }
+                // Different chains.
+                else
+                {
+                    // We link to all vertices on stack.
+                    @TesselationVertex p1 = top, p2;
+                    uint curId = current.VertexIndex;
+
+                    while (stack.Count > 0)
+                    {
+                        // We pop the second one.
+                        p2 = stack.Pop();
+
+                        // We have a triangle, we may need to ensure vertices are added.
+                        uint p1Id = p1.VertexIndex;
+                        uint p2Id = p2.VertexIndex;
+
+                        // We now add triangle.
+                        meshBuilder.AddIndexedTriangles(new uint[] {curId, p2Id, p1Id });
+
+                        // We relink.
+                        p1 = p2;
+                    }
+
+                    // At the end, we push current-1 and current.
+                    stack.Push(sorted[i - 1]);
+                    stack.Push(current);
+                }
+            }
+
+            // We end it.
+            
+            if (stack.Count > 0)
+            {
+                @TesselationVertex current = sorted[sorted.Count - 1];
+                @TesselationVertex top = stack.Pop();
+
+                while (stack.Count > 0)
+                {
+                    @TesselationVertex other = stack.Pop();
+
+                    meshBuilder.AddIndexedTriangles(new uint[] {current.VertexIndex, other.VertexIndex, top.VertexIndex});
+
+                    top = other;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Public Static Members
+
+        /// <summary>
+        /// Converts polygon group to triangle mesh.
+        /// </summary>
+        /// <param name="polygons">The polygon contours.</param>
+        /// <param name="builder">The builder where results are written.</param>
+        public static void Tesselate(List<@Vector[]> polygons,
+            Storage.Builders.@TriangleBuilder builder)
+        {
+            Tesselate(polygons, builder, TesselationOptions.BoundableHolesIdentify);
+        }
+
+
+        /// <summary>
+        /// Converts polygon group to triangle mesh.
+        /// </summary>
+        /// <param name="polygons">The polygon contours.</param>
+        /// <param name="builder">The builder where results are written.</param>
+        /// <param name="options">Tesselation options.</param>
+        public static void Tesselate(List<@Vector[]> polygons,
+            Storage.Builders.@TriangleBuilder builder, TesselationOptions options)
+        {
+            if (!builder.IsIndexed)
+            {
+                throw new InvalidOperationException("Only indexed builder supported for now.");
+            }
+
+
+            // We first create linked list.
+            List<@TesselationVertex> vertices = new List<@TesselationVertex>();
+            List<@TesselationVertex> beginning = new List<@TesselationVertex>();
+            
+
+            CreateLinked(polygons, vertices, beginning, builder, options);
+
+            // We make the polygon monothone by using split diagonals.
+            List<@TesselationEdge> additionalDiagonals = MakeMonothone(vertices);
+
+
+            {
+                // May improve efficiency of algorithm.
+
+                Stack<@TesselationVertex> toVisit = new Stack<@TesselationVertex>(10);
+                for (int j = 0; j < beginning.Count; j++)
+                {
+                    toVisit.Push(beginning[j]);
+                }
+
+                // We first append diagonals to multi-linked list.
+                for (int i = 0; i < additionalDiagonals.Count; i++)
+                {
+                    // We take the diagonal and add it to vertices.
+                    @TesselationEdge diag = additionalDiagonals[i];
+
+                    if (diag.Vertex1.AdditionalDiagonals == null) diag.Vertex1.AdditionalDiagonals = new List<@TesselationEdge>();
+                    if (diag.Vertex2.AdditionalDiagonals == null) diag.Vertex2.AdditionalDiagonals = new List<@TesselationEdge>();
+
+                    diag.Vertex1.AdditionalDiagonals.Add(diag);
+                    diag.Vertex2.AdditionalDiagonals.Add(diag);
+
+                    // We also push one element of diagonal (in case they are split).
+                    toVisit.Push(diag.Vertex1);
+                }
+
+                // We start at topmost vertex and create a polygon.
+                List<@TesselationVertex> monothone = new List<@TesselationVertex>(vertices.Count);
+                
+                while (toVisit.Count > 0)
+                {
+                    // We first check if already visited.
+                    @TesselationVertex start = toVisit.Pop();
+                    @TesselationVertex current = start;
+                    @TesselationVertex prev = start.PreviousEdge.Vertex1;
+                    if (!start.TryVisit()) continue;
+
+                    // We begin a new monothone
+                    monothone.Clear();
+
+                    monothone.Add(start);
+
+                    // We now transverse the polygon.
+                    while(true)
+                    {
+                        @TesselationVertex t = current;
+                        current = current.NextVertex(prev); //< Left order.
+                        prev = t;
+                        if (current == null || current == start) break;
+
+                        current.AddToVisits(toVisit);
+                        monothone.Add(current);
+                    }
+
+                    // We sort monotone.
+                    monothone.Sort();
+
+                    // Monothone triangulate.
+                    TriangulateMonotone(monothone, builder);
+                }
+            }
+
+        }
+
+        #endregion
+
+        #endregion @Vector
+
+        //#endfor
+    }
+}

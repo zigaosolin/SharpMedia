@@ -1,0 +1,241 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// A plane is infinite element in space.
+    /// </summary>
+    [Serializable]
+    public sealed class @ClassName :
+        @ContainsPoint3, @TransformableD,
+        ICloneable<@ClassName>,
+        IComparable<@ClassName>,
+        IEquatable<@ClassName>
+        
+    {
+        #region Private Members
+
+        /// <summary>
+        /// The normal of plane.
+        /// </summary>
+        @Vector3ClassName Normal;
+
+        /// <summary>
+        /// Distance from origin.
+        /// </summary>
+        @TypeName D;
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// A plane construction, given the plane normal and distance.
+        /// </summary>
+        /// <param name="normal">Normal.</param>
+        /// <param name="distance">Distance from plane with the
+        /// same normal and no transoformantion.</param>
+        public @ClassName(@Vector3ClassName normal, @TypeName distance)
+        {
+            Normal = normal;
+            D = distance;
+        }
+
+        /// <summary>
+        /// Constructor from 3 points on plane that define it. Points must
+        /// not lie on the same line. The order is important.
+        /// </summary>
+        /// <param name="p1">The first point.</param>
+        /// <param name="p2">The second point.</param>
+        /// <param name="p3">The third point.</param>
+        public @ClassName(@Vector3ClassName p1, @Vector3ClassName p2, @Vector3ClassName p3)
+        {
+            Normal = PlaneNormal(p1, p2, p3);
+            D = Normal * p1;
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// The plane normal.
+        /// </summary>
+        /// <param name="p1">The first point.</param>
+        /// <param name="p2">The second point.</param>
+        /// <param name="p3">The third point.</param>
+        /// <returns></returns>
+        public static @Vector3ClassName PlaneNormal(@Vector3ClassName p1, @Vector3ClassName p2, @Vector3ClassName p3)
+        {
+            @Vector3ClassName v1 = p2 - p1;
+            @Vector3ClassName v2 = p3 - p1;
+
+            // We create our normal.
+            return (v1 ^ v2).Normal;
+        }
+
+        /// <summary>
+        /// The X plane.
+        /// </summary>
+        public static @ClassName PlaneX
+        {
+            get { return new @ClassName(new @Vector3ClassName(@One, @Zero, @Zero), @Zero); }
+        }
+
+        /// <summary>
+        /// The Y plane.
+        /// </summary>
+        public static @ClassName PlaneY
+        {
+            get { return new @ClassName(new @Vector3ClassName(@Zero, @One, @Zero), @Zero); }
+        }
+
+        /// <summary>
+        /// The Z plane.
+        /// </summary>
+        public static @ClassName PlaneZ
+        {
+            get { return new @ClassName(new @Vector3ClassName(@Zero, @Zero, @One), @Zero); }
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Distance of the plane.
+        /// </summary>
+        public @TypeName Distance
+        {
+            get { return D; }
+            set { D = value; }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder();
+            b.Append("Plane : {");
+            b.Append(Normal);
+            b.Append(", ");
+            b.Append(D);
+            b.Append("}");
+            return b.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return false;
+        }
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Projects the point on plane.
+        /// </summary>
+        /// <param name="p">The point.</param>
+        /// <returns>Projected point.</returns>
+        public @Vector3ClassName Project(@Vector3ClassName p)
+        {
+            // The distance from point.
+            @TypeName dist = this.GetPointDistance(p);
+
+            return p - Normal * dist;
+        }
+
+        /// <summary>
+        /// Obtains point's distance to plane.
+        /// </summary>
+        /// <param name="v">The point.</param>
+        /// <returns>Distance in abosulte, sign means which side.</returns>
+        public @TypeName GetPointDistance(@Vector3ClassName v)
+        {
+            return Normal * v - D;
+        }
+
+        #endregion
+
+        #region @ContainsPoint3 Members
+
+        public bool ContainsPoint(@Vector3ClassName point)
+        {
+            return @NearEqual(GetPointDistance(point), @Zero);
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix4x4ClassName matrix)
+        {
+            Normal = matrix.Inverse * Normal;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector3ClassName.NearEqual(Normal, other.Normal) &&
+                @NearEqual(D, other.D))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(Normal, D);
+        }
+
+        #endregion
+
+        #region IComparable<Triangled> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = this.Normal.CompareTo(other.Normal);
+            if (cmp != 0) return cmp;
+            return D.CompareTo(other.D);
+        }
+
+        #endregion
+    }
+}

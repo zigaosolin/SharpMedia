@@ -1,0 +1,295 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.AspectOriented;
+using System.Threading;
+
+namespace SharpMedia.Math.Transform
+{
+    /// <summary>
+    /// The furier transform type.
+    /// </summary>
+    public enum FurierTransformType
+    {
+        /// <summary>
+        /// Normal transformation.
+        /// </summary>
+        Normal,
+
+        /// <summary>
+        /// The inverse transformation.
+        /// </summary>
+        Inverse,
+
+        /// <summary>
+        /// Inverse transformation without 1/N scaling.
+        /// </summary>
+        InverseWithoutScaling
+    }
+
+    
+
+    /// <summary>
+    /// A  Furier Transform class, implementing DFT (Discrete Furtier Transform)
+    /// using one of FFT (Fast Furier Transform) method.
+    /// </summary>
+    public static class DFT
+    {
+        #region Private Shared Members
+
+        static void ReverseBitsSort<T>(params T[] data)
+        {
+            // Compute number of bits.
+            uint bitCount = MathHelper.Log2((uint)data.Length);
+
+            // We do bit transversal.
+            for (int i = 0; i < data.Length; i++)
+            {
+                int reversed = (int)MathHelper.ReverseBits((uint)i, bitCount);
+
+                // We reverse only once.
+                if (reversed > i)
+                {
+                    T tmp = data[i];
+                    data[i] = data[reversed];
+                    data[reversed] = tmp;
+                }
+            }
+        }
+
+        #endregion
+
+        //#foreach Types
+
+        #region @TypeName
+
+        #region Private Methods
+
+        /// <summary>
+        /// Fast furier transform, in place.
+        /// </summary>
+        /// <param name="inputs">The inputs.</param>
+        /// <param name="forward">Is it forward or inverse transform.</param>
+        static void InternalFFT(@ComplexClassName[] data, bool forward)
+        {
+            // We first permutate the inputs in bit-reversed order.
+            ReverseBitsSort(data);
+
+            // Is it a forward or backward transform.
+            @TypeName exp = forward ? @One : -@One;
+
+            int n = data.Length;
+            int lnd = MathHelper.Log2(data.Length) + 1;
+            for (int lmd = 1; lmd <= lnd; lmd++)
+            {
+                int m = 1 << lmd;
+                int mh = m / 2;
+                for (int j = 0; j < mh; j++)
+                {
+                    @ComplexClassName e = MathHelper.ExpI(exp * (@TypeName)(2.0 * MathHelper.PI) * (@TypeName)j / (@TypeName)m);
+                    for (int r = 0; r <= n - m; r += m)
+                    {
+                        @ComplexClassName u = data[r + j];
+                        @ComplexClassName v = data[r + j + mh] * e;
+                        data[r + j] = u + v;
+                        data[r + j + mh] = u - v;
+                    }
+                }
+            }
+        }
+
+
+        static void Rescale(@ComplexClassName[] data)
+        {
+            if (data.Rank == 1)
+            {
+                @TypeName nInv = @One / (@TypeName)data.Length;
+                for (int i = 0; i < data.Length; i++)
+                {
+                    data[i] *= nInv;
+                }
+            }
+            else
+            {
+                throw new NotSupportedException();
+            }
+        }
+
+
+        #endregion
+
+        #region Static Methods
+
+        /// <summary>
+        /// Transforms the data in place.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        /// <param name="type">The type.</param>
+        public static void TransformInPlace([PowerOfTwoArray] @ComplexClassName[] data, FurierTransformType type)
+        {
+            // We do a complex Furier transform.
+            if (data.Rank == 1)
+            {
+                InternalFFT(data, type == FurierTransformType.Normal ? true : false);
+            }
+            else
+            {
+                // Multidimensional
+                throw new NotSupportedException();
+            }
+
+            if (type == FurierTransformType.Inverse) Rescale(data);
+            return;
+        }
+
+        /// <summary>
+        /// Transforms the specified input.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public static @ComplexClassName[] Transform([PowerOfTwoArray] @ComplexClassName[] input, FurierTransformType type)
+        {
+            @ComplexClassName[] result = new @ComplexClassName[input.Length];
+            input.CopyTo(result, 0);
+
+            TransformInPlace(result, type);
+            return result;
+        }
+
+        /// <summary>
+        /// Transforms the specified input.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
+        public static @ComplexClassName[] Transform([PowerOfTwoArray] @TypeName[] input, FurierTransformType type)
+        {
+            @ComplexClassName[] result = new @ComplexClassName[input.Length];
+            for (int i = 0; i < input.Length; i++)
+            {
+                result[i] = new @ComplexClassName(input[i], @Zero);
+            }
+
+
+            TransformInPlace(result, type);
+            return result;
+        }
+
+        /// <summary>
+        /// Performs convolution of two inputs.
+        /// </summary>
+        /// <param name="f">The first input.</param>
+        /// <param name="g">The second input.</param>
+        /// <returns></returns>
+        public static @ComplexClassName[] Convolution([PowerOfTwoArray] @ComplexClassName[] f, [PowerOfTwoArray] @ComplexClassName[] g)
+        {
+            if (f.Length != g.Length) throw new ArgumentException("The data must be the same length.");
+
+            @ComplexClassName[] t1 = DFT.Transform(f, FurierTransformType.Normal);
+            @ComplexClassName[] t2 = DFT.Transform(g, FurierTransformType.Normal);
+
+            // We merge inputs.
+            for (int i = 0; i < f.Length; i++) t1[i] = t1[i] * t2[i];
+
+            // Backtransform.
+            DFT.TransformInPlace(t1, FurierTransformType.Inverse);
+            return t1;
+        }
+
+        /// <summary>
+        /// Performs convolution of two inputs. Result is stored in f. The g is transformed to frequency space.
+        /// </summary>
+        /// <param name="f">The first input.</param>
+        /// <param name="g">The second input.</param>
+        public static void ConvolutionInPlace([PowerOfTwoArray] @ComplexClassName[] f, [PowerOfTwoArray] @ComplexClassName[] g)
+        {
+            if (f.Length != g.Length) throw new ArgumentException("The data must be the same lenght.");
+
+            DFT.TransformInPlace(f, FurierTransformType.Normal);
+            DFT.TransformInPlace(g, FurierTransformType.Normal);
+
+            // We merge inputs.
+            for (int i = 0; i < f.Length; i++) f[i] = g[i] * f[i];
+
+            // Backtransform.
+            DFT.TransformInPlace(f, FurierTransformType.Inverse);
+        }
+
+        #endregion
+
+        #endregion
+
+        //#endfor
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class FurierTest
+    {
+    
+        internal static @ComplexClassName[] BruteForce(@ComplexClassName[] input)
+        {
+            @ComplexClassName[] result = new @ComplexClassName[input.Length];
+            @TypeName N = (@TypeName)input.Length;
+
+            // We perform the brute force method.
+            for (int i = 0; i < input.Length; i++)
+            {
+                @TypeName n = (@TypeName)i;
+                result[i] = @ComplexClassName.Zero;
+
+                // We compute the amplitude.
+                for (int j = 0; j < input.Length; j++)
+                {
+                    result[i] += input[j] * MathHelper.ExpI((2.0 * MathHelper.PI / N) * n * (@TypeName)j);
+
+                }
+            }
+
+            return result;
+        }
+
+
+        [CorrectnessTest]
+        public void SimpleTransform()
+        {
+            @ComplexClassName[] r1 = @ComplexClassName.ToComplexArray(new @TypeName[] { 1, 1, 2, 2, 1, 1, 0, 0 });
+            @ComplexClassName[] r2 = @ComplexClassName.ToComplexArray(new @TypeName[] { 1, 1, 2, 2, 1, 1, 0, 0 });
+            r2 = BruteForce(r2);
+            r1 = DFT.Transform(r1, FurierTransformType.Normal);
+
+            for (int i = 0; i < r1.Length; i++)
+            {
+                Assert.IsTrue(@ComplexClassName.NearEqual(r1[i], r2[i]));
+            }
+        }
+
+        [CorrectnessTest]
+        public void FFTAndInverse()
+        {
+            @TypeName[] x = new @TypeName[]{0,0.5,0.84,1.0,0.84,0.5,0,-0.5,-0.84,-1.0,-0.84, -0.5,0,0.5,0.84,1};
+
+            @ComplexClassName[] r = DFT.Transform(x, FurierTransformType.Normal);
+            DFT.TransformInPlace(r, FurierTransformType.Inverse);
+
+            for (int i = 0; i < x.Length; i++)
+            {
+               Assert.IsTrue(MathHelper.NearEqual(r[i].Re, x[i], 0.01));
+               Assert.IsTrue(MathHelper.NearEqual(r[i].Im, 0.0, 0.01));
+            }
+            
+        }
+    }
+#endif
+}

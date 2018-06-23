@@ -1,0 +1,234 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+
+namespace SharpMedia.Math.Shapes
+{
+
+    /// <summary>
+    /// Can calculate if point is contained in shape.
+    /// </summary>
+    public interface @ContainsPoint2
+    {
+        /// <summary>
+        /// Is the point contained within shape.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        bool ContainsPoint(@Vector2ClassName point);
+    }
+
+    /// <summary>
+    /// Can calculate if point is contained within shape.
+    /// </summary>
+    public interface @ContainsPoint3
+    {
+        /// <summary>
+        /// Is the point contained within shape. Also applies to volumes.
+        /// </summary>
+        /// <param name="point"></param>
+        /// <returns></returns>
+        bool ContainsPoint(@Vector3ClassName point);
+    }
+
+    /// <summary>
+    /// Transformability for shapes.
+    /// </summary>
+    public interface @Transformable2
+    {
+        /// <summary>
+        /// Transforms a shape by matrix.
+        /// </summary>
+        /// <param name="matrix"></param>
+        void Transform(Matrix.@Matrix3x3ClassName matrix);
+    }
+
+    /// <summary>
+    /// Transformability for shapes.
+    /// </summary>
+    public interface @Transformable3
+    {
+        /// <summary>
+        /// Transforms a shape by matrix.
+        /// </summary>
+        /// <param name="matrix"></param>
+        void Transform(Matrix.@Matrix4x4ClassName matrix);
+    }
+
+    /// <summary>
+    /// A shape that has vertices that control its shape.
+    /// </summary>
+    public interface @ControlPoints
+    {
+        /// <summary>
+        /// Number of control points.
+        /// </summary>
+        uint ControlPointCount { get; }
+    }
+
+    /// <summary>
+    /// A 2D-shape vertex controllable.
+    /// </summary>
+    public interface @ControlPoints2 : @ControlPoints
+    {
+        /// <summary>
+        /// Can get or set all control points at the same time.
+        /// </summary>
+        @Vector2ClassName[] ControlPoints { get; set; }
+
+        /// <summary>
+        /// Sets a specific control point.
+        /// </summary>
+        /// <param name="index">The index, zero based.</param>
+        /// <param name="cp">The control point data.</param>
+        /// <remarks>This may fail with some shapes, resulting in exception or altering
+        /// of other control points in order to have a valid shape.</remarks>
+        void SetControlPoints(uint index, @Vector2ClassName cp);
+
+        /// <summary>
+        /// Obtains an indexed control point.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        @Vector2ClassName GetControlPoint(uint index);
+    }
+
+    /// <summary>
+    /// A 3D-shape vertex controllable.
+    /// </summary>
+    public interface @ControlPoints3 : @ControlPoints
+    {
+        /// <summary>
+        /// Can get or set all control points at the same time.
+        /// </summary>
+        @Vector3ClassName[] ControlPoints { get; set; }
+
+        /// <summary>
+        /// Sets a specific control point.
+        /// </summary>
+        /// <param name="index">The index, zero based.</param>
+        /// <param name="cp">The control point data.</param>
+        /// <remarks>This may fail with some shapes, resulting in exception or altering
+        /// of other control points in order to have a valid shape.</remarks>
+        void SetControlPoints(uint index, @Vector3ClassName cp);
+
+        /// <summary>
+        /// Obtains an indexed control point.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        @Vector3ClassName GetControlPoint(uint index);
+    }
+
+    public interface @Area
+    {
+        /// <summary>
+        /// Obtains the area of shape.
+        /// </summary>
+        /// <remarks>If it is hard to calculate, it may return negative value.</remarks>
+        @TypeName Area { get; }
+    }
+
+    /// <summary>
+    /// The area of shape, if it exists. Shapes without are do not implement this interface.
+    /// </summary>
+    public interface @Area2 : @Area
+    {
+        /// <summary>
+        /// Tesselates area to buffer.
+        /// </summary>
+        /// <param name="resolution">Resolution of tesselation (maximum error in world units),
+        /// negative resolution means adaptive tesselation.</param>
+        /// <param name="geometryOutputStream">The geometry output stream, with options of tesselation.</param>
+        void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder2 builder);
+    }
+
+    /// <summary>
+    /// The area of shape, if it exists. Shapes without are do not implement this interface.
+    /// </summary>
+    public interface @Area3 : @Area
+    {
+        /// <summary>
+        /// Tesselates area to buffer.
+        /// </summary>
+        /// <param name="resolution">Resolution of tesselation (maximum error in world units),
+        /// negative resolution means adaptive tesselation.</param>
+        /// <param name="geometryOutputStream">The geometry output stream, with options of tesselation.</param>
+        void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder3 builder);
+    }
+
+    /// <summary>
+    /// Outline of a shape, or path if it has no area.
+    /// </summary>
+    /// <remarks>Outlines work with parameter t that is always in range [0,1]. Interpolation
+    /// can be done at any basis</remarks>
+    public interface @Outline
+    {
+        /// <summary>
+        /// The length of outline, same as GetSectionLength(0, 1).
+        /// </summary>
+        @TypeName OutlineLength { get; }
+    }
+
+    /// <summary>
+    /// A 2D outline.
+    /// </summary>
+    public interface @Outline2 : @Outline
+    {
+        /// <summary>
+        /// Samples outline at t in range od [0,1].
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        @Vector2ClassName Sample(@TypeName t);
+
+        /// <summary>
+        /// Samples itself to vertex buffer given a resolution.
+        /// </summary>
+        /// <param name="resolution">The resolution of sampling (maximum error in world units),
+        /// negative resolution means adaptive tesselation.</param>
+        /// <param name="outlineOutputStream">Buffer with all available contraints.</param>
+        void Sample(@TypeName resolution, Storage.Builders.@LineBuilder2 lineStripBuilder);
+    }
+
+    /// <summary>
+    /// A 3D outline.
+    /// </summary>
+    public interface @Outline3 : @Outline
+    {
+        /// <summary>
+        /// Samples outline at t in range od [0,1].
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        @Vector3ClassName Sample(@TypeName t);
+
+        /// <summary>
+        /// Samples itself to vertex buffer given a resolution.
+        /// </summary>
+        /// <param name="resolution">The resolution of sampling (maximum error in world units),
+        /// negative resolution means adaptive tesselation.</param>
+        /// <param name="outlineOutputStream">Buffer with all available contraints.</param>
+        void Sample(@TypeName resolution, Storage.Builders.@LineBuilder3 outlineOutputStream);
+    }
+
+    /// <summary>
+    /// Weighted control points interface.
+    /// </summary>
+    public interface @WeightedControlPoints : @ControlPoints
+    {
+        /// <summary>
+        /// Sets or gets all weights, amutomatically renormalizes if they do not sum up.
+        /// </summary>
+        @TypeName[] Weights { set; get; } 
+    }
+
+
+}

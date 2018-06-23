@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+  
+  <!-- BSP -->
+  <TemplateSet Name="BinarySpacePartioningf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="BinarySpacePartioningf" />
+  </TemplateSet>
+  <TemplateSet Name="BinarySpacePartioningd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="BinarySpacePartioningd" />
+  </TemplateSet>
+
+  <!-- Octree -->
+  <TemplateSet Name="OctreeSpacePartioningf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="OctreeSpacePartioningf" />
+  </TemplateSet>
+  <TemplateSet Name="OctreeSpacePartioningd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="OctreeSpacePartioningd" />
+  </TemplateSet>
+
+</TemplateSets>

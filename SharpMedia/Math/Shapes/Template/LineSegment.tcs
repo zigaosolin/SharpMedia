@@ -1,0 +1,435 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.AspectOriented;
+using SharpMedia.Math.Shapes.Volumes;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// A line in @Dim space. Line is determined by two points, A and B point.
+    /// </summary>
+    [Serializable]
+    public sealed class @ClassName :
+        @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+        //#ifdef 3D
+        , @AABoxBoundable, @SphereBoundable
+        //#endif
+    {
+
+        #region Public Members
+
+        /// <summary>
+        /// The start control point.
+        /// </summary>
+        public @Vector A;
+
+        /// <summary>
+        /// Ending control point.
+        /// </summary>
+        public @Vector B;
+
+        #endregion
+
+        #region Constructors
+
+
+        /// <summary>
+        /// Empty contructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Line constructor.
+        /// </summary>
+        /// <param name="from">From point.</param>
+        /// <param name="to">To point.</param>
+        public @ClassName(@Vector a, @Vector b)
+        {
+            this.A = a;
+            this.B = b;
+        }
+
+        /// <summary>
+        /// Line constructor.
+        /// </summary>
+        /// <param name="from">From point.</param>
+        /// <param name="direction">The direction.</param>
+        /// <param name="length">Length of line in direction.</param>
+        public @ClassName(@Vector from, @Vector direction, @TypeName length)
+        {
+            this.A = from;
+            this.B = from + length * direction;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Are two lines parallel.
+        /// </summary>
+        /// <param name="other">The other line.</param>
+        /// <returns>Are they parallel.</returns>
+        public bool IsParallel([NotNull] @ClassName other)
+        {
+            if (@Vector.NearEqual(Direction, other.Direction)) return true;
+            return false;
+        }
+
+        /// <summary>
+        /// The lines are perpendicular.
+        /// </summary>
+        /// <param name="other">The other line.</param>
+        /// <returns>Are lines perpBicular.</returns>
+        public bool IsPerpendicular([NotNull] @ClassName other)
+        {
+            @Vector special;
+            //#ifdef 2D
+            special = new @Vector((@TypeName) - 1, (@TypeName) - 1);
+            //#else
+            special = new @Vector((@TypeName) - 1, (@TypeName) - 1, (@TypeName) - 1);
+            //#endif
+
+            return @Vector.NearEqual(Direction,
+                @Vector.ComponentDivision(
+                special, Direction));
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The direction of line. It's length is always the length
+        /// of line.
+        /// </summary>
+        public @Vector Direction
+        {
+            get { return B - A; }
+            set
+            {
+                B = A + value;
+            }
+        }
+
+        /// <summary>
+        /// A unit direction.
+        /// </summary>
+        public @Vector UnitDirection
+        {
+            get { return Direction.Normal; }
+            set
+            {
+                @TypeName l = Length;
+                B = A + value * l;
+            }
+        }
+
+        /// <summary>
+        /// Length of line.
+        /// </summary>
+        public @TypeName Length
+        {
+            get { return (A - B).Length; }
+            set
+            {
+                if (value < 0)
+                {
+                    throw new ArgumentException("Length cannot be negative");
+                }
+                else if (value == 0)
+                {
+                    B = A;
+                }
+                else if (Length != @Zero)
+                {
+                    // scaling
+                    B = A + ((B - A) / Length * value);
+                }
+                else throw new Exception("Cannot scale zero-length lines (points)");
+            }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(60);
+            builder.Append("LineSegment : {");
+            builder.Append(A.ToString());
+            builder.Append(", ");
+            builder.Append(B.ToString());
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector p)
+        {
+            // We get direction of one and direction of second.
+            @Vector x = p - A;
+
+            // If p is the same as control.
+            if (x.Length2 == @Zero) return true;
+
+            if (!@Vector.NearEqual(x.Normal, Direction.Normal)) return false;
+            @TypeName t = x.Length2 / Direction.Length2;
+            return t >= @Zero && t <= @One;
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            return (@One - t) * A + t * B;
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            if (resolution < @Zero)
+            {
+                builder.AddLineStrip(false, A, B);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get { return (B - A).Length; }
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { A, B };
+            }
+            set
+            {
+                if (value.Length != 2) throw new ArgumentException("Two control points expected.");
+                A = value[0];
+                B = value[1];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch (index)
+            {
+                case 0:
+                    A = cp;
+                    break;
+                case 1:
+                    B = cp;
+                    break;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-1 for line segment.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return A;
+                case 1:
+                    return B;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-1 for line segment.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 2; }
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            A = matrix * A;
+            B = matrix * B;
+        }
+
+        #endregion
+
+        //#ifdef 3D
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                return @AABox.FromPoints(A, B);
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                return new @Sphere((@TypeName)0.5 * (A + B), (B - A).Length);
+            }
+        }
+
+        #endregion
+
+        //#endif
+
+        #region ICloneable<@ClassName> Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(A, B);
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector.NearEqual(this.A, other.A) &&
+                @Vector.NearEqual(this.B, other.B)) return true;
+            return false;
+        }
+        #endregion
+
+        #region IComparable<ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = A.CompareTo(other.A);
+            if (cmp != 0) return cmp;
+            return B.CompareTo(other.B);
+
+        }
+
+        #endregion
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+        }
+
+        #endregion
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class @ClassName_Test
+    {
+        /*
+        [CorrectnessTest]
+        public void LineConstruction()
+        {
+            @ClassName line1 = new @ClassName(new @Vector(0, 0, 0), new @Vector(3, 3, 3));
+            @ClassName line2 = new @ClassName(new @Vector(0, 0, 0), new @Vector(1, 1, 1), 3.0);
+
+            Assert.IsTrue(line1.Equals(line1));
+            Assert.IsTrue(line2.Equals(line2));
+            Assert.IsTrue(line1.Equals(line2));
+        }
+
+        [CorrectnessTest]
+        public void Properties()
+        {
+            @ClassName line1 = new @ClassName(new @Vector(0, 0, 0), new @Vector(2, 0, 0));
+            Assert.AreEqual(2.0, line1.Length);
+            Assert.AreEqual(1, line1.LineSegmentCount);
+            Assert.AreEqual(1, line1.Lines.Length);
+            Assert.AreEqual(line1.UnitDirection, new @Vector(1, 0, 0));
+        }
+
+        [CorrectnessTest]
+        public void Contains()
+        {
+            @ClassName line = new @ClassName(new @Vector(1, 0, 0), new @Vector(2, 1, 0));
+            Assert.IsTrue(line.ContainsPoint(new @Vector(1.5, 0.5, 0)));
+        }
+
+        [CorrectnessTest]
+        public void Intersection()
+        {
+            @ClassName line1 = new @ClassName(new @Vector(0, 0, 0), new @Vector(3, 0, 0));
+            @ClassName line2 = new @ClassName(new @Vector(1, -1, 0), new @Vector(1, 5, 0));
+
+            Assert.IsTrue(line1.IntersectsWith(line2));
+            Pointd p = (Pointd)line1.Intersection(line2)[0];
+            Assert.AreEqual(new Pointd(1, 0, 0), p);
+        }*/
+    }
+#endif
+}

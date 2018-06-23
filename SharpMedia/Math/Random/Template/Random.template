@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <TemplateSet Name="RandomGeneratorf" Extends="Float,CoreMath">
+    <Template Name="RandomGenerator" Value="IRandomGeneratorf"/>
+    <Template Name="ResetableRandomGenerator" Value="IResetableRandomGeneratorf" />
+  </TemplateSet>
+  <TemplateSet Name="RandomGeneratord" Extends="Double,CoreMath">
+    <Template Name="RandomGenerator" Value="IRandomGeneratord"/>
+    <Template Name="ResetableRandomGenerator" Value="IResetableRandomGeneratord" />
+  </TemplateSet>
+
+</TemplateSets>

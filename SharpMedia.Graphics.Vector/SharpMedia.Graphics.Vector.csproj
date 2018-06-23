@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6C31FD57-6837-4A50-834C-C1258568D8F7}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Graphics.Vector</RootNamespace>
+    <AssemblyName>SharpMedia.Graphics.Vector</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SHARPMEDIA_TESTSUITE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpMedia, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4f200b7b044e0a29, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Documents\VGAnimation.cs" />
+    <Compile Include="Documents\VGScope.cs" />
+    <Compile Include="Documents\VGDocument.cs" />
+    <Compile Include="Documents\VGFill.cs" />
+    <Compile Include="Documents\VGObject.cs" />
+    <Compile Include="Fills\BlendedFill.cs" />
+    <Compile Include="Fills\FillElementOperation.cs" />
+    <Compile Include="Fills\GradientFill.cs" />
+    <Compile Include="Fills\Gradient4Fill.cs" />
+    <Compile Include="Fills\ImageFill.cs" />
+    <Compile Include="Fills\RadialFill.cs" />
+    <Compile Include="Fills\SolidFill.cs" />
+    <Compile Include="Fills\TextureFill.cs" />
+    <Compile Include="Fonts\Font.cs" />
+    <Compile Include="Fonts\FontSupplier.cs" />
+    <Compile Include="Fonts\Glyph.cs" />
+    <Compile Include="Fonts\RenderGlyphInfo.cs" />
+    <Compile Include="Fonts\SVG\SVGFont.cs" />
+    <Compile Include="Fonts\SVG\SVGGlyph.cs" />
+    <Compile Include="Fonts\SVG\SVGImport.cs" />
+    <Compile Include="Fonts\TextRenderInfo.cs" />
+    <Compile Include="GraphicsCanvas.cs" />
+    <Compile Include="ICanvas.cs" />
+    <Compile Include="ICanvasInfo.cs" />
+    <Compile Include="ICanvasRenderable.cs" />
+    <Compile Include="IDeviceCanvas.cs" />
+    <Compile Include="Fills\IFill.cs" />
+    <Compile Include="Mappers\RegionMapper.cs" />
+    <Compile Include="Mappers\TransformMapper.cs" />
+    <Compile Include="Transforms\LinearTransform.cs" />
+    <Compile Include="Mappers\Mapper.cs" />
+    <Compile Include="NullCanvas.cs" />
+    <Compile Include="Pen.cs" />
+    <Compile Include="Transforms\ITransform.cs" />
+    <Compile Include="Mappers\PositionMapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VectorTest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMedia.Graphics\SharpMedia.Graphics.csproj">
+      <Project>{AAF272C4-FAF0-4890-9679-C144F093AEF5}</Project>
+      <Name>SharpMedia.Graphics</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Documents\Sample.xml" />
+    <Content Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

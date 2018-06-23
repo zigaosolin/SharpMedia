@@ -1,0 +1,256 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Math.Matrix;
+using SharpMedia.AspectOriented;
+
+namespace SharpMedia.Math.Shapes
+{
+
+    /// <summary>
+    /// An intersection class allows intersecting many primitve pairs.
+    /// </summary>
+    /// <remarks>There are usually many intersection provided for the same pair type.</remarks>
+    public static class Intersection
+    {
+        #region LineSeg-LineSeg Intersection
+
+        //#foreach LineSegmentLineSegmentPair
+
+        /// <summary>
+        /// Pure intersection test.
+        /// </summary>
+        /// <remarks>Test does not handle parallel lines.</remarks>
+        /// <param name="one">The first line segment.</param>
+        /// <param name="other">The second line segment.</param>
+        /// <returns>Do lines intersect.</returns>
+        public static bool Intersect(@LineSegment one, @LineSegment other)
+        {
+            @TypeName t1, t2;
+            return Intersect(one, other, out t1, out t2);
+        }
+
+        /// <summary>
+        /// Intersection test.
+        /// </summary>
+        /// <remarks>Test does not handle parallel lines.</remarks>
+        /// <param name="one">The first line segment.</param>
+        /// <param name="other">The second line segment.</param>
+        /// <param name="t1">The interpolation for first line segment, only if intersects is true.</param>
+        /// <param name="t2">The interpolation for second line segment, only if intersects is true.</param>
+        /// <returns>Do lines intersect.</returns>
+        public static bool Intersect(@LineSegment one, @LineSegment other, 
+            out @TypeName t1, out @TypeName t2)
+        {
+            t1 = t2 = @Zero;
+
+            // We solve 2x2 system and then check if it is ok for the third argument.
+            @Vector2ClassName r = LinearSolver.SolveSystem(
+                new @Matrix2x2(one.Direction.X, -other.Direction.X,
+                               one.Direction.Y, -other.Direction.Y),
+                new @Vector2ClassName(other.A.X - one.A.X, other.A.Y - one.A.Y));
+
+            // If system has the solution, it must be in range [0,1].
+            if (r.X < @Zero || r.X > @Zero) return false;
+            if (r.Y < @Zero || r.Y > @Zero) return false;
+
+            // We check if the last line satisfies.
+            if (!@Vector.NearEqual(one.Sample(r.X), other.Sample(r.Y))) return false;
+
+            // We copy interpolation.
+            t1 = r.X;
+            t2 = r.Y;
+            return true;
+        }
+
+        /// <summary>
+        /// Intersection test.
+        /// </summary>
+        /// <remarks>Test does not handle parallel lines.</remarks>
+        /// <param name="one">The first line segment.</param>
+        /// <param name="other">The second line segment.</param>
+        /// <param name="result">The resulting intersection point, only if it returns true.</param>
+        /// <returns>Do lines intersect.</returns>
+        public static bool Intersect(@LineSegment one, @LineSegment other, out @Vector result)
+        {
+            @TypeName t1, t2;
+            if (!Intersect(one, other, out t1, out t2))
+            {
+                result = @Vector.Zero;
+                return false;
+            }
+            else
+            {
+                result = one.Sample(t1);
+                return true;
+            }
+        }
+
+        //#endfor
+
+        #endregion
+
+        #region LineSeg-Triangle Intersection
+
+        //#foreach LineSegmentTrianglePair
+
+        //#ifdef 3D
+
+        /// <summary>
+        /// A line-triangle intersection.
+        /// </summary>
+        /// <remarks>Only point is returned. In case of line segment lying on top of triangle, one
+        /// point is only returned.</remarks>
+        /// <param name="line">The line segment</param>
+        /// <param name="triangle">The triangle</param>
+        /// <param name="point">The intersection point.</param>
+        /// <returns>Does intersection occur</returns>
+        private static bool Intersect(@LineSegment line, @Triangle triangle, out @Vector point)
+        {
+            // We compute distance of ray of plane.
+            @TypeName d = -((line.A - triangle.A) * triangle.Normal) / (line.Direction * triangle.Normal);
+
+            // We exit quickly if intersection does not occur on line.
+            if (d < @Zero || d > @One)
+            {
+                point = @Vector.Zero;
+                return false;
+            }
+
+            // We now compute the actual point on the plane.
+            point = line.A + d * line.Direction;
+
+            // We have to determine if point lies inside triangle. We do it using barycentric
+            // coordinates. We solve the system with two unknowns.
+            @Vector2ClassName uv = triangle.GetBarycentric(point);
+
+            // Is it inside.
+            return @Triangle.IsBaryCentricInside(uv);
+        }
+
+        //#endif
+
+        //#endfor
+
+        #endregion
+
+        #region Triangle-Triangle Intersection
+
+        #endregion
+
+        #region Triangle-Ray Intersection
+
+        //#foreach TriangleRayPair
+
+        //#ifdef 3D
+
+        /// <summary>
+        /// Intersect triangle and ray, fast barycentric coordinate version.
+        /// </summary>
+        /// <param name="t">Triangle.</param>
+        /// <param name="Normal">Possibly precomputed normal.</param>
+        /// <param name="r">The ray.</param>
+        /// <param name="p">The output collision, valid if true is returned.</param>
+        /// <returns>Intersection result</returns>
+        public static bool Intersect(@Triangle t, @Ray r, @TypeName maxDist, out @Vector p)
+        {
+            @Vector Normal = t.Normal;
+
+            // We compute distance of ray of plane.
+            @TypeName d = -((r.Origin - t.A) * Normal) / (r.Direction * Normal);
+
+            // We exit quickly if intersection occurs behind ray, or if intersection does not
+            // exist.
+            if (d < 0.0 || d >= maxDist || @TypeName.IsNaN(d))
+            {
+                p = @Vector.Zero;
+                return false;
+            }
+
+            // We now compute the actual point on the plane.
+            p = r.Origin + d * r.Direction;
+
+            // We have to determine if point lies inside triangle. We do it using barycentric
+            // coordinates. We solve the system with two unknowns.
+            @Vector2ClassName uv = t.GetBarycentric(p);
+
+            // Is it inside.
+            if (@Triangle.IsBaryCentricInside(uv))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        //#endif
+
+        //#endfor
+
+        #endregion
+
+        #region Triangle-Line Intersection
+
+        //#foreach TriangleLinePair
+
+        //#ifdef 3D
+
+        /// <summary>
+        /// Triangle-Line intersection helper (only 3D version).
+        /// </summary>
+        /// <param name="t">The triangle.</param>
+        /// <param name="r">The line.</param>
+        /// <param name="p">Point of intersection.</param>
+        /// <returns>Does intersection exist.</returns>
+        private static bool Intersect(@Triangle t, @Line r, out @Vector p)
+        {
+            @Vector Normal = t.Normal;
+
+            // We compute distance of line of plane.
+            @TypeName d = -((r.A - t.A) * Normal) / (r.Direction * Normal);
+
+            // We now compute the actual point on the plane.
+            p = r.A + d * r.Direction;
+
+            // We have to determine if point lies inside triangle. We do it using barycentric
+            // coordinates. We solve the system with two unknowns.
+            @Vector2ClassName uv = t.GetBarycentric(p);
+
+            // Is it inside.
+            return @Triangle.IsBaryCentricInside(uv);
+        }
+
+        //#endif
+
+        //#endfor
+
+        #endregion
+
+        #region Bezier-Bezier Intersection
+
+        //#foreach BezierBezierPair
+
+        /// <summary>
+        /// Intersection of two beziers.
+        /// </summary>
+        private static bool Intersect(@Bezier b1, @Bezier b2, out @Vector p)
+        {
+            throw new NotImplementedException();
+        }
+
+        //#endfor
+
+        #endregion
+
+        // TODO: add missing 2D alternatives (for lines, rays etc.) and many other
+        // intersection pairs!
+    }
+}

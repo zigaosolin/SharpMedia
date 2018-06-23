@@ -1,0 +1,66 @@
+........
+- TOOLS
+
+The idea behind tools is to encapsulate repeatable software tasks that operate by generating, transforming,
+compiling or otherwise manipulating data into well behaved components that are easy to write, while at the
+same time provide a standard API for their control and configuration.
+
+The basic idea is to extend the configuration API by providing Tool specific attributes that can be attached
+to properties. While still using configuration API to configure the tool, those attributes add descriptive
+value (short name, alias, description), special types (nodes, typed stream, specified as path) and constraints
+on values (type of typed stream, minimum/maximum objects, flags ...). Those attributes than allow easy configuration
+through automatic user interface configuration providers.
+
+Automatic user interface for tools is generated from attributes. There is a question based configurator available,
+a graphical shell configurator and more. The configuration can in all cases still be direct, with name-value
+pairs or by setting the appropriate component directory. A configured tool can also be reconfigured with
+the same facilities.
+
+- EXAMPLE
+We have the following tool:
+
+
+public class MyTool : ITool
+{
+   int someData;
+   Node<object> destinationDirectory;
+   TypedStream<InDocument> inputDoc;
+   
+   
+   // Here, we present descriptions etc.
+   [UI(Description="SomeData" ShortName="Short")]
+   public int SomeData { ... }
+   
+   // The destination directory as node.
+   [NodeUI(RequiredTypes=new Type[]{typeof(OutDocument)}]
+   public Node<object> DestinationDirectory { ... }
+   
+   // Note that we need to convert manually.
+   [TypedStreamUI(Type=typeof(InDocument),ObjectCount=1)]
+   public TypeStream<object> InputDocument
+   { 
+		get { return inputDoc.As<object>(); }
+		set { inputDoc = value.As<InDocument>(); }
+   }
+
+   public int Run(params string[] args) { /* Do work */ }
+}
+
+
+We can now use our tool. The following uses are the same:
+a) Configure & Run
+ConfigureTool ToolName="SomeNsp.MyTool"
+# Performing tool configuration with default automatic UI (Graphical Shell UI) ... (window pops up and you configure)
+# Configuration sucessful, running tool
+
+b) Configure & Save & Run
+ConfigureTool ToolName=SomeNsp.MyTool" OutputPath="System/Applications/Tools/MyTool"
+# Performing tool configuration with default automatic UI (Graphical Shell UI) ... (window pops up and you configure)
+# Configuration sucessful, created application in 'System/Applications/Tools/MyTool'
+
+> System/Applications/Tools/MyTool
+
+The tool can be reconfigured on run with:
+> System/Applications/Tools/MyTool InputDocument=somepath@SomeNsp.InputDocument
+
+

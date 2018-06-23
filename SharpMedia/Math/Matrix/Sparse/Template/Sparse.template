@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+  
+  <!-- Band matrix-->
+  <TemplateSet Name="BandMatrixf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="BandMatrixf" />
+  </TemplateSet>
+  <TemplateSet Name="BandMatrixd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="BandMatrixd" />
+  </TemplateSet>
+
+  <!-- LT matrix-->
+  <TemplateSet Name="LTMatrixf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="LTMatrixf" />
+  </TemplateSet>
+  <TemplateSet Name="LTMatrixd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="LTMatrixd" />
+  </TemplateSet>
+
+  <!-- UT matrix-->
+  <TemplateSet Name="UTMatrixf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="UTMatrixf" />
+  </TemplateSet>
+  <TemplateSet Name="UTMatrixd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="UTMatrixd" />
+  </TemplateSet>
+
+</TemplateSets>

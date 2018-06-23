@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Application 
+	xversion="1.0.0"
+	name="Direct3D10 Driver"
+	friendly="A Direct3D10 Graphics Driver"
+	id="443AFB09-37E7-4b0a-87E3-26E32AA7E9B9"
+	root="Main"
+	type="SingleDocument">
+  
+  <!-- Replication of the application descriptor -->
+  <Components>
+    <Component
+			Id="Main"
+			Type="SharpMedia.Graphics.Driver.Direct3D10.D3D10ServiceProcess" />
+  </Components>
+</Application>

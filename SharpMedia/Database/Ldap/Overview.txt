@@ -1,0 +1,43 @@
+Ldap Overview
+
+Ldap plugin for database is implemeted in this namespace. Ldap is a bit more complex and
+not exactly suited for DB design, but with some tricks, you can get in working quickly.
+
+== LdapEntry ==
+
+Each Ldap directory is of specific default type, that is transparent (means it is not altered by managed implementetion) 
+class LdapEntry. The default typed stream is a single object typed stream. This class actually represents the
+options how Ldap is used, additional options and members. If you write (replace) to typed stream,
+you can configure the directory. Sometimes this is necessary in order to get access 
+(username & password scenarios). Typed stream can also be used to retrieve additional information
+about the directory itself (information not exposed through normal DB interfaces). You can use
+LdapController's static methods to achieve all those tasks.
+
+== ILdapIdentifier ==
+
+Objects in Ldap are packed as (name, value[]) pairs. If you take a look at our system, it is somewhat
+similiar to (type, value[]) pair (representing tped streams). Because the schema is available for Ldap,
+names have corresponding types. Identifier is responsible for converting those names to types.
+
+There is a fallback conversion to LdapTuple, which contains only ((name, index), value) tuple that describes
+the Ldap object.
+
+== Example ==
+
+Node<LdapEntry> ldapNode = root.Find<LdapEntry>("SomeAddress");
+
+// We now get Ldap information.
+LdapEntry info = ldapNode.Object;
+if(info.DomainName == "Something")
+{
+  // ...
+} 
+
+// We can now force syncing in two ways.
+LdapHelper.Update(ldapNode);
+
+// or without helper directly (may issue more commands in one run).
+info.IssueUpdate = true;
+ldapNode.Object = info;
+
+

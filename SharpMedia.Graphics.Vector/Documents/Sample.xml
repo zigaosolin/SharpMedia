@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<!-- A vector graphics document. Documents can be scoped since they are just native containers
+     of VG objects.-->
+<VGDocument Name="Buttons">
+  
+  <!-- This tag allows scoped grouping of objects. -->
+  <Scope Name="Fills">
+    <SolidFill Name="Black" Colour="Black" />
+    <SolidFill Name="LightBlue" Colour="LightBlue" />
+    <GradientFill Name="Gradient" Colours="{Red,Green,Red,Blue}" Positions="{0.25f, 0.50f, 0.75f}" />
+  </Scope>
+
+  <!-- This tag allows scoped object grouping. -->
+  <Scope Name="Pens">
+    <Pen Name="BlackBorderThin" Fill="@Fills.Black" WidthInPixels="2" />
+  </Scope>
+
+  <!-- Geometries -->
+  <Scope Name="Geometry">
+    <Rect Name="Quad" LeftButtom="(0,0)" RightTop="(1,1)" />
+  </Scope>
+
+  <!-- Animations -->
+  <Scope Name="Animations">
+    <MatrixAnimation Target="NormalButton.ClickMe" Property="Transform"
+         Start="1 0 0 0 1 0 0 0 1" End="0.9 0 0 0 0.9 0 0 0 0.9" Duration="3.0" Repeat="Wrap" />
+  </Scope>
+  
+  <!-- A scoped normal button for states -->
+  <Scope Name="NormalButton">
+
+    <!-- A normal button (normal state). Batch also provides some caching capabilities. -->
+    <Batch Name="Normal">
+      <FilledShape Fill="@Fills.LightBlue" Shape="@Geometry.Quad" />
+      <DrawnShape Pen="@Pens.BlackBorderThin" Shape="@Geometry.Quad" />
+    </Batch>
+
+    <!-- Same as normal, just with animation -->
+    <Batch Name="ClickMe">
+      <FilledShape Fill="@Fills.LightBlue" Shape="@Geometry.Quad" />
+      <DrawnShape Pen="@Pens.BlackBorderThin" Shape="@Geometry.Quad" />
+    </Batch>
+    
+
+    <!-- Fill is automatically linked to solid fill if it is not link and value is treated as colour. The same
+         goes for pen -->
+    <Batch Name="Pushed" Fill="Red" Pen="Black,5px">
+      <FilledShape Fill="@Fills.LightBlue" Shape="@Geometry.Quad" />
+      <DrawnShape Pen="@Pens.BlackBorderThin" Shape="@Geometry.Quad" />
+    </Batch>
+    
+  </Scope>
+  
+  
+</VGDocument>

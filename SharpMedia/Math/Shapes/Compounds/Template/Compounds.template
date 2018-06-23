@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Outline class-->
+  <TemplateSet Name="OutlineCompound2f" Extends="Shape2Df,ShapeInterfacesf">
+    <Template Name="ClassName" Value="OutlineCompound2f" />
+    <Template Name="ContourBuilder" Value="ContourBuilder" />
+    <Template Name="TesselationOptions" Value="TesselationOptionsf" />
+  </TemplateSet>
+  <TemplateSet Name="OutlineCompound2d" Extends="Shape2Dd,ShapeInterfacesd">
+    <Template Name="ClassName" Value="OutlineCompound2d" />
+    <Template Name="ContourBuilder" Value="ContourBuilder" />
+    <Template Name="TesselationOptions" Value="TesselationOptionsd" />
+  </TemplateSet>
+  <TemplateSet Name="OutlineCompound3f" Extends="Shape3Df,ShapeInterfacesf">
+    <Template Name="ClassName" Value="OutlineCompound3f" />
+    <Template Name="ContourBuilder" Value="ContourBuilder" />
+  </TemplateSet>
+  <TemplateSet Name="OutlineCompound3d" Extends="Shape3Dd,ShapeInterfacesd">
+    <Template Name="ClassName" Value="OutlineCompound3d" />
+    <Template Name="ContourBuilder" Value="ContourBuilder" />
+    
+  </TemplateSet>
+
+</TemplateSets>

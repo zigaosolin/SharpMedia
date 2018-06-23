@@ -1,0 +1,20 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Interpolation
+{
+    /// <summary>
+    /// A uniform interpolator interface.
+    /// </summary>
+    public interface @UniformStepper
+    {
+        /// <summary>
+        /// Interpolates value.
+        /// </summary>
+        /// <param name="t">In range [0,1]</param>
+        /// <returns>Result in range [0,1].</returns>
+        @TypeName Interpolate(@TypeName t);
+
+    }
+}

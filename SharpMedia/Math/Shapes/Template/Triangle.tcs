@@ -1,0 +1,694 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.Math.Matrix;
+using SharpMedia.Math.Shapes.Volumes;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// Any triangle in @Dim space.
+    /// </summary>
+    [Serializable]
+    public sealed class @ClassName :
+        @AreaD, @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+        //#ifdef 3D
+        , @AABoxBoundable, @SphereBoundable
+        //#endif
+
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The first point.
+        /// </summary>
+        public @Vector A;
+
+        /// <summary>
+        /// The second point.
+        /// </summary>
+        public @Vector B;
+
+        /// <summary>
+        /// The third point.
+        /// </summary>
+        public @Vector C;
+
+        #endregion
+
+        #region Properties
+
+        //#ifdef 3D
+
+        /// <summary>
+        /// The plane normal.
+        /// </summary>
+        public @Vector Normal
+        {
+            get
+            {
+                return @PlaneClassName.PlaneNormal(A, B, C);
+            }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// The ratio between the circe around the triangle and the biggest circle inside
+        /// the triangle.
+        /// </summary>
+        public @TypeName AspectRation
+        {
+            get
+            {
+                // Ration between maximum side and minimum atitute.
+                return MathHelper.Max(SideA, SideB, SideC) / MathHelper.Min(AltitudeA, AltitudeB, AltitudeC);
+            }
+        }
+
+        /// <summary>
+        /// Angle at A.
+        /// </summary>
+        public @TypeName Alpha
+        {
+            get
+            {
+                @Vector v1 = B - A;
+                @Vector v2 = C - A;
+
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Angle at B.
+        /// </summary>
+        public @TypeName Beta
+        {
+            get
+            {
+                @Vector v1 = A - B;
+                @Vector v2 = C - B;
+
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Angle at C.
+        /// </summary>
+        public @TypeName Gamma
+        {
+            get
+            {
+                @Vector v1 = B - C;
+                @Vector v2 = A - C;
+
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// The alpha angle to degrees.
+        /// </summary>
+        public @TypeName AlphaDegrees
+        {
+            get
+            {
+                return @ToDegrees(Alpha);
+            }
+        }
+
+        /// <summary>
+        /// The beta angle to degrees.
+        /// </summary>
+        public @TypeName BetaDegrees
+        {
+            get
+            {
+                return @ToDegrees(Beta);
+            }
+        }
+
+        /// <summary>
+        /// The gamma angle to degrees.
+        /// </summary>
+        public @TypeName GammaDegrees
+        {
+            get
+            {
+                return @ToDegrees(Gamma);
+            }
+        }
+
+        /// <summary>
+        /// The length of side A.
+        /// </summary>
+        public @TypeName SideA
+        {
+            get
+            {
+                return (C - B).Length;
+            }
+        }
+
+        /// <summary>
+        /// Length of side B.
+        /// </summary>
+        public @TypeName SideB
+        {
+            get
+            {
+                return (A - C).Length;
+            }
+        }
+
+        /// <summary>
+        /// Length of side C.
+        /// </summary>
+        public @TypeName SideC
+        {
+            get
+            {
+                return (B - C).Length;
+            }
+        }
+
+        /// <summary>
+        /// Altitute on A.
+        /// </summary>
+        public @TypeName AltitudeA
+        {
+            get
+            {
+                return @Sin(Beta) * SideC;
+            }
+        }
+
+        /// <summary>
+        /// Altitute on B.
+        /// </summary>
+        public @TypeName AltitudeB
+        {
+            get
+            {
+                return @Sin(Alpha) * SideC;
+            }
+        }
+
+        /// <summary>
+        /// Altitute on C.
+        /// </summary>
+        public @TypeName AltitudeC
+        {
+            get
+            {
+                return @Sin(Alpha) * SideA;
+            }
+        }
+
+        /// <summary>
+        /// Is triangle right.
+        /// </summary>
+        public bool IsRight
+        {
+            get
+            {
+                @Vector v1 = B - A;
+                @Vector v2 = C - B;
+                @Vector v3 = A - C;
+
+                if (@NearEqual(v1 * v2, @Zero)) return true;
+                if (@NearEqual(v2 * v3, @Zero)) return true;
+                if (@NearEqual(v3 * v1, @Zero)) return true;
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Is triangle equilateral.
+        /// </summary>
+        public bool IsEquilateral
+        {
+            get
+            {
+                return @NearEqual(SideA, SideB) &&
+                       @NearEqual(SideB, SideC);
+            }
+        }
+
+        /// <summary>
+        /// Is triangle isosceles.
+        /// </summary>
+        public bool IsIsosceles
+        {
+            get
+            {
+                return @NearEqual(SideA, SideB) ||
+                       @NearEqual(SideB, SideC) ||
+                       @NearEqual(SideC, SideA);
+            }
+        }
+
+
+        /// <summary>
+        /// Center of triangle.
+        /// </summary>
+        public @Vector Center
+        {
+            get
+            {
+                return (A + B + C) / (@TypeName)3;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Triangle constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Triangle construction.
+        /// </summary>
+        /// <param name="a">The point 1.</param>
+        /// <param name="b">The point 2.</param>
+        /// <param name="c">The point 3.</param>
+        public @ClassName(@Vector a, @Vector b, @Vector c)
+        {
+            this.A = a;
+            this.B = b;
+            this.C = c;
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Obtains barycentric coordinate relative to this triangle.
+        /// </summary>
+        /// <param name="input">The vector that lies in triangle plane.</param>
+        /// <returns></returns>
+        public @Vector2ClassName GetBarycentric(@Vector input)
+        {
+            //#ifdef 3D
+
+            // We need positive components of normal, only magnitude relavant.
+            @Vector normal = this.Normal;
+            normal = @Vector.ComponentMultiply(normal, normal);
+
+            if (normal.X > normal.Y)
+            {
+                if (normal.X > normal.Y)
+                {
+                    // We project to x axis, all xs are the same.
+                    return LinearSolver.SolveSystem(B.Y - A.Y, C.Y - A.Y,
+                                                    B.Z - A.Z, C.Z - A.Z,
+                                                    input.Y - A.Y, input.Z - A.Z);
+                }
+                else
+                {
+                    // We project to z axis, all zs are the same.
+                    return LinearSolver.SolveSystem(B.X - A.X, C.X - A.X,
+                                                    B.Y - A.Y, C.Y - A.Y,
+                                                    input.X - A.X, input.Y - A.Y);
+                }
+            }
+            else
+            {
+                if (normal.Y > normal.Z)
+                {
+                    // We project to y axis, all ys are the same.
+                    return LinearSolver.SolveSystem(B.X - A.X, C.X - A.X,
+                                                    B.Z - A.Z, C.Z - A.Z,
+                                                    input.X - A.X, input.Z - A.Z);
+                }
+                else
+                {
+                    // We project to z axis, all zs are the same.
+                    return LinearSolver.SolveSystem(B.X - A.X, C.X - A.X,
+                                                    B.Y - A.Y, C.Y - A.X,
+                                                    input.X - A.X, input.Y - A.Y);
+                }
+            }
+
+            //#else
+
+            // Automatic Z-projection for 2D.
+            return LinearSolver.SolveSystem(B.X - A.X, C.X - A.X,
+                                            B.Y - A.Y, C.Y - A.Y,
+                                            input.X - A.X, input.Y - A.Y);
+
+            //#endif
+        }
+
+        /// <summary>
+        /// Converts point from barycentric.
+        /// </summary>
+        /// <param name="baryCentric">The barycentric coordinate.</param>
+        /// <returns>The point in @Dim space on triangle.</returns>
+        public @Vector FromBaryCentric(@Vector2ClassName baryCentric)
+        {
+            return baryCentric.X * A + baryCentric.Y * B + (@One - baryCentric.X - baryCentric.Y) * C;
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Checks if bary centric component is inside triangle.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsBaryCentricInside(@Vector2ClassName v)
+        {
+            if (v.X < @Zero || v.X > @One) return false;
+            if (v.Y < @Zero || v.Y > @One) return false;
+            if (v.X + v.Y > @One) return false;
+            return true;
+        }
+
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.Append("Triangle : {");
+            builder.Append(A.ToString());
+            builder.Append(", ");
+            builder.Append(B.ToString());
+            builder.Append(", ");
+            builder.Append(C.ToString());
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName)
+            {
+                return this.Equals((@ClassName)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get 
+            { 
+                //#ifdef 2D
+                return (@TypeName)0.5 * (A.X * (B.Y - C.Y) + B.X * (C.Y - A.Y) + C.X * (A.Y - B.Y));
+                //#else
+                return (@TypeName)0.5 * ((B - A) ^ (C - A)).Length;
+                //#endif
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            if (resolution < @Zero || 
+                (resolution > SideA && resolution > SideB && resolution > SideC))
+            {
+
+                // We simply append vertices and proceed.
+                uint indexBase = builder.AddControlPoints(A, B, C);
+
+                // We also need indices if indexed.
+                if (builder.IsIndexed)
+                {
+                    builder.AddIndexedTriangles(
+                        new uint[] { indexBase, indexBase + 1, indexBase + 2 }
+                    );
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            if (t >= (@TypeName)0.0 && t <= (@One/(@TypeName)3))
+            {
+                @TypeName inter = (@TypeName)3 * t;
+                return A * (@One - inter) + B * inter;
+            }
+            else if (t <= ((@TypeName)2 / (@TypeName)3))
+            {
+                @TypeName inter = (@TypeName)3 * t - @One;
+                return B * (@One - inter) + C * inter;
+            }
+            else
+            {
+                @TypeName inter = (@TypeName)3 * t - (@TypeName)2;
+                return C * (@One - inter) + A * inter;
+            }
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            if (resolution < @Zero)
+            {
+                builder.AddLineStrip(true, A, B, C);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get { return SideA + SideB + SideC; }
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { A, B, C };
+            }
+            set
+            {
+                if (value.Length != 3) throw new ArgumentException("Three control points expected.");
+                A = value[0];
+                B = value[1];
+                C = value[2];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch(index)
+            {
+                case 0:
+                    A = cp;
+                    break;
+                case 1:
+                    B = cp;
+                    break;
+                case 2:
+                    C = cp;
+                    break;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-2 for triangle.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return A;
+                case 1:
+                    return B;
+                case 2:
+                    return C;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-2 for triangle.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 3; }
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector point)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            A = matrix * A;
+            B = matrix * B;
+            C = matrix * C;
+        }
+
+        #endregion
+
+        //#ifdef 3D
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                return @AABox.FromPoints(A, B, C);
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                return @Sphere.FromPoints(A, B, C);
+            }
+        }
+
+        #endregion
+
+        //#endif
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector.NearEqual(A, other.A) &&
+                @Vector.NearEqual(B, other.B) &&
+                @Vector.NearEqual(C, other.C))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(A, B, C);
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            @TypeName a1 = Area, a2 = other.Area;
+            if (a1 < a2) return -1;
+            else if (a1 == a2) return 0;
+            return 1;
+        }
+
+        #endregion
+    }
+
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        [CorrectnessTest]
+        public void Construction()
+        {
+            
+        }
+
+       
+
+    }
+#endif
+}

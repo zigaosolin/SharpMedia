@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- A differentiator. -->
+  <TemplateSet Name="Differentiator" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Float" Extends="Float,CoreMath">
+        <Template Name="Function" Value="Functionf" />
+      </TemplateSet>
+      <TemplateSet Name="Double" Extends="Double,CoreMath">
+        <Template Name="Function" Value="Functiond" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+  
+  <!-- Integrator -->
+  <TemplateSet Name="Integratorf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="IIntegratorf" />
+    <Template Name="Integrator" Value="IIntegratorf" />
+  </TemplateSet>
+  <TemplateSet Name="Integratord" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="IIntegratord" />
+    <Template Name="Integrator" Value="IIntegratord" />
+  </TemplateSet>
+  
+  <!-- Monte carlo integrator -->
+  <TemplateSet Name="MonteCarloIntegratorf" Extends="Integratorf">
+    <Template Name="ClassName" Value="MonteCarloIntegratorf" />
+  </TemplateSet>
+  <TemplateSet Name="MonteCarloIntegratord" Extends="Integratord">
+    <Template Name="ClassName" Value="MonteCarloIntegratord" />
+  </TemplateSet>
+  
+  <!-- Quadratic integrator -->
+  <TemplateSet Name="QuadraticIntegratorf" Extends="Integratorf">
+    <Template Name="ClassName" Value="QuadraticIntegratorf" />
+    <Template Name="Function" Value="Functionf" />
+  </TemplateSet>
+  <TemplateSet Name="QuadraticIntegratord" Extends="Integratord">
+    <Template Name="ClassName" Value="QuadraticIntegratord" />
+    <Template Name="Function" Value="Functiond" />
+  </TemplateSet>
+  
+  <!-- ODE base -->
+  <TemplateSet Name="ODEBasef" Extends="Float,CoreMath">
+    <Template Name="ODEListener" Value="IODEListenerf" />
+    <Template Name="ODESolver" Value="IODESolverf" />
+  </TemplateSet>
+  <TemplateSet Name="ODEBased" Extends="Double,CoreMath">
+    <Template Name="ODEListener" Value="IODEListenerd" />
+    <Template Name="ODESolver" Value="IODESolverd" />
+  </TemplateSet>
+
+
+
+</TemplateSets>

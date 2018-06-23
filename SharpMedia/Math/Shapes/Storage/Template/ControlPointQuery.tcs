@@ -1,0 +1,302 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.AspectOriented;
+using SharpMedia.Math.Matrix;
+
+namespace SharpMedia.Math.Shapes.Storage
+{
+
+
+    /// <summary>
+    /// A control point query is given a control over control point buffer views and
+    /// enables queriying certain control point attributes.
+    /// </summary>
+    [Serializable]
+    public class ControlPointQuery
+    {
+        #region Private Members
+        ControlPointBufferView[] buffers;
+        SortedList<string, uint> redirections = new SortedList<string, uint>();
+        #endregion
+
+        #region Helper Methods
+
+        void CalcRedirections()
+        {
+            for (int i = 0; i < buffers.Length; i++)
+            {
+                foreach (ControlPointFormat.Element el in buffers[i].Format)
+                {
+                    redirections.Add(el.Component, (uint)i);
+                }
+            }
+        }
+
+        ControlPointBufferView GetBuffer(string component)
+        {
+            uint val;
+            if (!redirections.TryGetValue(component, out val))
+            {
+                throw new ArgumentException(string.Format("Component {0} does not exist in control point query", component));
+            }
+            return buffers[val];
+
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Maximum number of control points of currently mapped buffers, 0 if none mapped.
+        /// </summary>
+        public uint MaxControlPoints
+        {
+            get
+            {
+                uint min = uint.MaxValue;
+                for (int i = 0; i < buffers.Length; i++)
+                {
+                    if (!buffers[i].IsMapped) continue;
+                    min = buffers[i].MaxControlPoints < min ? buffers[i].MaxControlPoints : min;
+                }
+                if (min == uint.MaxValue) return 0;
+                return min;
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// A standard constructors.
+        /// </summary>
+        /// <param name="buffers"></param>
+        public ControlPointQuery([NotNull] params ControlPointBufferView[] buffers)
+        {
+            this.buffers = buffers;
+            CalcRedirections();
+        }
+
+        #endregion
+
+        #region Mapping
+
+        /// <summary>
+        /// Mapps all buffers.
+        /// </summary>
+        /// <param name="options"></param>
+        public void Map(MapOptions options)
+        {
+            for (int i = 0; i < buffers.Length; i++)
+            {
+                buffers[i].Map(options);
+            }
+        }
+
+        /// <summary>
+        /// Unmaps all mapped buffers.
+        /// </summary>
+        public void UnMap()
+        {
+            for (int i = 0; i < buffers.Length; i++)
+            {
+                if (buffers[i].IsMapped)
+                    buffers[i].UnMap();
+            }
+        }
+
+        /// <summary>
+        /// Maps buffers that are required to be mapped.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="reqComponents"></param>
+        public void Map(MapOptions options, string[] reqComponents)
+        {
+            for (int i = 0; i < buffers.Length; i++)
+            {
+                bool needsMapping = false;
+                for (int j = 0; j < reqComponents.Length; j++)
+                {
+                    if (buffers[i].Format.HasComponent(reqComponents[j])) { needsMapping = true; break; }
+                }
+
+                if (needsMapping) buffers[i].Map(options);
+            }
+        }
+
+        #endregion
+
+        #region Read Queries
+
+        //#foreach Types
+
+        /// <summary>
+        /// A get accessor.
+        /// </summary>
+        /// <remarks>This query is not to be used in performance critical parts of application.
+        /// Use array getting queries or structures queries for that matter.</remarks>
+        /// <param name="component">The component name.</param>
+        /// <param name="index">The index in buffer, no matter what kind of binding this
+        /// component belongs to (instance, per vertex).</param>
+        /// <returns></returns>
+        public @TypeName @Get(string component, uint index)
+        {
+            return GetBuffer(component).@Get(component, index);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="indices">Indices in array.</param>
+        /// <returns></returns>
+        public @TypeName[] @Get(string component, uint[] indices)
+        {
+            return GetBuffer(component).@Get(component, indices);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component">The component name</param>
+        /// <param name="baseOffset">Base offset.</param>
+        /// <param name="count">Number of data.</param>
+        /// <returns></returns>
+        public @TypeName[] @Get(string component, uint baseOffset, uint count)
+        {
+            return GetBuffer(component).@Get(component, baseOffset, count);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component">Component name.</param>
+        /// <param name="indices">Indices of data, no checks are made.</param>
+        /// <param name="data">The actual place where data is written.</param>
+        public void Get(string component, uint[] indices, @TypeName[] data)
+        {
+            GetBuffer(component).Get(component, indices, data);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">Base offset for vertices.</param>
+        /// <param name="count">Number of verices, must not be more than data.Length.</param>
+        /// <param name="data">Where data is written.</param>
+        public void Get(string component, uint baseOffset, uint count, @TypeName[] data)
+        {
+            GetBuffer(component).Get(component, baseOffset, count, data);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="baseOffset"></param>
+        /// <param name="data"></param>
+        public void Get(string component, uint baseOffset, @TypeName[] data)
+        {
+            GetBuffer(component).Get(component, baseOffset, data);
+        }
+
+        //#endfor
+
+        // TODO: generic getters
+
+        // TODO: add matrix queries
+
+        #endregion
+
+        #region Write Queries
+
+        //#foreach Types
+
+        /// <summary>
+        /// A set accessor.
+        /// </summary>
+        /// <remarks>This query is not to be used in performance critical parts of application. Use
+        /// array setters or structure based setters for that mattter.</remarks>
+        /// <param name="component">The component name.</param>
+        /// <param name="index">The index in buffer, no matter what kind of binding this
+        /// component belongs to (instance, per vertex).</param>
+        public void Set(string component, uint index, @TypeName data)
+        {
+            GetBuffer(component).Set(component, index, data);
+        }
+
+
+        /// <summary>
+        /// Sets an array of data.
+        /// </summary>
+        /// <param name="component">Component name.</param>
+        /// <param name="indices">Indices of data, no checks are made.</param>
+        /// <param name="data">The actual place where data is held.</param>
+        public void Set(string component, uint[] indices, @TypeName[] data)
+        {
+            GetBuffer(component).Set(component, indices, data);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">Base offset for vertices.</param>
+        /// <param name="count">Number of verices, must not be more than data.Length.</param>
+        /// <param name="data">Where data is held.</param>
+        public void Set(string component, uint baseOffset, uint count, @TypeName[] data)
+        {
+            GetBuffer(component).Set(component, baseOffset, count, data);
+        }
+
+        /// <summary>
+        /// Obtains an array of data.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="baseOffset"></param>
+        /// <param name="data"></param>
+        public void Set(string component, uint baseOffset, @TypeName[] data)
+        {
+            GetBuffer(component).Set(component, baseOffset, data);
+        }
+
+        //#endfor
+
+        // TODO: add matrix queries
+
+        #endregion
+
+        // TODO: add (optimized) structure transfer support
+
+    }
+
+#if SHARPMEDIA_TESTSUITE
+
+    [TestSuite]
+    internal class ControlPointQueryTest
+    {
+        
+
+        [CorrectnessTest]
+        public void ControlPointQuery1()
+        {
+            ControlPointBufferView view1 = new ControlPointBufferView(
+                ControlPointFormat.Parse("P.Fx2"), new MemoryBuffer(2 * 4 * 3));
+            ControlPointBufferView view2 = new ControlPointBufferView(
+                ControlPointFormat.Parse("T0.Fx2 ReflectionIndex.F"), new MemoryBuffer((2 * 4 + 4) * 3));
+
+            
+
+            // We could also manually create mapping (without attributes)! or set data manually
+            // on per buffer basis (probably the fastest).
+            
+        }
+    }
+
+#endif
+}

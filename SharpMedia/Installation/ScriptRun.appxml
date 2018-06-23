@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="Script Run"
+	friendly="Application that is able to run scripts"
+	id="B889D2F8-24E4-46b0-8E28-09449C6D84A2"
+	root="Main"
+	type="SingleDocument">
+	
+	<!-- Replication of the application descriptor -->
+	<Components>
+		<Component
+			Id="Main"
+			Type="SharpMedia.Scripting.ScriptRunApp" />
+	</Components>
+</Application>
+
+
+  

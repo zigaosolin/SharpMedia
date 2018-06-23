@@ -1,0 +1,238 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes
+{
+
+    /// <summary>
+    /// A @Dim ray.
+    /// </summary>
+    [Serializable]
+    public sealed class @ClassName :
+        @ControlPointsD, @ContainsPointD, @TransformableD,
+        ICloneable<@ClassName>, IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>
+    {
+
+        #region Public Members
+
+        /// <summary>
+        /// The origin of ray.
+        /// </summary>
+        public @Vector Origin;
+
+        /// <summary>
+        /// The direction of ray.
+        /// </summary>
+        public @Vector Direction;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Contructor with vector and direction.
+        /// </summary>
+        /// <param name="p1">The starting point.</param>
+        /// <param name="d">Direction of vector.</param>
+        public @ClassName(@Vector p1, @Vector d)
+        {
+            Origin = p1;
+            Direction = d;
+        }
+
+        /// <summary>
+        /// Creates the ray from points.
+        /// </summary>
+        /// <param name="start">Starting point.</param>
+        /// <param name="other">The other point.</param>
+        /// <returns>Ray that begins in start and goes through other.</returns>
+        public static @ClassName FromPoints(@Vector start, @Vector other)
+        {
+            return new @ClassName(start, start - other);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Other point on ray.
+        /// </summary>
+        public @Vector OtherPoint
+        {
+            get { return Origin + Direction; }
+            set { Direction = (value - Origin).Normal; }
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(70);
+            builder.Append("Ray : {");
+            builder.Append(Origin);
+            builder.Append(", ");
+            builder.Append(Direction);
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { Origin, Origin + Direction };
+            }
+            set
+            {
+                if (value.Length != 2) throw new ArgumentException("Two control points expected.");
+                Origin = value[0];
+                Direction = value[1] - value[0];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch (index)
+            {
+                case 0:
+                    Origin = cp;
+                    break;
+                case 1:
+                    Direction = cp - Origin;
+                    break;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-1 for control points.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return Origin;
+                case 1:
+                    return Origin + Direction;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-1 for ray.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 2; }
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector point)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            @Vector other = OtherPoint;
+            Origin = matrix * Origin;
+            other = matrix * other;
+            OtherPoint = other;
+        }
+
+        #endregion
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return Origin;
+            yield return Origin + Direction;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return Origin;
+            yield return Origin + Direction;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector.NearEqual(Origin, other.Origin) &&
+                @Vector.NearEqual(Direction, other.Direction))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(Origin, Direction);
+        }
+
+        #endregion
+
+        #region IComparable<Triangled> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = Origin.CompareTo(other.Origin);
+            if (cmp == 0) return Direction.CompareTo(other.Direction);
+            return cmp;
+        }
+
+        #endregion
+    }
+
+
+}

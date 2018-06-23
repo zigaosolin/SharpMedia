@@ -1,0 +1,465 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.AspectOriented;
+using SharpMedia.Math.Shapes.Volumes;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// A bezier curve, using 3 control points to make the curve.
+    /// </summary>
+    public sealed class @ClassName :
+        @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+        //#ifdef 3D
+        , @AABoxBoundable, @SphereBoundable
+        //#endif
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The first control point.
+        /// </summary>
+        public @Vector A;
+
+        /// <summary>
+        /// The middle control point.
+        /// </summary>
+        public @Vector B;
+
+        /// <summary>
+        /// The end control point.
+        /// </summary>
+        public @Vector C;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Is it closed shape.
+        /// </summary>
+        public bool IsClosed
+        {
+            get
+            {
+                return @Vector.NearEqual(A, C);
+            }
+        }
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Are two bezier curves connected to each other.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public bool IsConnected(@ClassName other)
+        {
+            return @Vector.NearEqual(this.A, other.A) ||
+                   @Vector.NearEqual(this.A, other.C) ||
+                   @Vector.NearEqual(this.C, other.A) ||
+                   @Vector.NearEqual(this.C, other.C);
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Creates bezier curve from 3 points (not control points).
+        /// </summary>
+        /// <param name="p0">Beginning point of bezier curve.</param>
+        /// <param name="p1">Middle point </param>
+        /// <returns>Bezier curve.</returns>
+        public static @ClassName Approximate(@Vector p0, @Vector p1, @Vector p2)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Approximates the points by bezier curve. Points must be close to the line,
+        /// first and last points are fixed.
+        /// </summary>
+        /// <param name="ps">The points that represent it.</param>
+        /// <param name="maxBeziers">Maximum number of curves returned.</param>
+        /// <returns>Bezier curves.</returns>
+        public static @ClassName[] Approximate([NotEmptyArray] @Vector[] ps, uint maxBeziers)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Constructor with all three points.
+        /// </summary>
+        /// <param name="p1">First control point.</param>
+        /// <param name="p2">Second control point.</param>
+        /// <param name="p3">Third control point.</param>
+        public @ClassName(@Vector p1, @Vector p2, @Vector p3)
+        {
+            A = p1;
+            B = p2;
+            C = p3;
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.Append("Bezier : {");
+            builder.Append(A.ToString());
+            builder.Append(", ");
+            builder.Append(B.ToString());
+            builder.Append(", ");
+            builder.Append(C.ToString());
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return false;
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector p)
+        {
+            // We solve quadratic equation for t.
+            // p0.x = a.x * (1-t)^2 + b.x * t * (1-t) + c.x * t^2
+
+            @TypeName t1, t2;
+
+            // If first is non-linear.
+            if (!MathHelper.NearEqual(A.X - (@TypeName)2.0 * B.X + C.X, @Zero))
+            {
+                // If no real solutions, this is not true.
+                if (!Functions.Polynomial.Roots(A.X - (@TypeName)2.0 * B.X + C.X, (@TypeName)2.0 * B.X - (@TypeName)2.0 * A.X, A.X - p.X,
+                                                out t1, out t2)) return false;
+            }
+            else if (!MathHelper.NearEqual(A.Y - (@TypeName)2.0 * B.Y + C.Y, @Zero))
+            {
+                // If no real solutions, this is not true.
+                if (!Functions.Polynomial.Roots(A.Y - (@TypeName)2.0 * B.Y + C.Y, (@TypeName)2.0 * B.Y - (@TypeName)2.0 * A.Y, A.Y - p.Y,
+                                                out t1, out t2)) return false;
+
+            }
+            //#ifdef 3D
+            else if (!MathHelper.NearEqual(A.Z - (@TypeName)2.0 * B.Z + C.Z, @Zero))
+            {
+                // If no real solutions, this is not true.
+                if (!Functions.Polynomial.Roots(A.Z - (@TypeName)2.0 * B.Z + C.Z, (@TypeName)2.0 * B.Z - (@TypeName)2.0 * A.Z, A.Z - p.Z,
+                                                out t1, out t2)) return false;
+            }
+            //#endif
+            else
+            {
+                return false;
+            }
+
+            // We check if any of parameters satisfies:
+            if (t1 >= @Zero && t1 <= @One)
+            {
+                if (@Vector.NearEqual(p, Sample(t1))) return true;
+            }
+            if (t2 >= 0.0 && t2 <= 1.0)
+            {
+                if (@Vector.NearEqual(p, Sample(t2))) return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            @TypeName t1 = @One - t;
+            return t1 * t1 * A + (@TypeName)2 * t1 * t * B + t * t * C;
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get
+            {
+                // Those parameters can be changed for "section" length.
+                @TypeName t1 = @Zero, t2 = @One;
+
+                @Vector spec;
+                //#ifdef 2D
+                spec = new @Vector(1, 1);
+                //#else
+                spec = new @Vector(1, 1, 1);
+                //#endif
+
+                // We solve the equation. We first compute coefficients for first derivate.
+                @Vector M = (@TypeName)2.0 * (-(@TypeName)2.0 * @Vector.ComponentMultiply(A, B) + C);
+                @Vector N = (@TypeName)2.0 * (@Vector.ComponentMultiply(A, B) - A);
+
+                // Now we must compute integral( sqrt((dx/dt)^2 + (dy/dt)^2 + (dz/dt)^2)), we fit in to the
+                // formula and compute new coeficients of sqrt(polinomial) to integrate.
+                @TypeName C0 = M * M;
+                @TypeName C1 = (@TypeName)2.0 * M * N;
+                @TypeName C2 = N * N;
+
+                // We now compute the actual length by solving the integral:
+                return (C1 + (@TypeName)2.0 * C0 * t1) / ((@TypeName)4.0 * C0) * @Sqrt(t1 * (C1 + t1 * C0) + C2) -
+                       (C1 + (@TypeName)2.0 * C0 * t2) / ((@TypeName)4.0 * C0) * @Sqrt(t2 * (C1 + t2 * C0) + C2) +
+                       ((@TypeName)4.0 * C0 * C2 - C1 * C1) / ((@TypeName)8.0 * @Sqrt(C0 * C0 * C0)) *
+                       @Ln(((@TypeName)2.0 * C0 * t1 + C1 + (@TypeName)2.0 * @Sqrt(C0 * (t1 * (-C1 + C0 * t1) + C2))) /
+                                     ((@TypeName)2.0 * C0 * t2 + C1 + (@TypeName)2.0 * @Sqrt(C0 * (t2 * (-C1 + C0 * t2) + C2))));
+            }
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { A, B, C };
+            }
+            set
+            {
+                if (value.Length != 3) throw new ArgumentException("Three control points expected for bezier curve.");
+                A = value[0];
+                B = value[1];
+                C = value[2];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch (index)
+            {
+                case 0:
+                    A = cp;
+                    break;
+                case 1:
+                    B = cp;
+                    break;
+                case 2:
+                    C = cp;
+                    break;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-2 for bezier curve.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return A;
+                case 1:
+                    return B;
+                case 2:
+                    return C;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-2 for bezier curve.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 3; }
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            A = matrix * A;
+            B = matrix * B;
+            C = matrix * C;
+        }
+
+        #endregion
+
+        //#ifdef 3D
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                // Possibly not optimal!
+                return @AABox.FromPoints(A, B, C);
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                // Possibly not optimal!
+                return @Sphere.FromPoints(A, B, C);
+            }
+        }
+
+        #endregion
+
+        //#endif
+
+        #region ICloneable<@ClassName> Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(A, B, C);
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector.NearEqual(this.A, other.A) &&
+                @Vector.NearEqual(this.B, other.B) &&
+                @Vector.NearEqual(this.C, other.C)) return true;
+            return false;
+        }
+        #endregion
+
+        #region IComparable<ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = A.CompareTo(other.A);
+            if (cmp != 0) return cmp;
+            cmp = B.CompareTo(other.B);
+            if (cmp != 0) return cmp;
+            return C.CompareTo(other.C);
+
+        }
+
+        #endregion
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+        }
+
+        #endregion
+
+
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        /*
+        [CorrectnessTest]
+        public void Properties()
+        {
+            @ClassName b = new @ClassName(new @Vector(0, 0, 0),
+                                    new @Vector(1, 1, 0),
+                                    new @Vector(2, 0, 0));
+
+            Assert.AreEqual(false, b.IsClosed);
+            Assert.AreEqual(new @Vector(0, 0, 0), b.A);
+            Assert.AreEqual(new @Vector(1, 1, 0), b.B);
+            Assert.AreEqual(new @Vector(2, 0, 0), b.C);
+            Assert.AreEqual(new @Vector(0, 0, 0), b.Sample(0.0));
+            Assert.AreEqual(new @Vector(2, 0, 0), b.Sample(1.0));
+        }
+
+        [CorrectnessTest]
+        public void Contains()
+        {
+            @ClassName b = new @ClassName(new @Vector(0, 0, 0),
+                                    new @Vector(1, 1, 0),
+                                    new @Vector(2, 0, 0));
+
+            @Vector p = b.Sample(0.3);
+            Assert.IsTrue(b.ContainsPoint(p));
+            Assert.IsFalse(b.ContainsPoint(p + new @Vector(0, 0, 1)));
+        }
+
+        [CorrectnessTest]
+        public void Intersections()
+        {
+
+
+        }*/
+    }
+#endif
+}

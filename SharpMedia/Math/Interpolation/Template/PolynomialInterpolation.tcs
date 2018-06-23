@@ -1,0 +1,94 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Interpolation
+{
+
+    /// <summary>
+    /// Provides rountines for various polynomial interpolations.
+    /// </summary>
+    public static class PolynomialInterpolation
+    {
+        //#foreach Type
+
+        #region @TypeName Version
+
+        /// <summary>
+        /// A simple linear interpolation.
+        /// </summary>
+        public static @TypeName Linear(@TypeName v1, @TypeName v2, @TypeName t)
+        {
+            return v2 * t + v1 * (@One - t);
+        }
+
+        /// <summary>
+        /// A simple linear interpolation.
+        /// </summary>
+        public static @Vector2ClassName Linear(@Vector2ClassName v1, @Vector2ClassName v2, @TypeName t)
+        {
+            return v2 * t + v1 * (@One - t);
+        }
+
+        /// <summary>
+        /// A simple linear interpolation.
+        /// </summary>
+        public static @Vector3ClassName Linear(@Vector3ClassName v1, @Vector3ClassName v2, @TypeName t)
+        {
+            return v2 * t + v1 * (@One - t);
+        }
+
+        /// <summary>
+        /// A simple linear interpolation.
+        /// </summary>
+        public static Vector4d Linear(Vector4d v1, Vector4d v2, @TypeName t)
+        {
+            return v2 * t + v1 * (@One - t);
+        }
+
+        /// <summary>
+        /// Interpolates using N-th order polynomal interpolation. It is better to
+        /// construct polynomial (<see cref="Functions.Polinomiald"/>) and then use interpolation
+        /// factor many times then to use this method, because polynomial must be recreated every time.
+        /// </summary>
+        /// <param name="xy">XY values.</param>
+        /// <param name="x">Looking Y for this X</param>
+        public static @TypeName Polynomial(@Vector2ClassName[] xy, @TypeName x)
+        {
+            Functions.Polynomial p = Functions.Polynomial.FromPoints(xy);
+            return p.Eval(x);
+        }
+
+        /// <summary>
+        /// Quadratic interpolation.
+        /// </summary>
+        /// <param name="v1">Value at t=0.</param>
+        /// <param name="v2">Value at t=0.5.</param>
+        /// <param name="v3">Value at t=@One.</param>
+        /// <param name="t">The t, interpolator value.</param>
+        /// <returns>Cubic interpolated value.</returns>
+        public static @TypeName Quadratic(@TypeName v1, @TypeName v2, @TypeName v3, @TypeName t)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Cubic interpolation.
+        /// </summary>
+        /// <param name="v1">Value at t=0.</param>
+        /// <param name="v2">Value at t=0.33.</param>
+        /// <param name="v3">Value at t=0.66.</param>
+        /// <param name="v4">Value at t=@One.</param>
+        /// <param name="t">The t, interpolator value.</param>
+        /// <returns>Cubic interpolated value.</returns>
+        public static @TypeName Cubic(@TypeName v1, @TypeName v2, @TypeName v3, @TypeName v4, @TypeName t)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        //#endfor
+
+    }
+}

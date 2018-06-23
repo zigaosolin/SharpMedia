@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Library
+	xversion ="1.0.0"
+	name="SharpMedia.Standard"
+	friendly="A standard configurations exposed as standard SharpMedia library"
+	id="44AAE611-F005-492e-B55F-9E11A1C4F9FA" >
+
+  <!-- Components defined in library. -->
+	<Components>
+     
+    <!-- Caching configurations -->
+    <Component Id="NullCache" Type="SharpMedia.Caching.Cache">
+      
+    </Component>
+    
+    
+    <!-- Compiler facilities -->
+    
+    
+    <!-- Database configuration -->
+    <Component Id="DatabaseManager" Type="SharpMedia.Database.DatabaseManager" />
+    
+    
+    <!-- Console configurations -->
+    
+    <!-- Logging configurations -->
+    <Component Id="LocalLogger" Type="SharpMedia.Logging.Local.LocalLoggingManager" File="LocalLog.txt" />
+    <Component Id="LocalLoggerConsole" Type="SharpMedia.Logging.Local.LocalLoggingManager" Log="${StdOutput}" />
+
+    <Component Id="SilentConsole" MatchAgainstType="false" Type="SharpMedia.Components.TextConsole.SilentConsole" />
+	</Components>
+</Library>

@@ -1,0 +1,88 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{346A60B0-1AC9-4F41-80C7-8E40BE863754}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Components.BaseSystem</RootNamespace>
+    <AssemblyName>SharpMedia.Components.BaseSystem</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOPOSTCOMPILE;SHARPMEDIA_TESTSUITE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Init\InitApp.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TextShell\ExecutionContext.cs" />
+    <Compile Include="TextShell\ExecutionTree\AndCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\ConstantCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\ExecutionCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\ExecutionCommandParser.cs" />
+    <Compile Include="TextShell\ExecutionTree\MethodCallCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\OrCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\ParallelCommand.cs" />
+    <Compile Include="TextShell\ExecutionTree\PipeCommand.cs" />
+    <Compile Include="TextShell\Script.cs" />
+    <Compile Include="TextShell\ShellApp.cs" />
+    <Compile Include="TextShell\ShellCommandAttribute.cs" />
+    <Compile Include="TextShell\ShellCommands.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMedia\SharpMedia.csproj">
+      <Project>{0F4D22A5-E0DC-4579-9734-A7D5A2AEE34F}</Project>
+      <Name>SharpMedia</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\TextShell.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Init.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\BaseSystem.ipkg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

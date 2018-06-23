@@ -1,0 +1,679 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{0F4D22A5-E0DC-4579-9734-A7D5A2AEE34F}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia</RootNamespace>
+    <AssemblyName>SharpMedia</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SharpMedia.snk</AssemblyOriginatorKeyFile>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOPOSTCOMPILE;SHARPMEDIA_TESTSUITE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.4.6.0, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL" />
+    <Reference Include="PostSharp.Core, Version=1.5.1.409, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL" />
+    <Reference Include="PostSharp.Public, Version=1.5.1.409, Culture=neutral, PublicKeyToken=b13fd38b8f9c99d7, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Runtime.Serialization.Formatters.Soap" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AspectOriented\CallOnExceptionAttribute.cs" />
+    <Compile Include="AspectOriented\CloakOnExceptionAttribute.cs" />
+    <Compile Include="AspectOriented\ConstantReturnAttribute.cs" />
+    <Compile Include="AspectOriented\DisposeOnExceptionAttribute.cs" />
+    <Compile Include="AspectOriented\EqualAttribute.cs" />
+    <Compile Include="AspectOriented\Framework\IWeaves.cs" />
+    <Compile Include="AspectOriented\Framework\ModuleWeaving.cs" />
+    <Compile Include="AspectOriented\Framework\ParameterAspectAttribute.cs" />
+    <Compile Include="AspectOriented\Framework\WeaveAttributes.cs" />
+    <Compile Include="AspectOriented\IgnoreBaseAspectsAttribute.cs" />
+    <Compile Include="AspectOriented\InBoundsAttribute.cs" />
+    <Compile Include="AspectOriented\LogOnExceptionAttribute.cs" />
+    <Compile Include="AspectOriented\MaxAttribute.cs" />
+    <Compile Include="AspectOriented\MinAttribute.cs" />
+    <Compile Include="AspectOriented\NotEmptyArrayAttribute.cs" />
+    <Compile Include="AspectOriented\NotEmptyAttribute.cs" />
+    <Compile Include="AspectOriented\NotEqualAttribute.cs" />
+    <Compile Include="AspectOriented\NotNullAttribute.cs" />
+    <Compile Include="AspectOriented\NullAttribute.cs" />
+    <Compile Include="AspectOriented\OneOfAttribute.cs" />
+    <Compile Include="AspectOriented\PowerOfTwoAttribute.cs" />
+    <Compile Include="AspectOriented\RegexAttribute.cs" />
+    <Compile Include="AspectOriented\RetryOnExceptionAttribute.cs" />
+    <Compile Include="AspectOriented\SpecificTypeAttribute.cs" />
+    <Compile Include="AspectOriented\SupressOnExceptionAttribute.cs" />
+    <Compile Include="Caching\Cache.cs" />
+    <Compile Include="Caching\ICacheable.cs" />
+    <Compile Include="Caching\ICache.cs" />
+    <Compile Include="Caching\IEvaluator.cs" />
+    <Compile Include="Caching\IHierarchyCache.cs" />
+    <Compile Include="Caching\LRU.cs" />
+    <Compile Include="Common.cs" />
+    <Compile Include="Components\Applications\ApplicationInfo.cs" />
+    <Compile Include="Components\Applications\Application.cs" />
+    <Compile Include="Components\Applications\AutoParametrization.cs" />
+    <Compile Include="Components\Applications\IApplication.cs" />
+    <Compile Include="Components\Applications\IApplicationInstanceManagement.cs" />
+    <Compile Include="Components\Applications\ParametrizationAttributes.cs" />
+    <Compile Include="Components\Configuration\ApplicationIsLiveComponent.cs" />
+    <Compile Include="Components\Configuration\ClassAttributes.cs" />
+    <Compile Include="Components\Configuration\ComponentConfigurationException.cs" />
+    <Compile Include="Components\Configuration\ComponentDirectory.cs" />
+    <Compile Include="Components\Configuration\ComponentHostExitedException.cs" />
+    <Compile Include="Components\Configuration\ComponentLookupException.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\AlwaysNewConfiguredComponent.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\ConfiguredComponent.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\Instance.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\InstanceViewSupport.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\NameOverride.cs" />
+    <Compile Include="Components\Configuration\ComponentProviders\SimpleClass.cs" />
+    <Compile Include="Components\Configuration\ComponentSecurityException.cs" />
+    <Compile Include="Components\Configuration\ConfigurationValues\ClassName.cs" />
+    <Compile Include="Components\Configuration\ConfigurationValues\ComponentRef.cs" />
+    <Compile Include="Components\Configuration\ConfigurationValues\ProviderValue.cs" />
+    <Compile Include="Components\Configuration\ConfigurationValues\Simple.cs" />
+    <Compile Include="Components\Configuration\IComponentAccessSecurity.cs" />
+    <Compile Include="Components\Configuration\IComponentConfiguration.cs" />
+    <Compile Include="Components\Configuration\IComponentDirectory.cs" />
+    <Compile Include="Components\Configuration\IComponentPostInitialization.cs" />
+    <Compile Include="Components\Configuration\IComponentProvider.cs" />
+    <Compile Include="Components\Configuration\IConfigurationValue.cs" />
+    <Compile Include="Components\Configuration\ImportExportControl.cs" />
+    <Compile Include="Components\Configuration\IRequirement.cs" />
+    <Compile Include="Components\Configuration\IRequiresComponentDirectory.cs" />
+    <Compile Include="Components\Configuration\IRequiresConfiguration.cs" />
+    <Compile Include="Components\Configuration\Libraries\ILibraryDirectory.cs" />
+    <Compile Include="Components\Configuration\PropertyAttributes.cs" />
+    <Compile Include="Components\Configuration\Requirements\ConstructorConfiguration.cs" />
+    <Compile Include="Components\Configuration\Requirements\PropertyRequirement.cs" />
+    <Compile Include="Components\Configuration\Requirements\TypeRequiredConfiguration.cs" />
+    <Compile Include="Components\Configuration\StandardConfiguration.cs" />
+    <Compile Include="Components\Database\Application.cs" />
+    <Compile Include="Components\Database\Assembly.cs" />
+    <Compile Include="Components\Database\ComponentParameter.cs" />
+    <Compile Include="Components\Database\Library.cs" />
+    <Compile Include="Components\Documents\IDocumentManagementRegistry.cs" />
+    <Compile Include="Components\TextConsole\SilentConsole.cs" />
+    <Compile Include="Database\Aspects\AspectNode.cs" />
+    <Compile Include="Database\Aspects\CompositeNode.cs" />
+    <Compile Include="Database\Enumerators.cs" />
+    <Compile Include="Database\Host\NullTypedStream.cs" />
+    <Compile Include="Database\Indexing\IIndexAccess.cs" />
+    <Compile Include="Database\Indexing\StreamIndexTable.cs" />
+    <Compile Include="Database\Indexing\IndexTable.cs" />
+    <Compile Include="Database\Ldap\ILdapIdentifier.cs" />
+    <Compile Include="Database\Ldap\LdapDefaultIdentifier.cs" />
+    <Compile Include="Database\Ldap\LdapHelper.cs" />
+    <Compile Include="Database\Ldap\LdapDatabase.cs" />
+    <Compile Include="Database\Ldap\LdapEntry.cs" />
+    <Compile Include="Database\Ldap\LdapNode.cs" />
+    <Compile Include="Database\Ldap\LdapTuple.cs" />
+    <Compile Include="Database\Ldap\LdapTypedStream.cs" />
+    <Compile Include="Database\Node.cs" />
+    <Compile Include="Database\DatabaseManager.cs" />
+    <Compile Include="Database\ITransparent.cs" />
+    <Compile Include="Database\Query\Expressions\AutoSelectDelegateExpression.cs" />
+    <Compile Include="Database\Query\Expressions\DelegateExpression.cs" />
+    <Compile Include="Database\Query\Expressions\IJoinExpression.cs" />
+    <Compile Include="Database\Query\Expressions\IQueryExpression.cs" />
+    <Compile Include="Database\Indexing\IndexedAttribute.cs" />
+    <Compile Include="Database\Query\Query.cs" />
+    <Compile Include="Database\Query\QueryResults.cs" />
+    <Compile Include="Database\Remote\RemoteDatabase.cs" />
+    <Compile Include="Database\Remote\RemoteDatabaseServer.cs" />
+    <Compile Include="Database\SingleValueTypedStream.cs" />
+    <Compile Include="Database\Transactions\IAtomic.cs" />
+    <Compile Include="Database\TypedStream.cs" />
+    <Compile Include="Components\Documents\IDocumentManagement.cs" />
+    <Compile Include="Components\IAssemblyLoader.cs" />
+    <Compile Include="Components\Installation\Commands\CopySourceList.cs" />
+    <Compile Include="Components\Installation\Commands\DirNodeCreate.cs" />
+    <Compile Include="Components\Installation\Commands\FailIfInstalled.cs" />
+    <Compile Include="Components\Installation\Commands\FailIfNotInstalled.cs" />
+    <Compile Include="Components\Installation\Commands\FailIfNotRunning.cs" />
+    <Compile Include="Components\Installation\Commands\FailIfRunning.cs" />
+    <Compile Include="Components\Installation\Commands\InstallApplication.cs" />
+    <Compile Include="Components\Installation\Commands\RegisterService.cs" />
+    <Compile Include="Components\Installation\Destinations\InstallRelative.cs" />
+    <Compile Include="Components\Installation\Exceptions.cs" />
+    <Compile Include="Components\Installation\ICommand.cs" />
+    <Compile Include="Components\Installation\InstallationService.cs" />
+    <Compile Include="Components\Installation\InstallEnvironment.cs" />
+    <Compile Include="Components\Installation\IPackage.cs" />
+    <Compile Include="Components\Installation\IPackageAuthoring.cs" />
+    <Compile Include="Components\Installation\SerializableXmlDocument.cs" />
+    <Compile Include="Components\Installation\SourceDestination.cs" />
+    <Compile Include="Components\Installation\Sources\ApplicationDescriptorSource.cs" />
+    <Compile Include="Components\Installation\Sources\AssemblySource.cs" />
+    <Compile Include="Components\Installation\Sources\LibrarySource.cs" />
+    <Compile Include="Components\Installation\Sources\PackageContained.cs" />
+    <Compile Include="Components\IPublishedInfo.cs" />
+    <Compile Include="Components\Services\IServiceControl.cs" />
+    <Compile Include="Components\Services\IServiceRegistry.cs" />
+    <Compile Include="Components\Services\Service.cs" />
+    <Compile Include="Components\TextConsole\IConsole.cs" />
+    <Compile Include="Components\TextConsole\Key.cs" />
+    <Compile Include="Components\TextConsole\StandardConsole.cs" />
+    <Compile Include="Components\URLSchemes.cs" />
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\Managed\ManagedDatabaseManager.cs" />
+    <Compile Include="Database\DatabasePersistency.cs" />
+    <Compile Include="Database\DBTestSuite.cs" />
+    <Compile Include="Database\Driver.cs" />
+    <Compile Include="Database\Exceptions.cs" />
+    <Compile Include="Database\Host\DirectoryNode.cs" />
+    <Compile Include="Database\Host\FileNode.cs" />
+    <Compile Include="Database\Host\HostDatabase.cs" />
+    <Compile Include="Database\Managed\ManagedCommonNode.cs" />
+    <Compile Include="Database\Managed\ManagedNode.cs" />
+    <Compile Include="Database\Managed\ManagedTypedStream.cs" />
+    <Compile Include="Database\Memory\CyclicPersistantDatabase.cs" />
+    <Compile Include="Database\Memory\MemoryDatabase.cs" />
+    <Compile Include="Database\Memory\MemoryNode.cs" />
+    <Compile Include="Database\Memory\MemoryNodeCommon.cs" />
+    <Compile Include="Database\Memory\MemoryTypedStream.cs" />
+    <Compile Include="Database\Aspects\INode.cs" />
+    <Compile Include="Database\Managed\PathHelper.cs" />
+    <Compile Include="Database\Aspects\ITypedStream.cs" />
+    <Compile Include="Database\Managed\TypedStreamContainer.cs" />
+    <Compile Include="Database\Managed\VersionRef.cs" />
+    <Compile Include="EventActions.cs" />
+    <Compile Include="FakeStream.cs" />
+    <Compile Include="IAuthored.cs" />
+    <Compile Include="Loading\GenericLoadableFactory.cs" />
+    <Compile Include="Hashtable.cs" />
+    <Compile Include="IAssemblyLoader.cs" />
+    <Compile Include="IAssemblyLocator.cs" />
+    <Compile Include="Linkable.cs" />
+    <Compile Include="Loading\ILoadable.cs" />
+    <Compile Include="DomainAssemblyLoader.cs" />
+    <Compile Include="Loading\ILoadableFactory.cs" />
+    <Compile Include="Loading\RawLoadableFactory.cs" />
+    <Compile Include="Loading\SerializationLoadableFactory.cs" />
+    <Compile Include="Loading\XmlLoadableFactory.cs" />
+    <Compile Include="Logging\ILogger.cs" />
+    <Compile Include="Logging\ILoggerManager.cs" />
+    <Compile Include="Logging\Local\LocalLogger.cs" />
+    <Compile Include="Logging\Local\LocalLoggerManager.cs" />
+    <Compile Include="Logging\NullLoger.cs" />
+    <Compile Include="Math\BigNum.cs" />
+    <Compile Include="Math\EvalApp.cs" />
+    <Compile Include="Math\Functions\Wavelet.cs" />
+    <Compile Include="Math\Integration\Integratord.cs" />
+    <Compile Include="Math\Integration\Integratorf.cs" />
+    <Compile Include="Math\Integration\MonteCarloIntegratord.cs" />
+    <Compile Include="Math\Integration\MonteCarloIntegratorf.cs" />
+    <Compile Include="Math\Integration\ODE\ODEBased.cs" />
+    <Compile Include="Math\Integration\ODE\ODEBasef.cs" />
+    <Compile Include="Math\Integration\QuadraticIntegratord.cs" />
+    <Compile Include="Math\Integration\QuadraticIntegratorf.cs" />
+    <Compile Include="Math\Interpolation\CommonSteppersd.cs" />
+    <Compile Include="Math\Interpolation\CommonSteppersf.cs" />
+    <Compile Include="Math\Interpolation\PolynomialInterpolation.cs" />
+    <Compile Include="Math\Interpolation\RationalInterpolation.cs" />
+    <Compile Include="Math\Interpolation\SmoothStepd.cs" />
+    <Compile Include="Math\Interpolation\SmoothStepf.cs" />
+    <Compile Include="Math\Interpolation\UniformStepperd.cs" />
+    <Compile Include="Math\Interpolation\UniformStepperf.cs" />
+    <Compile Include="Math\Intervali.cs" />
+    <Compile Include="Math\Matrix\Algorithms\Cholesky.cs" />
+    <Compile Include="Math\Matrix\Algorithms\EigenValue.cs" />
+    <Compile Include="Math\Matrix\Algorithms\GaussJordan.cs" />
+    <Compile Include="Math\Matrix\Algorithms\Iterative.cs" />
+    <Compile Include="Math\Matrix\Algorithms\LU.cs" />
+    <Compile Include="Math\Matrix\Algorithms\SingularValue.cs" />
+    <Compile Include="Math\Matrix\DenseMatrixd.cs" />
+    <Compile Include="Math\Matrix\DenseMatrixf.cs" />
+    <Compile Include="Math\Matrix\IMatrixd.cs" />
+    <Compile Include="Math\Matrix\IMatrixf.cs" />
+    <Compile Include="Math\Matrix\Matrix2x2f.cs" />
+    <Compile Include="Math\Matrix\Matrix3x3f.cs" />
+    <Compile Include="Math\Matrix\Matrix4x4f.cs" />
+    <Compile Include="Math\Matrix\MatrixBase.cs" />
+    <Compile Include="Math\Matrix\MatrixHelper.cs" />
+    <Compile Include="Math\Matrix\Sparse\LTMatrixd.cs" />
+    <Compile Include="Math\Matrix\Sparse\LTMatrixf.cs" />
+    <Compile Include="Math\Matrix\Sparse\UTMatrixd.cs" />
+    <Compile Include="Math\Matrix\Sparse\UTMatrixf.cs" />
+    <Compile Include="Math\Minimization\IMinimizator.cs" />
+    <Compile Include="Math\Random\NativeGenerator.cs" />
+    <Compile Include="Math\Random\RandomGeneratorf.cs" />
+    <Compile Include="Math\Region2d.cs" />
+    <Compile Include="Math\Region2f.cs" />
+    <Compile Include="Math\Region3d.cs" />
+    <Compile Include="Math\Region3f.cs" />
+    <Compile Include="Math\Complexf.cs" />
+    <Compile Include="Math\Cylindricalf.cs" />
+    <Compile Include="Math\Functions\Series\ArithmeticSeriesd.cs" />
+    <Compile Include="Math\Functions\Series\ArithmeticSeriesf.cs" />
+    <Compile Include="Math\Functions\Discrete\DiscreteFunction.cs" />
+    <Compile Include="Math\Functions\Series\GeometricSeriesf.cs" />
+    <Compile Include="Math\Functions\Series\RecursiveSeriesd.cs" />
+    <Compile Include="Math\Functions\Series\RecursiveSeriesf.cs" />
+    <Compile Include="Math\Functions\Series\Seriesd.cs" />
+    <Compile Include="Math\Functions\Series\GeometricSeriesd.cs" />
+    <Compile Include="Math\Functions\Series\Seriesf.cs" />
+    <Compile Include="Math\Functions\Complex\ComplexFunction.cs" />
+    <Compile Include="Math\Functions\Distributions\DistributionFunction.cs" />
+    <Compile Include="Math\Random\RandomGeneratord.cs" />
+    <Compile Include="Math\Graphs\AStarSearch.cs" />
+    <Compile Include="Math\Graphs\BellmanFordSearch.cs" />
+    <Compile Include="Math\Graphs\BFS.cs" />
+    <Compile Include="Math\Graphs\DecisionTree.cs" />
+    <Compile Include="Math\Graphs\GraphBuilder.cs" />
+    <Compile Include="Math\Graphs\MinimumCostFlowSearch.cs" />
+    <Compile Include="Math\Graphs\FloydWarshallSearch.cs" />
+    <Compile Include="Math\Graphs\GraphColouring.cs" />
+    <Compile Include="Math\Graphs\DataWeightedGraph.cs" />
+    <Compile Include="Math\Graphs\Dijkstra.cs" />
+    <Compile Include="Math\Graphs\DFS.cs" />
+    <Compile Include="Math\Graphs\Graph.cs" />
+    <Compile Include="Math\Graphs\GraphAnalysis.cs" />
+    <Compile Include="Math\Graphs\GraphExceptions.cs" />
+    <Compile Include="Math\Graphs\HillClimbingSearch.cs" />
+    <Compile Include="Math\Graphs\MinHeap.cs" />
+    <Compile Include="Math\Graphs\Heuristics.cs" />
+    <Compile Include="Math\Graphs\IterativeDepeeningSearch.cs" />
+    <Compile Include="Math\Graphs\MinMaxSearch.cs" />
+    <Compile Include="Math\Graphs\ReadOnlySearch.cs" />
+    <Compile Include="Math\Graphs\Search.cs" />
+    <Compile Include="Math\Graphs\SearchResult.cs" />
+    <Compile Include="Math\Graphs\DataGraph.cs" />
+    <Compile Include="Math\MathHelper.cs" />
+    <Compile Include="Math\Complexd.cs" />
+    <Compile Include="Math\Cylindricald.cs" />
+    <Compile Include="Math\Expression.cs" />
+    <Compile Include="Math\ExpressionFunctions.cs" />
+    <Compile Include="Math\FunctionParams.cs" />
+    <Compile Include="Math\FunctionSet.cs" />
+    <Compile Include="Math\Functions\ErrorFunction.cs" />
+    <Compile Include="Math\Functions\Factorial.cs" />
+    <Compile Include="Math\Functions\Function.cs" />
+    <Compile Include="Math\Functions\Gamma.cs" />
+    <Compile Include="Math\Functions\Distributions\GaussianDistribution.cs" />
+    <Compile Include="Math\Functions\Polynomial.cs" />
+    <Compile Include="Math\Functions\Rational.cs" />
+    <Compile Include="Math\Functions\SphericalHarmonics.cs" />
+    <Compile Include="Math\Half.cs" />
+    <Compile Include="Math\Intervalf.cs" />
+    <Compile Include="Math\Matrix\Sparse\BandMatrixf.cs" />
+    <Compile Include="Math\Matrix\Matrix2x2d.cs" />
+    <Compile Include="Math\Matrix\Matrix3x3d.cs" />
+    <Compile Include="Math\Matrix\Matrix4x4d.cs" />
+    <Compile Include="Math\Matrix\Sparse\BandMatrixd.cs" />
+    <Compile Include="Math\Intervald.cs" />
+    <Compile Include="Math\Functions\RootFinder.cs" />
+    <Compile Include="Math\Polard.cs" />
+    <Compile Include="Math\Polarf.cs" />
+    <Compile Include="Math\Quaterniond.cs" />
+    <Compile Include="Math\Quaternionf.cs" />
+    <Compile Include="Math\Region2i.cs" />
+    <Compile Include="Math\Region3i.cs" />
+    <Compile Include="Math\Integration\Differentiator.cs" />
+    <Compile Include="Math\Functions\Windows\BartlettFunction.cs" />
+    <Compile Include="Math\Functions\Windows\BoxFunction.cs" />
+    <Compile Include="Math\Functions\Windows\HannFunction.cs" />
+    <Compile Include="Math\Functions\Windows\WelchFunction.cs" />
+    <Compile Include="Math\Functions\Windows\WindowFunction.cs" />
+    <Compile Include="Math\Matrix\LinearSolver.cs" />
+    <Compile Include="Math\Misc\QuadraticSolver.cs" />
+    <Compile Include="Math\Shapes\Algorithms\Extrude.cs" />
+    <Compile Include="Math\Shapes\Algorithms\Intersection.cs" />
+    <Compile Include="Math\Shapes\Algorithms\OutlineTesselation.cs" />
+    <Compile Include="Math\Shapes\Algorithms\PolygonTesselation.cs" />
+    <Compile Include="Math\Shapes\Algorithms\Tesselation.cs" />
+    <Compile Include="Math\Shapes\Bezier2d.cs" />
+    <Compile Include="Math\Shapes\Bezier2f.cs" />
+    <Compile Include="Math\Shapes\Bezier3d.cs" />
+    <Compile Include="Math\Shapes\Bezier3f.cs" />
+    <Compile Include="Math\Shapes\Compounds\OutlineCompunds2d.cs" />
+    <Compile Include="Math\Shapes\Compounds\OutlineCompunds2f.cs" />
+    <Compile Include="Math\Shapes\Compounds\OutlineCompunds3d.cs" />
+    <Compile Include="Math\Shapes\Compounds\OutlineCompunds3f.cs" />
+    <Compile Include="Math\Shapes\Ellipse2d.cs" />
+    <Compile Include="Math\Shapes\Ellipse2f.cs" />
+    <Compile Include="Math\Shapes\Ellipse3d.cs" />
+    <Compile Include="Math\Shapes\Ellipse3f.cs" />
+    <Compile Include="Math\Shapes\Line2d.cs" />
+    <Compile Include="Math\Shapes\Line2f.cs" />
+    <Compile Include="Math\Shapes\Line3d.cs" />
+    <Compile Include="Math\Shapes\Line3f.cs" />
+    <Compile Include="Math\Shapes\LineSegment2d.cs" />
+    <Compile Include="Math\Shapes\LineSegment2f.cs" />
+    <Compile Include="Math\Shapes\LineSegment3d.cs" />
+    <Compile Include="Math\Shapes\LineSegment3f.cs" />
+    <Compile Include="Math\Shapes\Plane3d.cs" />
+    <Compile Include="Math\Shapes\Plane3f.cs" />
+    <Compile Include="Math\Shapes\Polygon2d.cs" />
+    <Compile Include="Math\Shapes\Polygon2f.cs" />
+    <Compile Include="Math\Shapes\Polygon3d.cs" />
+    <Compile Include="Math\Shapes\Polygon3f.cs" />
+    <Compile Include="Math\Shapes\Quad2d.cs" />
+    <Compile Include="Math\Shapes\Quad2f.cs" />
+    <Compile Include="Math\Shapes\Quad3d.cs" />
+    <Compile Include="Math\Shapes\Quad3f.cs" />
+    <Compile Include="Math\Shapes\Ray2d.cs" />
+    <Compile Include="Math\Shapes\Ray2f.cs" />
+    <Compile Include="Math\Shapes\Ray3d.cs" />
+    <Compile Include="Math\Shapes\Ray3f.cs" />
+    <Compile Include="Math\Shapes\ShapeInterfacesd.cs" />
+    <Compile Include="Math\Shapes\ShapeInterfacesf.cs" />
+    <Compile Include="Math\Shapes\Spatial\BinarySpacePartioningf.cs" />
+    <Compile Include="Math\Shapes\Spatial\BinarySpacePartioningd.cs" />
+    <Compile Include="Math\Shapes\Spatial\OctreeSpacePartioningd.cs" />
+    <Compile Include="Math\Shapes\Spatial\OctreeSpacePartioningf.cs" />
+    <Compile Include="Math\Shapes\Storage\BaseTopologySet.cs" />
+    <Compile Include="Math\Shapes\Storage\Builders\BuilderInterfaces.cs" />
+    <Compile Include="Math\Shapes\Storage\Builders\GraphicsLineSoupBuilder.cs" />
+    <Compile Include="Math\Shapes\Storage\Builders\GraphicsTriangleSoupBuilder.cs" />
+    <Compile Include="Math\Shapes\Storage\Builders\ITopologySetBuilder.cs" />
+    <Compile Include="Math\Shapes\Storage\CommonComponents.cs" />
+    <Compile Include="Math\Shapes\Storage\ControlPointFormat.cs" />
+    <Compile Include="Math\Shapes\Storage\ControlPointQuery.cs" />
+    <Compile Include="Math\Shapes\Storage\ControlPointBufferView.cs" />
+    <Compile Include="Math\Shapes\Storage\GraphicsLineSoup.cs" />
+    <Compile Include="Math\Shapes\Storage\GraphicsTriangleSoup.cs" />
+    <Compile Include="Math\Shapes\Storage\ITopologySet.cs" />
+    <Compile Include="Math\Shapes\Storage\LineStrip2d.cs" />
+    <Compile Include="Math\Shapes\Storage\LineStrip2f.cs" />
+    <Compile Include="Math\Shapes\Storage\LineStrip3d.cs" />
+    <Compile Include="Math\Shapes\Storage\LineStrip3f.cs" />
+    <Compile Include="Math\Shapes\Storage\Optimizations\IShapeOptimizer.cs" />
+    <Compile Include="Math\Shapes\Storage\Optimizations\WeldControlPointsOptimizer.cs" />
+    <Compile Include="Math\Shapes\Storage\ShapeIndexBufferView.cs" />
+    <Compile Include="Math\Shapes\Storage\StorageAccess.cs" />
+    <Compile Include="Math\Shapes\Storage\TriangleSoup2d.cs" />
+    <Compile Include="Math\Shapes\Storage\TriangleSoup2f.cs" />
+    <Compile Include="Math\Shapes\Storage\TriangleSoup3d.cs" />
+    <Compile Include="Math\Shapes\Storage\TriangleSoup3f.cs" />
+    <Compile Include="Math\Shapes\Triangle3d.cs" />
+    <Compile Include="Math\Shapes\Triangle3f.cs" />
+    <Compile Include="Math\Shapes\Volumes\AABoxd.cs" />
+    <Compile Include="Math\Shapes\Volumes\AABoxf.cs" />
+    <Compile Include="Math\Shapes\Volumes\Sphered.cs" />
+    <Compile Include="Math\Shapes\Volumes\Spheref.cs" />
+    <Compile Include="Math\Shapes\Volumes\VolumeInterfacesd.cs" />
+    <Compile Include="Math\Shapes\Volumes\VolumeInterfacesf.cs" />
+    <Compile Include="Math\Shapes\Volumes\VoxelGridd.cs" />
+    <Compile Include="Math\Shapes\Volumes\VoxelGridf.cs" />
+    <Compile Include="MemoryBuffer.cs" />
+    <Compile Include="Math\Shapes\Triangle2d.cs" />
+    <Compile Include="Math\Shapes\Triangle2f.cs" />
+    <Compile Include="Math\SparseVectord.cs" />
+    <Compile Include="Math\SparseVectorf.cs" />
+    <Compile Include="Math\Sphericald.cs" />
+    <Compile Include="Math\Sphericalf.cs" />
+    <Compile Include="Math\Statistics\Accumulator.cs" />
+    <Compile Include="Math\Statistics\Combinatorics.cs" />
+    <Compile Include="Math\Statistics\Histrogram.cs" />
+    <Compile Include="Math\Transform\DFT.cs" />
+    <Compile Include="Math\Transform\Linear.cs" />
+    <Compile Include="Math\Transform\DWT.cs" />
+    <Compile Include="Math\Vector2d.cs" />
+    <Compile Include="Math\Vector2f.cs" />
+    <Compile Include="Math\Vector2i.cs" />
+    <Compile Include="Math\Vector3d.cs" />
+    <Compile Include="Math\Vector3f.cs" />
+    <Compile Include="Math\Vector3i.cs" />
+    <Compile Include="Math\Vector4d.cs" />
+    <Compile Include="Math\Vector4f.cs" />
+    <Compile Include="Math\Vector4i.cs" />
+    <Compile Include="Math\Vectord.cs" />
+    <Compile Include="Math\Vectorf.cs" />
+    <Compile Include="Math\Vectori.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\ResourceAddress.cs" />
+    <Compile Include="Resources\PersistencyInfo.cs" />
+    <Compile Include="Resources\Policies.cs" />
+    <Compile Include="Resources\Reference.cs" />
+    <Compile Include="Resources\ResourceLoader.cs" />
+    <Compile Include="Resources\Resource.cs" />
+    <Compile Include="Scene\SceneComponentAttribute.cs" />
+    <Compile Include="Scripting\CompilerFacilities\Grouping.cs" />
+    <Compile Include="Scripting\CompilerFacilities\ParseElement.cs" />
+    <Compile Include="Scripting\CompilerFacilities\Parser.cs" />
+    <Compile Include="Scripting\CompilerFacilities\Tokenizer.cs" />
+    <Compile Include="Scripting\CSharp\CSharpCode.cs" />
+    <Compile Include="Scripting\CSharp\CSharpCompiler.cs" />
+    <Compile Include="Scripting\CSharp\CSharpScript.cs" />
+    <Compile Include="Scripting\Script.cs" />
+    <Compile Include="Scripting\ScriptCompiler.cs" />
+    <Compile Include="Scripting\ScriptRunApp.cs" />
+    <Compile Include="Scripting\ScriptEngine.cs" />
+    <Compile Include="Security\Capability.cs" />
+    <Compile Include="Security\Default\Engine.cs" />
+    <Compile Include="Security\Default\MemoryStorage.cs" />
+    <Compile Include="Security\SecurityEngine.cs" />
+    <Compile Include="Security\SecurityStorage.cs" />
+    <Compile Include="Security\StandardCapabilities.cs" />
+    <Compile Include="StringMatcher.cs" />
+    <Compile Include="Tag.cs" />
+    <Compile Include="Testing\Assert.cs" />
+    <Compile Include="Testing\TestCaseAttribute.cs" />
+    <Compile Include="Testing\TestRunnerApp.cs" />
+    <Compile Include="Testing\TestSuiteAttribute.cs" />
+    <Compile Include="Threading\Default\CPUWorkUnit.cs" />
+    <Compile Include="Threading\Default\JobFactory.cs" />
+    <Compile Include="Threading\Default\ThreadControl.cs" />
+    <Compile Include="Threading\Default\ThreadControlOptimization.cs" />
+    <Compile Include="Threading\Default\WorkUnitRegistry.cs" />
+    <Compile Include="Threading\ICPUWorkUnit.cs" />
+    <Compile Include="Threading\IHardwareUnit.cs" />
+    <Compile Include="Threading\IJob.cs" />
+    <Compile Include="Threading\IJobFactory.cs" />
+    <Compile Include="Threading\IParallel.cs" />
+    <Compile Include="Threading\IMemoryUnit.cs" />
+    <Compile Include="Threading\IOptimizer.cs" />
+    <Compile Include="Threading\IThreadControl.cs" />
+    <Compile Include="Threading\IWorkUnit.cs" />
+    <Compile Include="Threading\Job\BranchedJob.cs" />
+    <Compile Include="Threading\Job\DelegateJob.cs" />
+    <Compile Include="Threading\Job\EstimatableDelegateJob.cs" />
+    <Compile Include="Threading\Job\OneTimeJob.cs" />
+    <Compile Include="Threading\Job\ParallelJob.cs" />
+    <Compile Include="Threading\Parallel.cs" />
+    <Compile Include="Threading\Performance\InstructionPerformance.cs" />
+    <Compile Include="Threading\Optimizers\ProfileOptimizer.cs" />
+    <Compile Include="Threading\Optimizers\LastResortOptimizer.cs" />
+    <Compile Include="Threading\Performance\BandwidthPerformance.cs" />
+    <Compile Include="Threading\Performance\CommunicationPerformance.cs" />
+    <Compile Include="Threading\Performance\FPUPerformance.cs" />
+    <Compile Include="Threading\Performance\IPerformance.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\ScriptRun.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installation\Eval.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Installation\TestRunner.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="Installation\SharpMedia.libxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Math\Functions\Series\Template\ArithmeticSeries.tcs" />
+    <None Include="Math\Functions\Series\Template\Series.template" />
+    <None Include="Math\Functions\Series\Template\RecursiveSeries.tcs" />
+    <None Include="Math\Functions\Series\Template\GeometricSeries.tcs" />
+    <None Include="Math\Functions\Series\Template\Series.tcs" />
+    <None Include="Math\Integration\ODE\Template\ODEBase.tcs" />
+    <None Include="Math\Integration\Template\Integration.template" />
+    <None Include="Math\Integration\Template\QuadraticIntegrator.tcs" />
+    <None Include="Math\Integration\Template\MonteCarloIntegrator.tcs" />
+    <None Include="Math\Integration\Template\Differentiator.tcs" />
+    <None Include="Math\Integration\Template\Integrator.tcs" />
+    <None Include="Math\Interpolation\Template\CommonSteppers.tcs" />
+    <None Include="Math\Interpolation\Template\RationalInterpolation.tcs" />
+    <None Include="Math\Interpolation\Template\PolynomialInterpolation.tcs" />
+    <None Include="Math\Interpolation\Template\SmoothStep.tcs" />
+    <None Include="Math\Interpolation\Template\Interpolation.template" />
+    <None Include="Math\Interpolation\Template\UniformStepper.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\Cholesky.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\Algorithms.template" />
+    <None Include="Math\Matrix\Algorithms\Template\EigenValue.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\SingularValue.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\LU.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\Iterative.tcs" />
+    <None Include="Math\Matrix\Algorithms\Template\GaussJordan.tcs" />
+    <None Include="Math\Matrix\Sparse\Template\Sparse.template" />
+    <None Include="Math\Matrix\Sparse\Template\BandMatrix.tcs" />
+    <None Include="Math\Matrix\Sparse\Template\UTMatrix.tcs" />
+    <None Include="Math\Matrix\Sparse\Template\LTMatrix.tcs" />
+    <None Include="Math\Matrix\Template\Matrix.template" />
+    <None Include="Math\Matrix\Template\MatrixInterface.tcs" />
+    <None Include="Math\Matrix\Template\DenseMatrix.tcs" />
+    <None Include="Math\Matrix\Template\Matrix4x4.tcs" />
+    <None Include="Math\Matrix\Template\Matrix3x3.tcs" />
+    <None Include="Math\Matrix\Template\Matrix2x2.tcs" />
+    <None Include="Math\Random\Template\Random.template" />
+    <None Include="Math\Random\Template\RandomGenerator.tcs" />
+    <None Include="Math\Shapes\Algorithms\Template\Algorithms.template" />
+    <None Include="Math\Shapes\Algorithms\Template\OutlineTesselation.tcs" />
+    <None Include="Math\Shapes\Algorithms\Template\Tesselation.tcs" />
+    <None Include="Math\Shapes\Algorithms\Template\PolygonTesselation.tcs" />
+    <None Include="Math\Shapes\Algorithms\Template\Extrude.tcs" />
+    <None Include="Math\Shapes\Algorithms\Template\Intersection.tcs" />
+    <None Include="Math\Shapes\Compounds\Template\Compounds.template" />
+    <None Include="Math\Shapes\Compounds\Template\OutlineCompound.tcs" />
+    <None Include="Math\Shapes\Spatial\Template\BinarySpacePartioning.tcs" />
+    <None Include="Math\Shapes\Spatial\Template\OctreeSpacePartioning.tcs" />
+    <None Include="Math\Shapes\Spatial\Template\Spatial.template" />
+    <None Include="Math\Shapes\Storage\Builders\Template\Builders.template" />
+    <None Include="Math\Shapes\Storage\Builders\Template\Builders.tcs" />
+    <None Include="Math\Shapes\Storage\Builders\Template\GraphicsLineSoupBuilder.tcs" />
+    <None Include="Math\Shapes\Storage\Builders\Template\GraphicsTriangleSoupBuilder.tcs" />
+    <None Include="Math\Shapes\Storage\Template\LineStrip.tcs" />
+    <None Include="Math\Shapes\Storage\Template\TriangleSoup.tcs" />
+    <None Include="Math\Shapes\Storage\Template\StorageAccess.tcs" />
+    <None Include="Math\Shapes\Storage\Template\ControlPointBufferView.tcs" />
+    <None Include="Math\Shapes\Storage\Template\ControlPointQuery.tcs" />
+    <None Include="Math\Shapes\Storage\Template\GraphicsLineSoup.tcs" />
+    <None Include="Math\Shapes\Storage\Template\GraphicsTriangleSoup.tcs" />
+    <None Include="Math\Shapes\Storage\Template\ShapeIndexBufferView.tcs" />
+    <None Include="Math\Shapes\Storage\Template\Storage.template" />
+    <None Include="Math\Shapes\Template\Bezier.tcs" />
+    <None Include="Math\Shapes\Template\Plane.tcs" />
+    <None Include="Math\Shapes\Template\Polygon.tcs" />
+    <None Include="Math\Shapes\Template\Ray.tcs" />
+    <None Include="Math\Shapes\Template\Ellipse.tcs" />
+    <None Include="Math\Shapes\Template\Quad.tcs" />
+    <None Include="Math\Shapes\Template\Line.tcs" />
+    <None Include="Math\Shapes\Template\LineSegment.tcs" />
+    <None Include="Math\Shapes\Template\Shapes.template" />
+    <None Include="Math\Shapes\Template\Triangle.tcs" />
+    <None Include="Math\Shapes\Template\ShapeInterfaces.tcs" />
+    <None Include="Math\Shapes\Volumes\Template\AABox.tcs" />
+    <None Include="Math\Shapes\Volumes\Template\VoxelGrid.tcs" />
+    <None Include="Math\Shapes\Volumes\Template\Sphere.tcs" />
+    <None Include="Math\Shapes\Volumes\Template\Volume.template" />
+    <None Include="Math\Shapes\Volumes\Template\VolumeInterfaces.tcs" />
+    <None Include="Math\Template\BasicStructures.template" />
+    <None Include="Math\Template\Complex.tcs" />
+    <None Include="Math\Template\Vector.tcs" />
+    <None Include="Math\Template\Interval.tcs" />
+    <None Include="Math\Template\Region3.tcs" />
+    <None Include="Math\Template\Region2.tcs" />
+    <None Include="Math\Template\Polar.tcs" />
+    <None Include="Math\Template\Quaternion.tcs" />
+    <None Include="Math\Template\SparseVector.tcs" />
+    <None Include="Math\Template\Cylindrical.tcs" />
+    <None Include="Math\Template\Spherical.tcs" />
+    <None Include="Math\Template\Vector4.tcs" />
+    <None Include="Math\Template\Vector3.tcs" />
+    <None Include="Math\Template\General.template" />
+    <None Include="Math\Template\Math.tproj" />
+    <None Include="Math\Template\Vector2.tcs" />
+    <None Include="Math\Transform\Template\Transforms.template" />
+    <None Include="Math\Transform\Template\Linear.tcs" />
+    <None Include="Math\Transform\Template\DWT.tcs" />
+    <None Include="Math\Transform\Template\DFT.tcs" />
+    <None Include="SharpMedia.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\Ldap\Overview.txt" />
+    <Content Include="Math\Math.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logging\Redirect\" />
+    <Folder Include="Logging\Remote\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21928E43-5783-4B6F-AA23-1DB5291D2A25}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Database.Physical</RootNamespace>
+    <AssemblyName>SharpMedia.Database.Physical</AssemblyName>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>SharpMedia.Database.Physical.snk</AssemblyOriginatorKeyFile>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOPOSTCOMPILE;SHARPMEDIA_TESTSUITE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;NOPOSTCOMPILE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Block.cs" />
+    <Compile Include="BlockHelper.cs" />
+    <Compile Include="BoolArray.cs" />
+    <Compile Include="BPlusTree.cs" />
+    <Compile Include="Caching\BlockCache.cs" />
+    <Compile Include="Caching\FallThroughCache.cs" />
+    <Compile Include="ChildTag.cs" />
+    <Compile Include="Journalling\Allocator.cs" />
+    <Compile Include="Journalling\JournalLog.cs" />
+    <Compile Include="Journalling\NonSafeJournal.cs" />
+    <Compile Include="Journalling\AllocationContext.cs" />
+    <Compile Include="Journalling\Journal.cs" />
+    <Compile Include="Journalling\JournalRecovery.cs" />
+    <Compile Include="Journalling\NonSafeService.cs" />
+    <Compile Include="Journalling\OperationStartupData.cs" />
+    <Compile Include="Journalling\ReadService.cs" />
+    <Compile Include="Journalling\SafeJournal.cs" />
+    <Compile Include="Journalling\SafeService.cs" />
+    <Compile Include="Operation.cs" />
+    <Compile Include="Journalling\Services.cs" />
+    <Compile Include="Operations\AddObject.cs" />
+    <Compile Include="Operations\AddObjects.cs" />
+    <Compile Include="Operations\AddObjectSO.cs" />
+    <Compile Include="Operations\AddTypedStream.cs" />
+    <Compile Include="Operations\ChangeDefaultTypedStream.cs" />
+    <Compile Include="Operations\CreateChild.cs" />
+    <Compile Include="Operations\CreateNewVersion.cs" />
+    <Compile Include="Operations\CreateRootObject.cs" />
+    <Compile Include="Operations\DeleteChild.cs" />
+    <Compile Include="Operations\DeleteTypedStream.cs" />
+    <Compile Include="Operations\DeleteVersion.cs" />
+    <Compile Include="Operations\InsertObject.cs" />
+    <Compile Include="Operations\RemoveObjects.cs" />
+    <Compile Include="Operations\RenameNode.cs" />
+    <Compile Include="PhysicalDatabase.cs" />
+    <Compile Include="PhysicalNode.cs" />
+    <Compile Include="PhysicalTypedStream.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\BlockProvider.cs" />
+    <Compile Include="Provider\Formatter.cs" />
+    <Compile Include="Provider\RAMProvider.cs" />
+    <Compile Include="StorageStructs\BlockLinkHeader.cs" />
+    <Compile Include="StorageStructs\BTreeNode.cs" />
+    <Compile Include="StorageStructs\JournalLogData.cs" />
+    <Compile Include="StorageStructs\NodeCommonHeader.cs" />
+    <Compile Include="StorageStructs\DatabaseHeader.cs" />
+    <Compile Include="StorageStructs\NodeVersionHeader.cs" />
+    <Compile Include="StorageStructs\TypedStreamHeader.cs" />
+    <Compile Include="BlockStream.cs" />
+    <Compile Include="NodeVersionHelper.cs" />
+    <Compile Include="TestingSuite.cs" />
+    <Compile Include="VersionTag.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMedia\SharpMedia.csproj">
+      <Project>{0F4D22A5-E0DC-4579-9734-A7D5A2AEE34F}</Project>
+      <Name>SharpMedia</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SharpMedia.Database.Physical.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

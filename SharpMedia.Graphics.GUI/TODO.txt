@@ -1,0 +1,24 @@
+Style:
+* style linking (so theme apply and unapply are correct)
+
+Pointer:
+* cursor state styles more concrete (so we can change them quickly)
+* registering cursor state styles
+* cursor shapes
+
+Widgets & Containers:
+* add more widgets
+* add more containers
+* implement current containers
+
+Rendering:
+* blended operations (done)
+
+Compiler:
+* add validators
+* add styles
+* add "WindowContext" (done)
+* add runtime assembly options
+* add events
+* add animations
+* add custom namespace support

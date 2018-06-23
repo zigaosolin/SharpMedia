@@ -1,0 +1,326 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes.Volumes
+{
+
+    /// <summary>
+    /// An axis aligned box.
+    /// </summary>
+    public sealed class @ClassName :
+        @Volume, @AABoxBoundable, @SphereBoundable,
+        @AreaD, @ContainsPoint3,
+        IEquatable<@ClassName>, IComparable<@ClassName>, ICloneable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The minimum components of box.
+        /// </summary>
+        public @Vector3ClassName Min;
+
+        /// <summary>
+        /// The maximum components of box.
+        /// </summary>
+        public @Vector3ClassName Max;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the dimension.
+        /// </summary>
+        /// <value>The dimensions.</value>
+        public @Vector3ClassName Dimension
+        {
+            get
+            {
+                return Max - Min;
+            }
+            set
+            {
+                if (!value.AllPositive) throw new ArgumentException("Dimensions must be positive.");
+                Max = Min + value;
+            }
+        }
+
+        /// <summary>
+        /// The center.
+        /// </summary>
+        public @Vector3ClassName Center
+        {
+            get
+            {
+                return (@TypeName)0.5 * (Max + Min);
+            }
+        }
+
+        /// <summary>
+        /// The side X's length.
+        /// </summary>
+        public @TypeName SideX
+        {
+            get
+            {
+                return Max.X - Min.X;
+            }
+        }
+
+        /// <summary>
+        /// The side Y's length.
+        /// </summary>
+        public @TypeName SideY
+        {
+            get
+            {
+                return Max.Y - Min.Y;
+            }
+        }
+
+        /// <summary>
+        /// The side Z' length.
+        /// </summary>
+        public @TypeName SideZ
+        {
+            get
+            {
+                return Max.Z - Min.Z;
+            }
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Constructor box from points.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static @ClassName FromPoints(params @Vector3ClassName[] data)
+        {
+            if (data.Length == 0) throw new ArgumentException("At least on point must be provided.");
+
+            @Vector3ClassName Max = data[0];
+            @Vector3ClassName Min = data[1];
+
+            for (int i = 1; i < data.Length; i++)
+            {
+                @Vector3ClassName v = data[i];
+
+                // Update min.
+                Min.X = v.X < Min.X ? v.X : Min.X;
+                Min.Y = v.Y < Min.Y ? v.Y : Min.Y;
+                Min.Z = v.Z < Min.Z ? v.Z : Min.Z;
+
+                // Update max.
+                Max.X = v.X > Max.X ? v.X : Max.X;
+                Max.Y = v.Y > Max.Y ? v.Y : Max.Y;
+                Max.Z = v.Z > Max.Z ? v.Z : Max.Z;
+            }
+
+            return new @ClassName(Min, Max);
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Constructor with minimum and maximum components.
+        /// </summary>
+        /// <param name="min">The minimum component.</param>
+        /// <param name="max">The maximum component.</param>
+        public @ClassName(@Vector3ClassName min, @Vector3ClassName max)
+        {
+            if (!(max - min).AllPositive) throw new ArgumentException("Dimensions must be positive.");
+            this.Max = max;
+            this.Min = min;
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get
+            {
+                @Vector3ClassName dim = Dimension;
+
+                return (@TypeName)2.0 * dim.X * dim.Y +
+                    (@TypeName)2.0 * dim.Y * dim.Z +
+                    (@TypeName)2.0 * dim.X * dim.Z;
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            if (resolution < @Zero ||
+                (resolution > SideX && resolution > SideX && resolution > SideX))
+            {
+                if (!builder.IsIndexed)
+                {
+                    // Non indexed really isnt the best practice here ...
+                    throw new NotImplementedException();
+                }
+                else
+                {
+
+                    // We simply append vertices and proceed.
+                    uint indexBase = builder.AddControlPoints(
+                        new @Vector3ClassName(Min.X, Min.Y, Min.Z),
+                        new @Vector3ClassName(Max.X, Min.Y, Min.Z),
+                        new @Vector3ClassName(Max.X, Min.Y, Max.Z),
+                        new @Vector3ClassName(Min.X, Min.Y, Max.Z),
+                        new @Vector3ClassName(Min.X, Max.Y, Min.Z),
+                        new @Vector3ClassName(Max.X, Max.Y, Min.Z),
+                        new @Vector3ClassName(Max.X, Max.Y, Max.Z),
+                        new @Vector3ClassName(Min.X, Max.Y, Max.Z));
+
+                    // We also need indices if indexed.
+
+                    builder.AddIndexedTriangles(
+                        new uint[] { 
+                        indexBase, indexBase + 1, indexBase + 2,
+                        indexBase, indexBase + 2, indexBase + 3,
+                        indexBase, indexBase + 5, indexBase + 1,
+                        indexBase, indexBase + 4, indexBase + 5,
+                        indexBase + 1, indexBase + 6, indexBase + 2,
+                        indexBase+1, indexBase + 5, indexBase + 6,
+                        indexBase, indexBase + 3, indexBase + 7,
+                        indexBase, indexBase + 7, indexBase + 4,
+                        indexBase + 3, indexBase + 2, indexBase + 6,
+                        indexBase + 3, indexBase + 6, indexBase + 7,
+                        indexBase + 4, indexBase + 6, indexBase + 5,
+                        indexBase + 4, indexBase + 7, indexBase + 6 
+                    
+                    }
+                    );
+                }
+                
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+        }
+
+        #endregion
+
+        #region @ContainsPoint3 Members
+
+        public bool ContainsPoint(@Vector3ClassName point)
+        {
+            return (point - Min).AllPositive && (Max - point).AllPositive;
+        }
+
+        #endregion
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get { return Clone(); }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                @Vector3ClassName dim2 = Dimension / (@TypeName)2;
+                @TypeName radius = dim2.Length;
+
+                return new @Sphere(Center, radius);
+            }
+        }
+
+        #endregion
+
+        #region @Volume
+
+        public @TypeName Volume
+        {
+            get
+            {
+                @Vector3ClassName dim = Dimension;
+                return dim * dim;
+            }
+        }
+
+        #endregion
+
+        #region Transforms
+
+        public void Transform(@Vector3ClassName scale, @Vector3ClassName transform)
+        {
+            @Vector3ClassName dim = Dimension;
+            @Vector3ClassName center = Center;
+
+            center = center + transform;
+            dim = @Vector3ClassName.ComponentMultiply(scale, dim);
+
+            Min = center - dim * (@TypeName)0.5;
+            Max = center + dim * (@TypeName)0.5;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector3ClassName.NearEqual(Min, other.Min) &&
+                @Vector3ClassName.NearEqual(Max, other.Max))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(Min, Max);
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = Min.CompareTo(other.Min);
+            if (cmp != 0) return cmp;
+            return Max.CompareTo(other.Max);
+        }
+
+        #endregion
+    }
+}

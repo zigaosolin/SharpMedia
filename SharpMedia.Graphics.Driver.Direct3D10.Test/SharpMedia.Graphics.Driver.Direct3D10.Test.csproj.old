@@ -1,0 +1,96 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{36173945-BD27-4078-826D-BC0F4398A03D}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Graphics.Driver.Direct3D10.Test</RootNamespace>
+    <AssemblyName>SharpMedia.Graphics.Driver.Direct3D10.Test</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SHARPMEDIA_TESTSUITE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;NOPOSTCOMPILE </DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpMedia, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4f200b7b044e0a29, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BuildOutput\SharpMedia.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Test.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMedia.Graphics.Driver.Direct3D10\SharpMedia.Graphics.Driver.Direct3D10.vcproj">
+      <Project>{50FA5B8E-99F3-41CD-8F74-9275ED756C13}</Project>
+      <Name>SharpMedia.Graphics.Driver.Direct3D10</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics.GUI.Themes.Default\SharpMedia.Graphics.GUI.Themes.Default.csproj">
+      <Project>{C08C80F8-57F6-477E-B2BD-3035AC217127}</Project>
+      <Name>SharpMedia.Graphics.GUI.Themes.Default</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics.GUI\SharpMedia.Graphics.GUI.csproj">
+      <Project>{794433D2-8C01-429C-A945-087BDCD1DA69}</Project>
+      <Name>SharpMedia.Graphics.GUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics.Vector\SharpMedia.Graphics.Vector.csproj">
+      <Project>{6C31FD57-6837-4A50-834C-C1258568D8F7}</Project>
+      <Name>SharpMedia.Graphics.Vector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics\SharpMedia.Graphics.csproj">
+      <Project>{AAF272C4-FAF0-4890-9679-C144F093AEF5}</Project>
+      <Name>SharpMedia.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Input.Driver.DirectInput\SharpMedia.Input.Driver.DirectInput.vcproj">
+      <Project>{1BBAD42D-CB26-4324-87C6-B89EBA5060AC}</Project>
+      <Name>SharpMedia.Input.Driver.DirectInput</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Input\SharpMedia.Input.csproj">
+      <Project>{00652ADB-6B51-4FF2-81AC-70253A753E5E}</Project>
+      <Name>SharpMedia.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Shell\SharpMedia.Shell.csproj">
+      <Project>{9D17BDBC-706A-4CB3-8C87-42F10F65059A}</Project>
+      <Name>SharpMedia.Shell</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

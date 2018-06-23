@@ -1,0 +1,49 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+
+namespace SharpMedia.Math.Shapes.Storage
+{
+
+    //#foreach Types
+
+    /// <summary>
+    /// A line access interface.
+    /// </summary>
+    public interface @LineAccess
+    {
+        /// <summary>
+        /// Number of lines.
+        /// </summary>
+        uint ShapeCount { get; } 
+
+        /// <summary>
+        /// Gets lines.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <param name="segment">The data to be filled.</param>
+        void Get(uint index, @LineSegment[] segment);
+    }
+
+
+    /// <summary>
+    /// A triangle access interface.
+    /// </summary>
+    public interface @TriangleAccess
+    {
+        /// <summary>
+        /// Number of triangles.
+        /// </summary>
+        uint ShapeCount { get; }
+
+        /// <summary>
+        /// Gets lines.
+        /// </summary>
+        /// <param name="index">The line index.</param>
+        /// <param name="segment">The data to be filled.</param>
+        void Get(uint index, @Triangle[] segment);
+    }
+
+    //#endfor
+}

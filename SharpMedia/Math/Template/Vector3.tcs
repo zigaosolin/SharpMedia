@@ -1,0 +1,980 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math
+{
+    /// <summary>
+    /// A three dimensional vector type.
+    /// </summary>
+    [Serializable]
+    public struct @ClassName : IComparable, IComparable<@ClassName>, IEquatable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// A vector processor delegate. Used at many places, like solver etc. Processor
+        /// is a kind of @ClassName transformator.
+        /// </summary>
+        /// <param name="input">Input, as vector.</param>
+        /// <returns>Vector output.</returns>
+        public delegate @ClassName Processor(@ClassName input);
+
+        /// <summary>
+        /// The X component of the vector.
+        /// </summary>
+        public @TypeName X;
+
+        /// <summary>
+        /// The Y component of the vector.
+        /// </summary>
+        public @TypeName Y;
+
+        /// <summary>
+        /// The Z component of the vector.
+        /// </summary>
+        public @TypeName Z;
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// A zero vector.
+        /// </summary>
+        public static @ClassName Zero
+        {
+            get { return new @ClassName(@Zero, @Zero, @Zero); }
+        }
+
+        //#ifdef NaN
+
+        /// <summary>
+        /// The NaN vector.
+        /// </summary>
+        public static @ClassName NaN
+        {
+            get { return new @ClassName(@NaN, @NaN, @NaN); }
+        }
+
+        //#ifdef IsNaN
+
+        /// <summary>
+        /// Is the vector NaN. Vector is NaN, if any component is NaN.
+        /// </summary>
+        /// <param name="v"></param>
+        /// <returns></returns>
+        public static bool IsNaN(@ClassName v)
+        {
+            return @IsNaN(v.X) || @IsNaN(v.Y) || @IsNaN(v.Z);
+        }
+
+        //#endif
+
+        //#endif
+
+        /// <summary>
+        /// Index access to vector.
+        /// </summary>
+        /// <param name="index">The index.</param>
+        public @TypeName this[uint index]
+        {
+            get
+            {
+                if (index == 0) return X;
+                if (index == 1) return Y;
+                if (index == 2) return Z;
+                throw new ArgumentException("Invalid index for 3D vector.");
+            }
+            set
+            {
+                if (index == 0) X = value;
+                else if (index == 1) Y = value;
+                else if (index == 2) Z = value;
+                else throw new ArgumentException("Invalid index for 3D vector.");
+            }
+        }
+
+        /// <summary>
+        /// Unit vector in axis X.
+        /// </summary>
+        public static @ClassName AxisX
+        {
+            get { return new @ClassName(@One, @Zero, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis y.
+        /// </summary>
+        public static @ClassName AxisY
+        {
+            get { return new @ClassName(@Zero, @One, @Zero); }
+        }
+
+        /// <summary>
+        /// Unit vector in axis z.
+        /// </summary>
+        public static @ClassName AxisZ
+        {
+            get { return new @ClassName(@Zero, @Zero, @One); }
+        }
+
+        //#ifdef UniformRandomSupply
+
+        /// <summary>
+        /// Unit random vector property.
+        /// </summary>
+        public static @ClassName UnitRandom
+        {
+            get
+            {
+                @ClassName vec = new @ClassName(@UniformRandomSupply, @UniformRandomSupply, @UniformRandomSupply);
+                return vec.Normal;
+            }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Multiplication by components.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of component multiplication.</returns>
+        public static @ClassName ComponentMultiply(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X * v2.X, v1.Y * v2.Y, v1.Z * v2.Z);
+        }
+
+        /// <summary>
+        /// Division by components.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of component division.</returns>
+        public static @ClassName ComponentDivision(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X / v2.X, v1.Y / v2.Y, v1.Z / v2.Z);
+        }
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Checks if vectors are nearly equal.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <param name="eps">The maximum difference in one component.</param>
+        /// <returns>Are vectors equal indicator.</returns>
+        public static bool NearEqual(@ClassName v1, @ClassName v2, @TypeName eps)
+        {
+            if (!@NearEqual(v2.X, v1.X, eps)) return false;
+            if (!@NearEqual(v2.Y, v1.Y, eps)) return false;
+            if (!@NearEqual(v2.Z, v1.Z, eps)) return false;
+            return true;
+        }
+
+
+        /// <summary>
+        /// Near equal using default epsilon.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result indicator.</returns>
+        public static bool NearEqual(@ClassName v1, @ClassName v2)
+        {
+            if (!@NearEqual(v1.X, v2.X)) return false;
+            if (!@NearEqual(v1.Y, v2.Y)) return false;
+            if (!@NearEqual(v1.Z, v2.Z)) return false;
+            return true;
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Outputs vector in (x,y) form.
+        /// </summary>
+        /// <returns>Vector converted to string.</returns>
+        public override string ToString()
+        {
+            return "(" + X.ToString() + " ," + Y.ToString() + " ," + Z.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Checks if objects equal.
+        /// </summary>
+        /// <param name="obj">The other object.</param>
+        /// <returns>Do objects equal.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return this == (@ClassName)obj;
+            return false;
+        }
+
+        /// <summary>
+        /// Obtain the hash code.
+        /// </summary>
+        /// <returns>The hash code.</returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Overloadable addition.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of addition.</returns>
+        public static @ClassName operator +(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
+        }
+
+        /// <summary>
+        /// Overloadable substraction.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of substraction.</returns>
+        public static @ClassName operator -(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.X - v2.X, v1.Y - v2.Y, v1.Z - v2.Z);
+        }
+
+        /// <summary>
+        /// Overloadable multiplication, or so called dot product. Result is a scalar.
+        /// Dot product can be interpretered as:
+        /// <code>this * other == this.Length * other.Length * this.AngleTo(other)</code>
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Result of substraction.</returns>
+        public static @TypeName operator *(@ClassName v1, @ClassName v2)
+        {
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
+        }
+
+        /// <summary>
+        /// Vector multiplication with scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator *(@ClassName v1, @TypeName f)
+        {
+            return new @ClassName(v1.X * f, v1.Y * f, v1.Z * f);
+        }
+
+        /// <summary>
+        /// Vector multiplication with scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator *(@TypeName f, @ClassName v1)
+        {
+            return new @ClassName(v1.X * f, v1.Y * f, v1.Z * f);
+        }
+
+        /// <summary>
+        /// Cross product of two vectors. The result is vector with the length
+        /// of surface of paralelogram, defined by two vectors, and direction 
+        /// is perpendicular to both vectors.
+        /// <remarks>
+        /// The <c>v1 ^ v2</c> is not the same as <c>v2 ^ v1</c>, it is <c>- v2 ^ v1</c> 
+        /// </remarks>
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>The result.</returns>
+        public static @ClassName operator ^(@ClassName v1, @ClassName v2)
+        {
+            return new @ClassName(v1.Y * v2.Z - v1.Z * v2.Y,
+                                v1.Z * v2.X - v1.X * v2.Z,
+                                v1.X * v2.Y - v1.Y * v2.X);
+        }
+
+        /// <summary>
+        /// Negation operator.
+        /// </summary>
+        /// <param name="v">The vector.</param>
+        /// <returns>Negated vector (direction flipped).</returns>
+        public static @ClassName operator -(@ClassName v)
+        {
+            return v * -@One;
+        }
+
+        /// <summary>
+        /// Vector divided by scalar.
+        /// </summary>
+        /// <param name="v1">The vector.</param>
+        /// <param name="f">Scalar.</param>
+        /// <returns>Result of operation.</returns>
+        public static @ClassName operator /(@ClassName v1, @TypeName f)
+        {
+            return new @ClassName(v1.X / f, v1.Y / f, v1.Z / f);
+        }
+
+
+        /// <summary>
+        /// Checks if vectors are equal. This check is precise and may not give desirable
+        /// result if small errors occur due to precission errors.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Are vectorrs equal.</returns>
+        public static bool operator ==(@ClassName v1, @ClassName v2)
+        {
+            return (v1.X == v2.X) && (v1.Y == v2.Y) && (v1.Z == v2.Z);
+        }
+
+        /// <summary>
+        /// Returns if vectors are different.
+        /// </summary>
+        /// <param name="v1">The first vector.</param>
+        /// <param name="v2">The second vector.</param>
+        /// <returns>Are vectors different.</returns>
+        public static bool operator !=(@ClassName v1, @ClassName v2)
+        {
+            return !(v1 == v2);
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The obsolete x-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName x
+        {
+            get { return X; }
+            set { X = value; }
+        }
+
+        /// <summary>
+        /// The obsolete y-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName y
+        {
+            get { return Y; }
+            set { Y = value; }
+        }
+
+        /// <summary>
+        /// The obsolete z-property getter.
+        /// </summary>
+        [Obsolete]
+        public @TypeName z
+        {
+            get { return Z; }
+            set { Z = value; }
+        }
+
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// The length of vector.
+        /// </summary>
+        public @TypeName Length
+        {
+            get { return @Sqrt((this * this)); }
+            set { this = this * value / @Sqrt((this * this)); }
+        }
+
+        /// <summary>
+        /// Normalized direction.
+        /// </summary>
+        public @ClassName Direction
+        {
+            get { return this / Length; }
+            set { this = value * Length; }
+        }
+
+        /// <summary>
+        /// Normal vector, always length of 1.
+        /// </summary>
+        public @ClassName Normal
+        {
+            get { return this / Length; }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Length squared.
+        /// </summary>
+        public @TypeName Length2
+        {
+            get { return this * this; }
+            set { this = this * value / (this * this); }
+        }
+
+        //#ifdef CylindricalClassName
+
+        /// <summary>
+        /// Conversion to cylindrical coordinates.
+        /// </summary>
+        public @CylindricalClassName Cylindrical
+        {
+            get
+            {
+                @CylindricalClassName c = new @CylindricalClassName();
+                c.Cartesian = this;
+                return c;
+            }
+
+            set
+            {
+                this = value.Cartesian;
+            }
+        }
+
+        //#endif
+
+        //#ifdef SphericalClassName
+
+        /// <summary>
+        /// Conversion to spherical coordinates.
+        /// </summary>
+        public @SphericalClassName Spherical
+        {
+            get
+            {
+                @SphericalClassName s = new @SphericalClassName();
+                s.Cartesian = this;
+                return s;
+            }
+
+            set
+            {
+                this = value.Cartesian;
+            }
+        }
+
+        //#endif
+
+        //#ifdef Vector2ClassName
+
+        /// <summary>
+        /// Gets or sets the homohenous point 2D.
+        /// </summary>
+        /// <value>The point2D.</value>
+        public @Vector2ClassName Point2D
+        {
+            get
+            {
+                if (Z == @Zero)
+                {
+                    // Point in infinity.
+                    throw new ArithmeticException("Cannot convert a homogenous 3D point to 2D point, it is point in infinity.");
+                }
+                return new @Vector2ClassName(X / Z, X / Z);
+            }
+            set
+            {
+                X = value.X;
+                Y = value.Y;
+                Z = @One;
+            }
+        }
+
+        /// <summary>
+        /// A two dimensional vector.
+        /// </summary>
+        public @Vector2ClassName Vec2
+        {
+            set { X = value.X; Y = value.Y; Z = @Zero; }
+            get { return new @Vector2ClassName(X, Y); }
+        }
+
+        //#endif
+
+
+        /// <summary>
+        /// Are all components positive.
+        /// </summary>
+        public bool AllPositive
+        {
+            get
+            {
+                if (X >= @Zero && Y >= @Zero && Z >= @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components positive, strictly speaking.
+        /// </summary>
+        public bool AllPositiveStrict
+        {
+            get
+            {
+                if (X > @Zero && Y > @Zero && Z > @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components negative.
+        /// </summary>
+        public bool AllNegative
+        {
+            get
+            {
+                if (X <= @Zero && Y <= @Zero && Z <= @Zero) return true;
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Are all components negative.
+        /// </summary>
+        public bool AllNegativeStrict
+        {
+            get
+            {
+                if (X < @Zero && Y < @Zero && Z < @Zero) return true;
+                return false;
+            }
+        }
+
+        //#ifdef @Vector4ClassName
+
+        /// <summary>
+        /// A four dimensional vector.
+        /// </summary>
+        public @Vector4ClassName Vec4
+        {
+            set { X = value.X; Y = value.Y; Z = value.Z; }
+            get { return new @Vector4ClassName(X, Y, Z, @Zero); }
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Swizzles
+
+        /// <summary>
+        /// The XXX swizzle mask.
+        /// </summary>
+        public @ClassName XXX
+        {
+            set { X = value.Z; }
+            get { return new @ClassName(X, X, X); }
+        }
+
+        /// <summary>
+        /// The XXY swizzle mask.
+        /// </summary>
+        public @ClassName XXY
+        {
+            set { X = value.Y; Y = value.Z; }
+            get { return new @ClassName(X, X, Y); }
+        }
+
+        /// <summary>
+        /// The XXZ swizzle mask.
+        /// </summary>
+        public @ClassName XXZ
+        {
+            set { X = value.Y; Z = value.Z; }
+            get { return new @ClassName(X, X, Z); }
+        }
+
+        /// <summary>
+        /// The XYX swizzle mask.
+        /// </summary>
+        public @ClassName XYX
+        {
+            set { Y = value.Y; X = value.Z; }
+            get { return new @ClassName(X, Y, X); }
+        }
+
+        /// <summary>
+        /// The XYY swizzle mask.
+        /// </summary>
+        public @ClassName XYY
+        {
+            set { X = value.Y; Y = value.Z; }
+            get { return new @ClassName(X, Y, Y); }
+        }
+
+        /// <summary>
+        /// The XYZ swizzle mask.
+        /// </summary>
+        public @ClassName XYZ
+        {
+            set { this = value; }
+            get { return new @ClassName(X, Y, Z); }
+        }
+
+        /// <summary>
+        /// The XZX swizzle mask.
+        /// </summary>
+        public @ClassName XZX
+        {
+            set { Z = value.Y; X = value.Z; }
+            get { return new @ClassName(X, Z, X); }
+        }
+
+        /// <summary>
+        /// The XZY swizzle mask.
+        /// </summary>
+        public @ClassName XZY
+        {
+            set { X = value.X; Y = value.Z; Z = value.Y; }
+            get { return new @ClassName(X, Z, Y); }
+        }
+
+        /// <summary>
+        /// The XZZ swizzle mask.
+        /// </summary>
+        public @ClassName XZZ
+        {
+            set { X = value.X; Z = value.Z; }
+            get { return new @ClassName(X, Z, Z); }
+        }
+
+
+        /// <summary>
+        /// The YXX swizzle mask.
+        /// </summary>
+        public @ClassName YXX
+        {
+            set { Y = value.X; X = value.Z; }
+            get { return new @ClassName(Y, X, X); }
+        }
+
+        /// <summary>
+        /// The YXY swizzle mask.
+        /// </summary>
+        public @ClassName YXY
+        {
+            set { X = value.Y; Y = value.Z; }
+            get { return new @ClassName(Y, X, Y); }
+        }
+
+        /// <summary>
+        /// The YXZ swizzle mask.
+        /// </summary>
+        public @ClassName YXZ
+        {
+            set { Y = value.X; X = value.Y; Z = value.Z; }
+            get { return new @ClassName(Y, X, Z); }
+        }
+
+        /// <summary>
+        /// The YYX swizzle mask.
+        /// </summary>
+        public @ClassName YYX
+        {
+            set { Y = value.Y; X = value.Z; }
+            get { return new @ClassName(Y, Y, X); }
+        }
+
+        /// <summary>
+        /// The YYY swizzle mask.
+        /// </summary>
+        public @ClassName YYY
+        {
+            set { Y = value.Z; }
+            get { return new @ClassName(Y, Y, Y); }
+        }
+
+        /// <summary>
+        /// The YYZ swizzle mask.
+        /// </summary>
+        public @ClassName YYZ
+        {
+            set { Y = value.Y; Z = value.Z; }
+            get { return new @ClassName(Y, Y, Z); }
+        }
+
+        /// <summary>
+        /// The YZX swizzle mask.
+        /// </summary>
+        public @ClassName YZX
+        {
+            set { Y = value.X; Z = value.Y; X = value.Z; }
+            get { return new @ClassName(Y, Z, X); }
+        }
+
+        /// <summary>
+        /// The YZY swizzle mask.
+        /// </summary>
+        public @ClassName YZY
+        {
+            set { Y = value.Z; Z = value.Y; }
+            get { return new @ClassName(Y, Z, Y); }
+        }
+
+        /// <summary>
+        /// The YZZ swizzle mask.
+        /// </summary>
+        public @ClassName YZZ
+        {
+            set { Y = value.X; Z = value.Z; }
+            get { return new @ClassName(Y, Z, Z); }
+        }
+
+        /// <summary>
+        /// The ZXX swizzle mask.
+        /// </summary>
+        public @ClassName ZXX
+        {
+            set { Z = value.X; X = value.Z; }
+            get { return new @ClassName(Z, X, X); }
+        }
+
+        /// <summary>
+        /// The ZXY swizzle mask.
+        /// </summary>
+        public @ClassName ZXY
+        {
+            set { Z = value.X; X = value.Y; Y = value.Z; }
+            get { return new @ClassName(Z, X, Y); }
+        }
+
+        /// <summary>
+        /// The ZXZ swizzle mask.
+        /// </summary>
+        public @ClassName ZXZ
+        {
+            set { X = value.Y; Z = value.Z; }
+            get { return new @ClassName(Z, X, Z); }
+        }
+
+        /// <summary>
+        /// The ZYX swizzle mask.
+        /// </summary>
+        public @ClassName ZYX
+        {
+            set { Z = value.X; Y = value.Y; X = value.Z; }
+            get { return new @ClassName(Z, Y, X); }
+        }
+
+        /// <summary>
+        /// The ZYY swizzle mask.
+        /// </summary>
+        public @ClassName ZYY
+        {
+            set { Z = value.X; Y = value.Z; }
+            get { return new @ClassName(Z, Y, Y); }
+        }
+
+        /// <summary>
+        /// The ZYZ swizzle mask.
+        /// </summary>
+        public @ClassName ZYZ
+        {
+            set { Y = value.Y; Z = value.Z; }
+            get { return new @ClassName(Z, Y, Z); }
+        }
+
+        /// <summary>
+        /// The ZZX swizzle mask.
+        /// </summary>
+        public @ClassName ZZX
+        {
+            set { Z = value.Y; X = value.Z; }
+            get { return new @ClassName(Z, Z, X); }
+        }
+
+        /// <summary>
+        /// The ZZY swizzle mask.
+        /// </summary>
+        public @ClassName ZZY
+        {
+            set { Y = value.Z; Z = value.Y; }
+            get { return new @ClassName(Z, Z, Y); }
+        }
+
+        /// <summary>
+        /// The ZZZ swizzle mask.
+        /// </summary>
+        public @ClassName ZZZ
+        {
+            set { Z = value.Z; }
+            get { return new @ClassName(Z, Z, Z); }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor with arguments.
+        /// </summary>
+        /// <param name="X">The X component.</param>
+        /// <param name="y">The y component.</param>
+        /// <param name="z">The z component.</param>
+        public @ClassName(@TypeName x, @TypeName y, @TypeName z)
+        {
+            this.X = x;
+            this.Y = y;
+            this.Z = z;
+        }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="r">The vector to copy.</param>
+        public @ClassName(@ClassName r)
+        {
+            X = r.X;
+            Y = r.Y;
+            Z = r.Z;
+        }
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// Construction with magnitude and direction.
+        /// </summary>
+        /// <param name="magnitude">The magnitude, or length of vector.</param>
+        /// <param name="direction">Direction of vector.</param>
+        public @ClassName(@TypeName magnitude, @ClassName direction)
+        {
+            this = magnitude * direction.Normal;
+        }
+
+        //#endif
+
+        //#ifdef Vector2ClassName
+
+        /// <summary>
+        /// Contructor with 2D vector and additional dimension.
+        /// </summary>
+        /// <param name="v">The 2D vector.</param>
+        /// <param name="add">Additional dimension z.</param>
+        public @ClassName(@Vector2ClassName v, @TypeName z)
+        {
+            X = v.X;
+            Y = v.Y;
+            Z = z;
+        }
+
+        //#endif
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = X.CompareTo(other.X);
+            if (cmp != 0) return cmp;
+            cmp = Y.CompareTo(other.Y);
+            if (cmp != 0) return cmp;
+            return Z.CompareTo(other.Z);
+        }
+
+        #endregion
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return CompareTo((@ClassName)obj);
+            return -1;
+        }
+
+        #endregion
+
+        #region Conversions
+
+
+        //#ifdef Vector2ClassName
+
+        public static explicit operator @Vector2ClassName(@ClassName v)
+        {
+            return new @Vector2ClassName(v.X, v.Y);
+        }
+
+        //#endif
+
+        //#ifdef Vector4ClassName
+
+        public static implicit operator @Vector4ClassName(@ClassName v)
+        {
+            return new @Vector4ClassName(v.X, v.Y, v.Z, @Zero);
+        }
+
+        //#endif
+
+        #endregion
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        protected @ClassName v1 = new @ClassName(@One, 2, 3);
+        protected @ClassName v2 = new @ClassName(3, -@One, -2);
+        protected @ClassName v3 = new @ClassName(4, 3, @Zero);
+        protected @ClassName v5 = new @ClassName(@One, @Zero, @Zero);
+        protected @ClassName v6 = new @ClassName(@Zero, @One, @Zero);
+
+        [CorrectnessTest]
+        public void Add() { Assert.AreEqual( v1 + v2, new @ClassName(4, @One, @One)); }
+        [CorrectnessTest]
+        public void Sub() { Assert.AreEqual( v1 - v2, new @ClassName(-2, 3, 5)); }
+        [CorrectnessTest]
+        public void Dot() { Assert.AreEqual( v1 * v2, -5); }
+        [CorrectnessTest]
+        public void Cross() { Assert.AreEqual((v5 ^ v6), new @ClassName(@Zero, @Zero, @One)); }
+        //#ifdef Sqrt
+        [CorrectnessTest]
+        public void Length() { Assert.AreEqual(v3.Length, 5); }
+        [CorrectnessTest]
+        public void DirectionNormal() { Assert.AreEqual(v1.Normal, v1.Direction); }
+        //#endif
+        [CorrectnessTest]
+        public void Length2() { Assert.AreEqual(v3.Length2, 25); }
+        [CorrectnessTest]
+        public void SwizzleXXX() {  Assert.AreEqual(v1.XXX, new @ClassName(@One, @One, @One)); }
+        [CorrectnessTest]
+        public void SwizzleXZY() {  Assert.AreEqual(v1.XZY, new @ClassName(@One, 3, 2)); }
+        [CorrectnessTest]
+        public void WSwizzleXXX()
+        {
+            @ClassName v4 = v1;
+            v4.XXX = new @ClassName(1@Zero, 2, @One);
+            Assert.AreEqual(v1, v4);
+        }
+    }
+#endif
+
+}

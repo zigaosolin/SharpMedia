@@ -1,0 +1,27 @@
+﻿
+DONE:
+* tesselation with indices
+* pen using vertex with indices scheme (3x less data to transform -> better perf.)
+* precache font tesselated data (global per-font cache with resolution/glyph indexing) 
+
+TODO:
+
+* bug when CanvasRenderFlags are used
+* pen width in pixel ruints caching
+* tesselation of poligon (path) to be included, so not only outline mode is supported
+* use of multithreading for complex shape tesselation (and data)
+* use of transform caching through bone-like matrices
+* could pre-create VertexData[] array
+* clipping region support
+
+Goal:
+* at least 20FPS on average GUI screens (on text screen) at high resolution and MS enabled
+
+Issue:
+* different canvases may provide different path tesselation, that may result in different data:
+   - could include canvas type as part of key
+   - could require all canvases to use the same tesselation routines
+   - could left undefined
+
+Subgoals:
+* use hierarchical cache for glyph caching

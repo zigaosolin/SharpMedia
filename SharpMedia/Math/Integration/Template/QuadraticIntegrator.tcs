@@ -1,0 +1,91 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Integration
+{
+
+    /// <summary>
+    /// A quadratic integrator (1D functions only).
+    /// </summary>
+    public class @ClassName : @Integrator
+    {
+        #region Private Members
+        @Function func;
+        uint refCount = 0;
+        @TypeName integral = 0.0f;
+        @TypeName prevIntegral = @TypeName.PositiveInfinity;
+        @IntervalClassName range;
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// Quadratic integrator.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <param name="range"></param>
+        public @ClassName(@Function func, @IntervalClassName range)
+        {
+            this.func = func;
+            this.range = range;
+        }
+
+        #endregion
+
+        #region IIntegrator Members
+
+        public uint RefinementCount
+        {
+            get { return refCount; }
+        }
+
+        public bool Refine(uint maxSamples)
+        {
+            // We perform refinement.
+            refCount++;
+            @TypeName t = integral;
+
+            // Cannot continue with so few samples.
+            if (maxSamples / 3 < (1 << (int)refCount)) return false;
+
+            // Special case first step.
+            if (refCount == 1)
+            {
+                integral = (@TypeName)0.5 * range.Range * (func(range.A) + func(range.B));
+            }
+            else
+            {
+                integral = @Zero;
+                @TypeName h = (range.Range / (1 << (int)refCount));
+                @TypeName b, c, d;
+                for (@TypeName a = range.A; a < range.B; a += h)
+                {
+                    // We get the c.
+                    c = a + h > range.B ? range.B : a + h;
+                    d = (c - a);
+                    b = a + d * (@TypeName)0.5;
+
+                    // We approximate function on interval by trepezoid.
+                    integral += (@TypeName)1.0 / (@TypeName)3.0 * func(a)
+                        + (@TypeName)4.0 / (@TypeName)3.0 * func(b) + (@TypeName)1.0 / (@TypeName)3.0 * func(c) * d;
+                }
+            }
+
+            prevIntegral = t;
+            return true;
+        }
+
+        public @TypeName IntegralApproximation
+        {
+            get { return integral; }
+        }
+
+        public @TypeName ErrorEstimate
+        {
+            get { return prevIntegral - integral; }
+        }
+
+        #endregion
+    }
+}

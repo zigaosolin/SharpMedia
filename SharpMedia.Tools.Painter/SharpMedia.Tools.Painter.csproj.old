@@ -1,0 +1,85 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{790A0AD1-CF56-4136-8D09-6B31561D5345}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Tools.Painter</RootNamespace>
+    <AssemblyName>SharpMedia.Tools.Painter</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Painter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Layer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\PainterGUI.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMedia.Graphics.GUI\SharpMedia.Graphics.GUI.csproj">
+      <Project>{794433D2-8C01-429C-A945-087BDCD1DA69}</Project>
+      <Name>SharpMedia.Graphics.GUI</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics.Vector\SharpMedia.Graphics.Vector.csproj">
+      <Project>{6C31FD57-6837-4A50-834C-C1258568D8F7}</Project>
+      <Name>SharpMedia.Graphics.Vector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Graphics\SharpMedia.Graphics.csproj">
+      <Project>{AAF272C4-FAF0-4890-9679-C144F093AEF5}</Project>
+      <Name>SharpMedia.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Input\SharpMedia.Input.csproj">
+      <Project>{00652ADB-6B51-4FF2-81AC-70253A753E5E}</Project>
+      <Name>SharpMedia.Input</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia.Shell\SharpMedia.Shell.csproj">
+      <Project>{9D17BDBC-706A-4CB3-8C87-42F10F65059A}</Project>
+      <Name>SharpMedia.Shell</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpMedia\SharpMedia.csproj">
+      <Project>{0F4D22A5-E0DC-4579-9734-A7D5A2AEE34F}</Project>
+      <Name>SharpMedia</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UI\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,256 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.50727</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AAF272C4-FAF0-4890-9679-C144F093AEF5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SharpMedia.Graphics</RootNamespace>
+    <AssemblyName>SharpMedia.Graphics</AssemblyName>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\BuildOutput\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;SHARPMEDIA_TESTSUITE;SHARPMEDIA_TESTSUITE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;NOPOSTCOMPILE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SharpMedia, Version=1.0.0.0, Culture=neutral, PublicKeyToken=4f200b7b044e0a29, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\BuildOutput\SharpMedia.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Driver\States.cs" />
+    <Compile Include="Driver\Views.cs" />
+    <Compile Include="GeometryBatch.cs" />
+    <Compile Include="GPUWorkUnit.cs" />
+    <Compile Include="GraphicsSignature.cs" />
+    <Compile Include="Images\Compositing\CompositingResources.cs" />
+    <Compile Include="Images\Compositing\Effects\Effect.cs" />
+    <Compile Include="Images\Compositing\ICompositeInterface.cs" />
+    <Compile Include="Images\Compositing\CompositingOperation.cs" />
+    <Compile Include="Images\Compositing\ICompositingOperation.cs" />
+    <Compile Include="Images\Compositing\Operations\AddSources.cs" />
+    <Compile Include="Images\Compositing\Operations\BlendSources.cs" />
+    <Compile Include="Images\Compositing\Operations\BlendToTarget.cs" />
+    <Compile Include="Images\Compositing\Operations\ColourSource.cs" />
+    <Compile Include="Images\Compositing\Operations\CopyToTarget.cs" />
+    <Compile Include="Images\Compositing\Operations\ResizeSource.cs" />
+    <Compile Include="Images\Compositing\Operations\SampledTextureSource.cs" />
+    <Compile Include="Images\Compositing\Operations\TextureSource.cs" />
+    <Compile Include="Images\Compositing\Effects\BoxBlur.cs" />
+    <Compile Include="Images\Compositing\Effects\GaussianBlur.cs" />
+    <Compile Include="Implementation\DeviceListener.cs" />
+    <Compile Include="Implementation\LockState.cs" />
+    <Compile Include="Implementation\Sampler.cs" />
+    <Compile Include="Implementation\StateChangeGroup.cs" />
+    <Compile Include="Implementation\TypelessBufferAsRenderTarget.cs" />
+    <Compile Include="Implementation\TypelessBufferAsTexture.cs" />
+    <Compile Include="Implementation\TypelessTexture2DAsDepthStencil.cs" />
+    <Compile Include="Implementation\TypelessTexture2DAsRenderTarget.cs" />
+    <Compile Include="Implementation\TypelessTexture2DAsTexture2D.cs" />
+    <Compile Include="PixelFormatEnums.cs" />
+    <Compile Include="ResourceView.cs" />
+    <Compile Include="ConstantBufferView.cs" />
+    <Compile Include="DepthStencilTargetView.cs" />
+    <Compile Include="DeviceLock.cs" />
+    <Compile Include="Driver\Device.cs" />
+    <Compile Include="Driver\GraphicsService.cs" />
+    <Compile Include="Driver\Objects.cs" />
+    <Compile Include="Driver\ShaderCompiler.cs" />
+    <Compile Include="Enumerators.cs" />
+    <Compile Include="Shaders\Assembler\ConstantAttribute.cs" />
+    <Compile Include="Shaders\Assembler\ConversionTest.cs" />
+    <Compile Include="Shaders\Assembler\GPUCallable.cs" />
+    <Compile Include="Shaders\Assembler\GPUEmulator.cs" />
+    <Compile Include="Shaders\Assembler\GPUEntryPointAttribute.cs" />
+    <Compile Include="Shaders\Assembler\InAttribute.cs" />
+    <Compile Include="Shaders\Assembler\CustomCallAttribute.cs" />
+    <Compile Include="Shaders\Assembler\OutAttribute.cs" />
+    <Compile Include="Shaders\Assembler\ResourceAttribute.cs" />
+    <Compile Include="Shaders\Assembler\ShaderDisassembler.cs" />
+    <Compile Include="Shaders\CommonShaderCode.cs" />
+    <Compile Include="Shaders\ConstantBufferLayout.cs" />
+    <Compile Include="Shaders\ConstantBufferLayoutBuilder.cs" />
+    <Compile Include="Shaders\GraphHelper.cs" />
+    <Compile Include="Shaders\Metadata\Boolean.cs" />
+    <Compile Include="Shaders\Metadata\FloatMatrix.cs" />
+    <Compile Include="Shaders\Metadata\FloatSwizzle.cs" />
+    <Compile Include="Shaders\Metadata\Integer.cs" />
+    <Compile Include="Shaders\Metadata\InterfaceBinder.cs" />
+    <Compile Include="Shaders\Metadata\IntSwizzle.cs" />
+    <Compile Include="Shaders\Metadata\Loops.cs" />
+    <Compile Include="Shaders\Metadata\MetadataTests.cs" />
+    <Compile Include="Shaders\Metadata\PinArray.cs" />
+    <Compile Include="Shaders\Metadata\SamplerBinder.cs" />
+    <Compile Include="Shaders\Metadata\TextureBinder.cs" />
+    <Compile Include="Shaders\Metadata\UInteger.cs" />
+    <Compile Include="Shaders\Operations\AllOperation.cs" />
+    <Compile Include="Shaders\Operations\AnyOperation.cs" />
+    <Compile Include="Shaders\Operations\ArraySizeOperation.cs" />
+    <Compile Include="Shaders\Operations\BranchOperation.cs" />
+    <Compile Include="Shaders\Operations\CompareOperation.cs" />
+    <Compile Include="Shaders\Operations\CompoundOperation.cs" />
+    <Compile Include="Shaders\Operations\ConvertOperation.cs" />
+    <Compile Include="Shaders\Operations\ExpandOperation.cs" />
+    <Compile Include="Shaders\Operations\Implementation\LoopInternal.cs" />
+    <Compile Include="Shaders\Operations\Implementation\WhileInternal.cs" />
+    <Compile Include="Shaders\Operations\IndexInArrayOperation.cs" />
+    <Compile Include="Shaders\Operations\InterpolateOperation.cs" />
+    <Compile Include="Shaders\Operations\LoadOperation.cs" />
+    <Compile Include="Shaders\Operations\MethodOperation.cs" />
+    <Compile Include="Shaders\Operations\MultiplyOperation.cs" />
+    <Compile Include="Shaders\Operations\NoneOperation.cs" />
+    <Compile Include="Shaders\Operations\InterfaceHelper.cs" />
+    <Compile Include="Shaders\Operations\SampleOperation.cs" />
+    <Compile Include="Shaders\Operations\SwizzleOperation.cs" />
+    <Compile Include="Shaders\Operations\WriteToIndexInArrayOperation.cs" />
+    <Compile Include="Shaders\Operations\WriteToSwizzledOperation.cs" />
+    <Compile Include="Shaders\PinDescriptor.cs" />
+    <Compile Include="Shaders\PinRelations.cs" />
+    <Compile Include="Shaders\ShaderCode.cs" />
+    <Compile Include="Shaders\ParameterDescription.cs" />
+    <Compile Include="StateManager.cs" />
+    <Compile Include="TypelessBuffer.cs" />
+    <Compile Include="GraphicsLocality.cs" />
+    <Compile Include="IndexBufferView.cs" />
+    <Compile Include="IndexFormat.cs" />
+    <Compile Include="BufferManager.cs" />
+    <Compile Include="ShaderManager.cs" />
+    <Compile Include="DevicePerformance.cs" />
+    <Compile Include="TextureManager.cs" />
+    <Compile Include="Mipmap.cs" />
+    <Compile Include="RenderTargetParameters.cs" />
+    <Compile Include="Colour.cs" />
+    <Compile Include="CompressedImage.cs" />
+    <Compile Include="GraphicsDevice.cs" />
+    <Compile Include="Geometry.cs" />
+    <Compile Include="GraphicsService.cs" />
+    <Compile Include="GraphicsTest.cs" />
+    <Compile Include="Images\AtlasCreator.cs" />
+    <Compile Include="Images\Compositing\Effects\HDRI.cs" />
+    <Compile Include="Images\Compositing\Effects\Sharpen.cs" />
+    <Compile Include="Images\Histogram.cs" />
+    <Compile Include="Images\ImageHelper.cs" />
+    <Compile Include="Images\MipmapHelper.cs" />
+    <Compile Include="Images\SubImage.cs" />
+    <Compile Include="PinFormatHelper.cs" />
+    <Compile Include="RenderTargetView.cs" />
+    <Compile Include="TextureView.cs" />
+    <Compile Include="Shaders\Assembler\ShaderAssembler.cs" />
+    <Compile Include="Shaders\Debugging\Debugger.cs" />
+    <Compile Include="Shaders\GShader.cs" />
+    <Compile Include="Image.cs" />
+    <Compile Include="Images\Compositor.cs" />
+    <Compile Include="PixelFormat.cs" />
+    <Compile Include="ProceduralImage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Shaders\Interface.cs" />
+    <Compile Include="Shaders\Metadata\CodeGenerator.cs" />
+    <Compile Include="Shaders\Metadata\Float.cs" />
+    <Compile Include="Shaders\Metadata\PinBinder.cs" />
+    <Compile Include="Shaders\Operations\Arithmetic.cs" />
+    <Compile Include="Shaders\Operations\Constant.cs" />
+    <Compile Include="Shaders\Operations\LoopOperation.cs" />
+    <Compile Include="Shaders\Operations\WhileOperation.cs" />
+    <Compile Include="Shaders\Operations\Operation.cs" />
+    <Compile Include="Shaders\Pin.cs" />
+    <Compile Include="Shaders\Operations\InputOperation.cs" />
+    <Compile Include="Shaders\Operations\OutputOperation.cs" />
+    <Compile Include="Shaders\PShader.cs" />
+    <Compile Include="Shaders\FixedShaderParameters.cs" />
+    <Compile Include="Shaders\Scope.cs" />
+    <Compile Include="Shaders\Shader.cs" />
+    <Compile Include="Shaders\ShaderCompiler.cs" />
+    <Compile Include="SharingContext.cs" />
+    <Compile Include="SwizzleMask.cs" />
+    <Compile Include="States\BlendState.cs" />
+    <Compile Include="States\DepthStencilState.cs" />
+    <Compile Include="States\RasterizationState.cs" />
+    <Compile Include="States\SamplerState.cs" />
+    <Compile Include="States\State.cs" />
+    <Compile Include="SwapChain.cs" />
+    <Compile Include="Shaders\VShader.cs" />
+    <Compile Include="TypelessTexture.cs" />
+    <Compile Include="TypelessTexture1D.cs" />
+    <Compile Include="TypelessTexture1DArray.cs" />
+    <Compile Include="TypelessTexture2D.cs" />
+    <Compile Include="ImageExceptions.cs" />
+    <Compile Include="PinFormat.cs" />
+    <Compile Include="TypelessTexture2DArray.cs" />
+    <Compile Include="TypelessTexture3D.cs" />
+    <Compile Include="VertexBufferView.cs" />
+    <Compile Include="VertexFormat.cs" />
+    <Compile Include="Window.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TODO.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Graphics.ipkg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Direct3D10Driver.ipkg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Direct3D10Service.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Direct3D10Test.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\Graphics.libxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Installation\BezierDemo.appxml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

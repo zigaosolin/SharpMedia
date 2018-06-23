@@ -1,0 +1,139 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.Math.Functions.Discrete;
+
+namespace SharpMedia.Math.Functions.Series
+{
+
+    /// <summary>
+    /// Arithmetic series, defined as:
+    /// a, a+d, a+2d, ... a+n*d
+    /// </summary>
+    public class @ClassName : @BaseClass
+    {
+        #region Private Members
+        private @TypeName a;
+        private @TypeName d;
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The difference between two adjected elements.
+        /// </summary>
+        public @TypeName Difference
+        {
+            get { return d; }
+            set { d = value; }
+        }
+
+        /// <summary>
+        /// An initial element of arithmetic series.
+        /// </summary>
+        public @TypeName Initial
+        {
+            get { return a; }
+            set { a = value; }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Construction of arithmetic series.
+        /// </summary>
+        /// <param name="initial">The initial element.</param>
+        /// <param name="dif">The difference between two elements in row.</param>
+        public @ClassName(@TypeName initial, @TypeName dif)
+        {
+            a = initial;
+            d = dif;
+        }
+
+        #endregion
+
+        #region @BaseClass Members
+
+        public @DiscreteFunction Function
+        {
+            get
+            {
+                return delegate(uint x)
+                {
+                    return a + x * d;
+                };
+            }
+        }
+
+        public @DiscreteFunction SumFunction
+        {
+            get
+            {
+                return delegate(uint x)
+                {
+                    return (@TypeName)0.5 * (@TypeName)(x + 1) * ((@TypeName)2.0 * a + (@TypeName)x * d);
+                };
+            }
+        }
+
+        public @TypeName[] Sample(uint begin, uint count)
+        {
+            @TypeName[] r = new @TypeName[count];
+            for (int i = 0; i < count; i++)
+            {
+                r[i] = a + (begin + i) * d;
+            }
+
+            return r;
+        }
+
+        public @TypeName[] SampleSum(uint begin, uint count)
+        {
+            @TypeName[] r = new @TypeName[count];
+            for (int i = 0; i < count; i++)
+            {
+                r[i] = (@TypeName)0.5 * (@TypeName)(begin + i + 1)
+                       * ((@TypeName)2.0 * a + (begin + i) * d);
+            }
+
+            return r;
+        }
+
+        public @TypeName InfiniteSum
+        {
+            get { return @TypeName.PositiveInfinity * d; }
+        }
+
+        #endregion
+    }
+
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        [CorrectnessTest]
+        public void Properties()
+        {
+            @ClassName s = new @ClassName((@TypeName)1.0, (@TypeName)0.2);
+            Assert.AreEqual((@TypeName)1.2, s.Function(1));
+            Assert.AreEqual((@TypeName)2.2, s.SumFunction(1));
+            Assert.AreEqual((@TypeName)1.0, s.Initial);
+            Assert.AreEqual(@TypeName.PositiveInfinity, s.InfiniteSum);
+            Assert.AreEqual((@TypeName)0.2, s.Difference);
+        }
+    }
+#endif
+}

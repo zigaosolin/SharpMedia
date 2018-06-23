@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="Eval"
+	friendly="Evaluates a mathematical expression"
+	id="20DA4537-883F-493c-B00B-CE9D6F77C436"
+	root="Main"
+	type="SingleDocument">
+	
+	<!-- Replication of the application descriptor -->
+	<Components>
+		<Component
+			Id="Main"
+			Type="SharpMedia.Math.EvalApp" />
+	</Components>
+</Application>
+
+
+  

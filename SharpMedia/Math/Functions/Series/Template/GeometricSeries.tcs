@@ -1,0 +1,181 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.Math.Functions.Discrete;
+
+namespace SharpMedia.Math.Functions.Series
+{
+
+    /// <summary>
+    /// A geometric series, defined as:
+    /// a, ak, ak^2, ak^3, ...
+    /// </summary>
+    public class @ClassName : @BaseClass
+    {
+        #region Private Members
+        private @TypeName k;
+        private @TypeName a;
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The koefficient, next element versus previous is this element.
+        /// </summary>
+        public @TypeName K
+        {
+            get
+            {
+                return k;
+            }
+            set
+            {
+                k = value;
+            }
+        }
+
+        /// <summary>
+        /// The initial value.
+        /// </summary>
+        public @TypeName Initial
+        {
+            get
+            {
+                return a;
+            }
+            set
+            {
+                a = value;
+            }
+        }
+
+        #endregion
+
+        #region ISeriesd Members
+
+        public @DiscreteFunction Function
+        {
+            get
+            {
+                return delegate(uint x)
+                {
+                    return a * @Pow(k, (@TypeName)x);
+                };
+            }
+        }
+
+        public @DiscreteFunction SumFunction
+        {
+            get
+            {
+                return delegate(uint x)
+                {
+                    return a * ((@TypeName)1.0 - @Pow(k, (@TypeName)(x + 1))) / ((@TypeName)1.0 - k);
+                };
+            }
+
+        }
+
+        public @TypeName[] Sample(uint begin, uint count)
+        {
+            // Must be nonzero.
+            if (count == 0) return null;
+
+            @TypeName[] r = new @TypeName[count];
+
+            // We calculate the begin element.
+            @TypeName x = Function(begin);
+            r[0] = x;
+
+            for (uint i = 1; i < count; i++)
+            {
+                x *= k;
+                r[i] = x;
+            }
+
+            // Returns next element.
+            return r;
+        }
+
+        public @TypeName[] SampleSum(uint begin, uint count)
+        {
+            if (count == 0) return null;
+
+            @TypeName[] r = new @TypeName[count];
+
+            // We caclulate first element.
+            @TypeName x = Function(begin);
+            r[0] = SumFunction(begin);
+
+            for (uint i = 1; i < count; i++)
+            {
+                x *= k;
+                r[i] = r[i - 1] + x;
+            }
+
+            // Returns next element.
+            return r;
+
+        }
+
+        public @TypeName InfiniteSum
+        {
+            get
+            {
+                if (@Abs(k) < @One) return a / (@One - k);
+                if (k < @Zero) return @TypeName.NaN;
+
+                // Otherwise, result depends on a.'s sign.
+                return a * @TypeName.PositiveInfinity;
+
+            }
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor given needed parameters.
+        /// </summary>
+        /// <param name="initial">Initial, first values in series.</param>
+        /// <param name="q">The queficient with adjecting elements.</param>
+        public @ClassName(@TypeName initial, @TypeName q)
+        {
+            a = initial;
+            k = q;
+        }
+
+        #endregion
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        [CorrectnessTest]
+        public void Properties()
+        {
+            @ClassName s = new @ClassName((@TypeName)1.0, (@TypeName)0.5);
+
+            Assert.AreEqual((@TypeName)1.0, s.Function(0));
+            Assert.AreEqual((@TypeName)0.5, s.Function(1));
+            Assert.AreEqual((@TypeName)1.0, s.SumFunction(0));
+            Assert.AreEqual((@TypeName)1.5, s.SumFunction(1));
+            Assert.AreEqual((@TypeName)1.0, s.Initial);
+            Assert.AreEqual((@TypeName)0.5, s.K);
+            Assert.AreEqual((@TypeName)2.0, s.InfiniteSum);
+        }
+    }
+#endif
+}

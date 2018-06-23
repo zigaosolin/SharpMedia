@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+  
+  <TemplateSet Name="DoubleMatrix" Extends="Double,CoreMath">
+    <Template Name="BaseInterface" Value="IMatrixd"/>
+  </TemplateSet>
+
+  <TemplateSet Name="FloatMatrix" Extends="Float,CoreMath">
+    <Template Name="BaseInterface" Value="IMatrixf"/>
+  </TemplateSet>
+  
+  <!-- A matrix interface. -->
+  <TemplateSet Name="MatrixInterfacef" Extends="FloatMatrix">
+    <Template Name="ClassName" Value="IMatrixf" />
+    <Template Name="SparseClassName" Value="ISparseMatrixf" />
+  </TemplateSet>
+  <TemplateSet Name="MatrixInterfaced" Extends="DoubleMatrix">
+    <Template Name="ClassName" Value="IMatrixd" />
+    <Template Name="SparseClassName" Value="ISparseMatrixd" />
+  </TemplateSet>
+
+  <!-- A 2x2 matrix. -->
+  <TemplateSet Name="Matrix2x2f" Extends="FloatMatrix">
+    <Template Name="ClassName" Value="Matrix2x2f" />
+  </TemplateSet>
+  <TemplateSet Name="Matrix2x2d" Extends="DoubleMatrix">
+    <Template Name="ClassName" Value="Matrix2x2d" />
+  </TemplateSet>
+
+  <!-- A 3x3 matrix. -->
+  <TemplateSet Name="Matrix3x3f" Extends="FloatMatrix">
+    <Template Name="ClassName" Value="Matrix3x3f" />
+  </TemplateSet>
+  <TemplateSet Name="Matrix3x3d" Extends="DoubleMatrix">
+    <Template Name="ClassName" Value="Matrix3x3d" />
+  </TemplateSet>
+
+  <!-- A 4x4 matrix. -->
+  <TemplateSet Name="Matrix4x4f" Extends="FloatMatrix">
+    <Template Name="ClassName" Value="Matrix4x4f" />
+  </TemplateSet>
+  <TemplateSet Name="Matrix4x4d" Extends="DoubleMatrix">
+    <Template Name="ClassName" Value="Matrix4x4d" />
+  </TemplateSet>
+
+  <!-- A dense matrix. -->
+  <TemplateSet Name="DenseMatrixf" Extends="FloatMatrix">
+    <Template Name="ClassName" Value="DenseMatrixf" />
+  </TemplateSet>
+  <TemplateSet Name="DenseMatrixd" Extends="DoubleMatrix">
+    <Template Name="ClassName" Value="DenseMatrixd" />
+  </TemplateSet>
+  
+ 
+
+</TemplateSets>

@@ -1,0 +1,137 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.AspectOriented;
+
+namespace SharpMedia.Math.Integration
+{
+    /// <summary>
+    /// Can calculate various order derivates in certain points.
+    /// </summary>
+    public static class Differentiator
+    {
+        //#foreach Types
+
+        #region @TypeName
+
+        #region Point Differentiation
+
+        /// <summary>
+        /// Computes derivate at x0, using order 2 (not very precise).
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="x0">Point where derivate is to be computed.</param>
+        /// <returns>Derivate (slope, tangents of angle between axis x and tangent).</returns>
+        /// <param name="h">The delta.</param>
+        public static @TypeName DerivateOrder2([NotNull] @Function f, @TypeName x0, @TypeName h)
+        {
+            return (f(x0 + h) - f(x0 - h)) / ((@TypeName)2.0 * h);
+        }
+
+
+        /// <summary>
+        /// Computes derivate at x0, using order 4 formulea.
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="x0">Point where differentiation is needed.</param>
+        /// <returns>Result.</returns>
+        /// <param name="h">The delta.</param>
+        public static @TypeName DerivateOrder4([NotNull] @Function f, @TypeName x0, @TypeName h)
+        {
+            return ((@TypeName)8.0 * (f(x0 + h) - f(x0)) 
+                    - (f(x0 + (@TypeName)2 * h) 
+                    - f(x0 - (@TypeName)2 * h))) 
+                       / ((@TypeName)12.0 * h);
+        }
+
+
+        /// <summary>
+        /// A derivate of order n calculation. 
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="x0">Actual value where the function is to be differentiated.</param>
+        /// <param name="order">Order of differentiation.</param>
+        /// <param name="h">Delta for computation.</param>
+        /// <returns>Result.</returns>
+        public static @TypeName Derivate([NotNull] @Function f, @TypeName x0, uint order, @TypeName h)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Function Differentiation
+
+        /// <summary>
+        /// Creates a derivate function using samples.
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="interval">Interval where to compute derivate.</param>
+        /// <param name="samples">Number of samples.</param>
+        /// <param name="h">The delta for computation.</param>
+        /// <returns>Function, a polynomial in compact compiled form.</returns>
+        public static @Function Derivate([NotNull] @Function f, @IntervalClassName interval, uint samples, @TypeName h)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a derivate function using samples.
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="interval">Interval where to compute derivate.</param>
+        /// <param name="samples">Number of samples.</param>
+        /// <param name="h">The delta for computation.</param>
+        /// <returns>Function, a polynomial.</returns>
+        public static Functions.Polynomial DerivatePolynomial([NotNull] @Function f, @IntervalClassName interval, uint samples, @TypeName h)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a derivate function using samples.
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="interval">Interval where to compute derivate.</param>
+        /// <param name="samples">Number of samples.</param>
+        /// <param name="h">The delta for computation.</param>
+        /// <param name="order">Order of differentiation.</param>
+        /// <returns>Function, a polynomial in compact compiled form.</returns>
+        public static @Function DerivatePolynomial([NotNull] @Function f, 
+            @IntervalClassName interval, uint samples, uint order, @TypeName h)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a derivate function using samples.
+        /// </summary>
+        /// <param name="f">The function.</param>
+        /// <param name="interval">Interval where to compute derivate.</param>
+        /// <param name="samples">Number of samples.</param>
+        /// <param name="h">The delta for computation.</param>
+        /// <param name="order">Order of differentiation.</param>
+        /// <returns>Function, a polynomial.</returns>
+        public static Functions.Polynomial Derivate([NotNull] @Function f, 
+            @IntervalClassName interval, uint samples, uint order, @TypeName h)
+        {
+            return null;
+        }
+
+        #endregion
+
+        #endregion
+
+        //#endfor
+
+    }
+}

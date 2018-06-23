@@ -1,0 +1,149 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+
+<Application Namespace="SharpMedia.Tools.Painter.UI" 
+             xmlns:container="1"
+             xmlns:gui="2"
+             xmlns:validation="3">
+
+  <!-- Outer horizontal box. The most common way of painter is to have tool bar, followed by rendering area
+       with optional tools and at bottom status bar. -->
+  <container:HBox Name="OuterHBox">
+
+    <!-- A tab for tools -->
+    <container:Tab Name="Tools">
+
+      <!-- Basic commands -->
+      <container:VBox Name="Home">
+
+        <!-- A file manipulaction grid, with commands to save, load, reload or close file. We use
+             extend mode which garanties that if subelements do not fit in the grid, drop down list is available. -->
+        <container:Grid Title="File" Name="FileManipulation" ExtendMode="DropDown">
+          <gui:Button Text="Open" Name="OpenImage" />
+          <gui:Button Text="Close" Name="CloseImage" />
+          <gui:Button Text="Save" Name="SaveImage" />
+          <gui:Button Text="Save As" Name="SaveImageAs" />
+        </container:Grid>
+
+        <!-- An image print grid -->
+        <container:Grid Title="Print" Name="Print" ExtendMode="DropDown">
+          <gui:Button Text="Print" Name="PrintImageImmediate" />
+          <gui:Button Text="Print Preview" Name="PrintPreview" />
+          <gui:Button Text="Settings" Name="PrintSettings" />
+        </container:Grid>
+
+        <!-- An export grid-->
+        <container:Grid Name="Export" ExtendMode="DropDown">
+          <gui:Button Text="Shapes" Name="ExportShapes" />
+          <gui:Button Text="Image" Name="ExportImage" />
+          <gui:Button Text="Layout" Name="ExportLayout" />
+          <gui:Button Text="Shapes As" Name="ExportShapesAs" />
+          <gui:Button Text="Image As" Name="ExportImageAs" />
+          <gui:Button Text="Layout As" Name="ExportLayoutAs" />
+        </container:Grid>
+        
+      </container:VBox>
+
+      <!-- A table with shapes (vector drawing) -->
+      <container:VBox Name="Shape">
+
+        <!-- A combo box with shape selection -->
+        <container:ComboBox Text="Shape" Name="ShapeCombo" Default="0">
+          
+          <!-- A line -->
+          <container:HBox Name="ShapeLine">
+            <gui:VectorImage Link="Resources/VectorImages/Shapes/Line" Name="ShapeLineImage" />
+            <gui:Label Text="Line" Name="ShapeLineLabel" />
+          </container:HBox>
+          
+          <!-- Bezier 3 curve -->
+          <container:HBox Name="ShapeBezier3">
+            <gui:VectorImage Link="Resources/VectorImages/Shapes/Bezier" Name="ShapeBezier3Image" />
+            <gui:Label Text="Bezier3" Name="ShapeBezier3Label" />
+          </container:HBox>
+          
+          <!-- Spline -->
+          <container:HBox Name="ShapeSpline">
+            <gui:VectorImage Link="Resources/VectorImages/Shapes/Spline" Name="ShapeSplineImage" />
+            <gui:Label Text="Spline" Name="SplineLabel" />
+          </container:HBox>
+          
+          <!-- Add more -->
+          
+        </container:ComboBox>
+        
+        <!-- Fills selected path tool -->
+        <gui:Button Text="Fill Path" Name="FillPath" />
+
+        <!-- Closes selected path tool -->
+        <gui:Button Text="Close Path" Name="ClosePath" />
+
+        <!-- A pen grid -->
+        <container:Grid Title="Pen" Name="Pen">
+          
+          <!-- Pen type -->
+          <container:ComboBox Title="Type" Name="PenType" >
+            
+          </container:ComboBox>
+
+          <!-- Pen width in canvas units -->
+          <container:VBox Name="PenWidthCanvasBox">
+            <gui:Label Name="PenWidthCanvasLabel" Text="Pen width (canvas):" />
+            <gui:TextEdit Name="PenWidthCanvasEdit">
+              <validation:Number AllowFloating="true" />
+            </gui:TextEdit>
+          </container:VBox>
+          
+          <!--Pen width in pixel units -->
+          <container:VBox Name="PenWidthPixelBox">
+            <gui:Label Name="PenWidthPixelLabel" Text="Pen width (pixel):" />
+            <gui:TextEdit Name="PenWidthPixelEdit">
+              <validation:Number AllowFloating="true" />
+            </gui:TextEdit>
+          </container:VBox>
+
+        </container:Grid>
+
+
+        <container:Grid Name="Fill" Title="Fill">
+          
+        </container:Grid>
+        
+      </container:VBox>
+
+      <container:VBox Name="Layer">
+
+      </container:VBox>
+      
+      <container:VBox Name="Effects">
+
+      </container:VBox>
+      
+    </container:Tab>
+    
+    <!-- Working area, where you can dock elements and paint. -->
+    <container:DockableSheet Name="">
+      
+      <!-- Contains the rendering area, it is rendered by applying a special ISkinRenderer to
+           sheet which renders the actual image, and not the background. -->
+      <container:Sheet Name="RenderArea" LayoutAnchor="Left|Top" >
+     
+        <!-- Rendering area as big as possible -->
+        <PreferredRect X="0%" Y="0%" Width="100%" Height="100%" />
+        
+        
+        
+        
+      </container:Sheet>
+      
+      <!-- Addins can also be configured to reside here, or any grid item can be probably dragged -->
+      
+      
+    </container:DockableSheet>
+
+    <container:VBox Name="StatusBar" LayoutAnchor="Bottom">
+      
+    </container:VBox>
+    
+  </container:HBox>
+</Application>

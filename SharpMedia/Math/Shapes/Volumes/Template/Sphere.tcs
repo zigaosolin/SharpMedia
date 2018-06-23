@@ -1,0 +1,200 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Shapes.Volumes
+{
+
+    /// <summary>
+    /// An sphere.
+    /// </summary>
+    public sealed class @ClassName :
+        @Volume, @AABoxBoundable, @SphereBoundable,
+        @AreaD, @ContainsPoint3, @Transformable3,
+        IEquatable<@ClassName>, IComparable<@ClassName>, ICloneable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The center of sphere.
+        /// </summary>
+        public @Vector3ClassName Center;
+
+        /// <summary>
+        /// The radius of sphere.
+        /// </summary>
+        public @TypeName Radius;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the diameter.
+        /// </summary>
+        /// <value>The dimensions.</value>
+        public @TypeName Diameter
+        {
+            get { return Radius * (@TypeName)2.0; }
+            set { Radius = Diameter * (@TypeName)0.5; }
+        }
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Constructor box from points.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static @ClassName FromPoints(params @Vector3ClassName[] data)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Constructor with center and radius.
+        /// </summary>
+        /// <param name="center">The center point of sphere.</param>
+        public @ClassName(@Vector3ClassName center, @TypeName radius)
+        {
+            if (radius < @Zero) throw new ArgumentException("Negative radius invalid.");
+            Center = center;
+            Radius = radius;
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get
+            {
+                return (@TypeName)4.0 * (@TypeName)MathHelper.PI * Radius * Radius;
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            // Adaptive same as normal
+            if (resolution < 0) resolution = -resolution;
+
+            throw new NotImplementedException();
+
+        }
+
+        #endregion
+
+        #region @ContainsPoint3 Members
+
+        public bool ContainsPoint(@Vector3ClassName point)
+        {
+            return (point - Center).Length2 <= Radius * Radius;
+        }
+
+        #endregion
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                return new @AABox(Center - new @Vector3ClassName(Radius, Radius, Radius),
+                                  Center + new @Vector3ClassName(Radius, Radius, Radius));  
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                return Clone();
+            }
+        }
+
+        #endregion
+
+        #region @Volume
+
+        public @TypeName Volume
+        {
+            get
+            {
+                return (@TypeName)4.0 / (@TypeName)3.0 * 
+                    (@TypeName)MathHelper.PI * Radius * Radius * Radius;
+            }
+        }
+
+        #endregion
+
+        #region Transformable3
+
+        public void Transform(Matrix.@Matrix4x4ClassName matrix)
+        {
+            Center = matrix * Center;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (@Vector3ClassName.NearEqual(Center, other.Center) &&
+                @NearEqual(Radius, other.Radius))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        #endregion
+
+        #region ICloneable Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(Center, Radius);
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = Center.CompareTo(other.Center);
+            if (cmp != 0) return cmp;
+            return Radius.CompareTo(other.Radius);
+        }
+
+        #endregion
+    }
+}

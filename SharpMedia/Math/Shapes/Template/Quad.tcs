@@ -1,0 +1,621 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+using SharpMedia.Math.Shapes.Volumes;
+
+namespace SharpMedia.Math.Shapes
+{
+
+
+    /// <summary>
+    /// A quad in @Dim space.
+    /// </summary>
+    [Serializable]
+    public class @ClassName :
+        @AreaD, @OutlineD, @ControlPointsD, @ContainsPointD, @TransformableD,
+        IEquatable<@ClassName>, IComparable<@ClassName>,
+        IEnumerable<@Vector>, ICloneable<@ClassName>
+        //#ifdef 3D
+        , @AABoxBoundable, @SphereBoundable
+        //#endif
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The first control point.
+        /// </summary>
+        public @Vector A;
+
+        /// <summary>
+        /// The second control point.
+        /// </summary>
+        public @Vector B;
+
+        /// <summary>
+        /// The third control point.
+        /// </summary>
+        public @Vector C;
+
+        /// <summary>
+        /// The forth control point.
+        /// </summary>
+        public @Vector D;
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Empty constructor.
+        /// </summary>
+        public @ClassName()
+        {
+        }
+
+        /// <summary>
+        /// Constructor with all four points.
+        /// </summary>
+        /// <param name="p0">The first point.</param>
+        /// <param name="p1">The second point.</param>
+        /// <param name="p2">The third point.</param>
+        /// <param name="p3">The forth point.</param>
+        public @ClassName(@Vector p0, @Vector p1,
+            @Vector p2, @Vector p3)
+        {
+            A = p0;
+            B = p1;
+            C = p2;
+            D = p3;
+        }
+
+        #endregion
+
+        #region Properties
+
+
+        /// <summary>
+        /// The alpha, angle at A.
+        /// </summary>
+        public @TypeName Alpha
+        {
+            get
+            {
+                @Vector v1 = B - A;
+                @Vector v2 = D - A;
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Alpha in degrees.
+        /// </summary>
+        public @TypeName AlphaDegrees
+        {
+            get
+            {
+                return MathHelper.ToDegrees(Alpha);
+            }
+        }
+
+        /// <summary>
+        /// Beta angle, angle at B.
+        /// </summary>
+        public @TypeName Beta
+        {
+            get
+            {
+                @Vector v1 = A - B;
+                @Vector v2 = C - B;
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Beta angle in degrees.
+        /// </summary>
+        public @TypeName BetaDegrees
+        {
+            get
+            {
+                return MathHelper.ToDegrees(Beta);
+            }
+        }
+
+        /// <summary>
+        /// Gamma angle, angle at C.
+        /// </summary>
+        public @TypeName Gamma
+        {
+            get
+            {
+                @Vector v1 = B - C;
+                @Vector v2 = D - C;
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Gamma angle in degrees.
+        /// </summary>
+        public @TypeName GammaDegrees
+        {
+            get
+            {
+                return MathHelper.ToDegrees(Gamma);
+            }
+        }
+
+        /// <summary>
+        /// Delta angle, the angle at D.
+        /// </summary>
+        public @TypeName Delta
+        {
+            get
+            {
+                @Vector v1 = A - D;
+                @Vector v2 = C - D;
+                return @Acos((v1 * v2) / (v1.Length * v2.Length));
+            }
+        }
+
+        /// <summary>
+        /// Delta angle in degrees.
+        /// </summary>
+        public @TypeName DeltaDegrees
+        {
+            get
+            {
+                return MathHelper.ToDegrees(Delta);
+            }
+        }
+
+        /// <summary>
+        /// The side a, between vertices A and B.
+        /// </summary>
+        public @TypeName SideA
+        {
+            get
+            {
+                return (B - A).Length;
+            }
+        }
+
+        /// <summary>
+        /// The side a, between vertices C and B.
+        /// </summary>
+        public @TypeName SideB
+        {
+            get
+            {
+                return (B - C).Length;
+            }
+        }
+
+        /// <summary>
+        /// The side a, between vertices C and D.
+        /// </summary>
+        public @TypeName SideC
+        {
+            get
+            {
+                return (D - C).Length;
+            }
+        }
+
+        /// <summary>
+        /// The side a, between vertices A and D.
+        /// </summary>
+        public @TypeName SideD
+        {
+            get
+            {
+                return (D - A).Length;
+            }
+        }
+
+        /// <summary>
+        /// The center of quad.
+        /// </summary>
+        public @Vector Center
+        {
+            get
+            {
+                return (A + B + C + D) / (@TypeName)4.0;
+            }
+        }
+
+        /// <summary>
+        /// Is the quad square.
+        /// </summary>
+        public bool IsSquare
+        {
+            get
+            {
+                if (!IsRectangle) return false;
+
+                // We check that all sides are the same length.
+                return @NearEqual((D - A).Length2, (B - A).Length2);
+            }
+        }
+
+        /// <summary>
+        /// Is the shape a rectangle.
+        /// </summary>
+        public bool IsRectangle
+        {
+            get
+            {
+                // We require all angles to be 90 degress.
+                if (!@NearEqual((B - A) * (D - A), @Zero)) return false;
+                if (!@NearEqual((A - B) * (C - B), @Zero)) return false;
+                if (!@NearEqual((D - C) * (B - C), @Zero)) return false;
+                // The other is automatically.
+
+                return true;
+            }
+        }
+
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder(100);
+            builder.Append("Quad : {");
+            builder.Append(A.ToString());
+            builder.Append(", ");
+            builder.Append(B.ToString());
+            builder.Append(", ");
+            builder.Append(C.ToString());
+            builder.Append(", ");
+            builder.Append(D.ToString());
+            builder.Append("}");
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return this.Equals((@ClassName)obj);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Always prefer this split over the tesellation because it is faster and there is
+        /// no need to allocate collection. This only works for quads/rectanges.
+        /// </summary>
+        /// <param name="t1">The first triangle.</param>
+        /// <param name="t2">The second triangle.</param>
+        public void Split(out @Triangle t1, out @Triangle t2)
+        {
+            t1 = new @Triangle(A, B, C);
+            t2 = new @Triangle(A, C, D);
+        }
+
+        #endregion
+
+        #region @AreaD Members
+
+        public @TypeName Area
+        {
+            get
+            {
+                // We sum two triangles.
+                return (@TypeName)0.5 * (A.X * (B.Y - C.Y) + B.X * (C.Y - A.Y) + C.X * (A.Y - B.Y)) +
+                       (@TypeName)0.5 * (A.X * (C.Y - D.Y) + C.X * (D.Y - A.Y) + D.X * (A.Y - C.Y));
+            }
+        }
+
+        public void Tesselate(@TypeName resolution, Storage.Builders.@TriangleBuilder builder)
+        {
+            if (resolution < @Zero ||
+                (resolution > SideA && resolution > SideB && resolution > SideC && resolution > SideD))
+            {
+                if (builder.IsIndexed)
+                {
+                    // We simply append vertices and proceed.
+                    uint indexBase = builder.AddControlPoints(A, B, C, D);
+
+                    // Add vertices if indexed
+
+                    builder.AddIndexedTriangles(
+                        new uint[] { indexBase, indexBase + 1, indexBase + 2,
+                                 indexBase, indexBase + 2, indexBase + 3 }
+                    );
+                }
+                else
+                {
+                    // We need to pust 2 triangles.
+                    builder.AddControlPoints(A, B, C, A, C, D);
+                }
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+
+        }
+
+        #endregion
+
+        #region @OutlineD Members
+
+        public @Vector Sample(@TypeName t)
+        {
+            if (t >= (@TypeName)0.0 && t <= (@One / (@TypeName).25))
+            {
+                @TypeName inter = (@TypeName)4 * t;
+                return A * (@One - inter) + B * inter;
+            }
+            else if (t <= ((@TypeName)2 / (@TypeName)4))
+            {
+                @TypeName inter = (@TypeName)4 * t - @One;
+                return B * (@One - inter) + C * inter;
+            }
+            else if (t <= ((@TypeName)3 / (@TypeName)4))
+            {
+                @TypeName inter = (@TypeName)4 * t - (@TypeName)2;
+                return C * (@One - inter) + D * inter;
+            }
+            else
+            {
+                @TypeName inter = (@TypeName)4 * t - (@TypeName)3;
+                return D * (@One - inter) + A * inter;
+            }
+        }
+
+        public void Sample(@TypeName resolution, Storage.Builders.@LineBuilder builder)
+        {
+            if (resolution < @Zero)
+            {
+                builder.AddLineStrip(true, A, B, C, D);
+            }
+            else
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #region @Outline Members
+
+        public @TypeName OutlineLength
+        {
+            get { return SideA + SideB + SideC + SideD; }
+        }
+
+        #endregion
+
+        #region @ControlPointsD Members
+
+        public @Vector[] ControlPoints
+        {
+            get
+            {
+                return new @Vector[] { A, B, C, D };
+            }
+            set
+            {
+                if (value.Length != 4) throw new ArgumentException("Three control points expected.");
+                A = value[0];
+                B = value[1];
+                C = value[2];
+                D = value[3];
+            }
+        }
+
+        public void SetControlPoints(uint index, @Vector cp)
+        {
+            switch (index)
+            {
+                case 0:
+                    A = cp;
+                    break;
+                case 1:
+                    B = cp;
+                    break;
+                case 2:
+                    C = cp;
+                    break;
+                case 3:
+                    D = cp;
+                    break;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-3 for quad.");
+            }
+        }
+
+        public @Vector GetControlPoint(uint index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return A;
+                case 1:
+                    return B;
+                case 2:
+                    return C;
+                case 3:
+                    return D;
+                default:
+                    throw new ArgumentException("Index out of range, must be 0-3 for quad.");
+            }
+        }
+
+        #endregion
+
+        #region @ControlPoints Members
+
+        public uint ControlPointCount
+        {
+            get { return 4; }
+        }
+
+        #endregion
+
+        #region @ContainsPointD Members
+
+        public bool ContainsPoint(@Vector point)
+        {
+            throw new Exception("The method or operation is not implemented.");
+        }
+
+        #endregion
+
+        #region @TransformableD
+
+        public void Transform(Matrix.@Matrix matrix)
+        {
+            A = matrix * A;
+            B = matrix * B;
+            C = matrix * C;
+            D = matrix * D;
+        }
+
+        #endregion
+
+        //#ifdef 3D
+
+        #region @AABoxBoundable Members
+
+        public @AABox BoundingAABox
+        {
+            get
+            {
+                return @AABox.FromPoints(A, B, C, D);
+            }
+        }
+
+        #endregion
+
+        #region @SphereBoundable Members
+
+        public @Sphere BoundingSphere
+        {
+            get
+            {
+                return @Sphere.FromPoints(A, B, C, D);
+            }
+        }
+
+        #endregion
+
+        //#endif
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return @Vector.NearEqual(A, other.A) &&
+                   @Vector.NearEqual(B, other.B) &&
+                   @Vector.NearEqual(C, other.C) &&
+                   @Vector.NearEqual(D, other.D);
+
+        }
+
+        #endregion
+
+        #region IEnumerable<@Vector> Members
+
+        public IEnumerator<@Vector> GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+            yield return D;
+        }
+
+        #endregion
+
+        #region IEnumerable Members
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            yield return A;
+            yield return B;
+            yield return C;
+            yield return D;
+        }
+
+        #endregion
+
+        #region ICloneable<@ClassName> Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(A, B, C, D);
+        }
+
+        #endregion
+
+        #region IComparable<Triangled> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            @TypeName a1 = Area, a2 = other.Area;
+            if (a1 < a2) return -1;
+            else if (a1 == a2) return 0;
+            return 1;
+        }
+
+        #endregion
+
+
+    }
+
+#if SHARPMEDIA_TESTSUITE
+    [TestSuite]
+    internal class @ClassName_Test
+    {
+        /*
+        [CorrectnessTest]
+        public void Construction()
+        {
+            @ClassName q = new @ClassName(new @Vector(0, 0, 0),
+                                new @Vector(1, 0, 0),
+                                new @Vector(1, 1, 0),
+                                new @Vector(0, 1, 0));
+
+            Assert.AreEqual(q.A, new @Vector(0, 0, 0));
+            Assert.AreEqual(q.B, new @Vector(1, 0, 0));
+            Assert.AreEqual(q.C, new @Vector(1, 1, 0));
+            Assert.AreEqual(q.D, new @Vector(0, 1, 0));
+            Assert.AreEqual(q.AlphaDegrees, 90.0);
+        }
+
+        [CorrectnessTest]
+        public void Intersection()
+        {
+
+        }
+
+        [CorrectnessTest]
+        public void Tesselation()
+        {
+
+        }*/
+    }
+#endif
+
+}

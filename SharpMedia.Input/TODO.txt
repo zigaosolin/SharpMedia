@@ -1,0 +1,4 @@
+Input TODO list:
+
+* character translations (through mappings on per-keyboard language basis)
+* action mapping

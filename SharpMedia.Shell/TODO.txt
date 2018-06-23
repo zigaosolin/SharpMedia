@@ -1,0 +1,2 @@
+﻿* implementation of window manager, desktop
+* how to handle GUI communication (e.i. shared ICursor or not, input)

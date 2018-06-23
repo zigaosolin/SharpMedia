@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<InstallPackage
+	xversion ="1.0.0"
+	name     ="Graphics Libraries"
+	id       ="C7DC42BC-F39B-4ee3-806D-49924C8D455E"
+	publisher="SharpMedia">
+  
+  <PreInstallCheck>
+    <!-- Requires: Base System-->
+    <FailIfNotInstalled InstalledPackages="A0B61AB8-84E1-11DC-A6DF-B5C056D89593" />
+    <!-- Prohibits: Self -->
+    <FailIfInstalled InstalledPackages="C7DC42BC-F39B-4ee3-806D-49924C8D455E  " />
+  </PreInstallCheck>
+
+  <Installation>
+    <!-- Copy Graphics Assemblies -->
+    <CopySourceList SourceListName="Assemblies" DestinationListName="Assemblies" />
+
+    <!-- Copy Graphics Libraries -->
+    <CopySourceList SourceListName="Libraries"  DestinationListName="Libraries" />
+    
+  </Installation>
+
+  <Sources>
+    
+    <Assemblies>
+      <AssemblySource>
+        <PackageContained Relative="../SharpMedia.Graphics.dll" Type="BinaryRaw" />
+      </AssemblySource>
+
+      <AssemblySource>
+        <PackageContained Relative="../SharpMedia.Graphics.Vector.dll" Type="BinaryRaw" />
+      </AssemblySource>
+    </Assemblies>
+
+    <Libraries>
+      <LibrarySource>
+        <PackageContained Relative="Graphics.libxml" Type="XML" />
+      </LibrarySource>
+    </Libraries>
+    
+  </Sources>
+
+  <Destinations>
+    
+    <Assemblies>
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Graphics" />
+      <InstallRelative Relative="System/Assemblies/SharpMedia/Graphics/Vector" />
+    </Assemblies>
+
+    <Libraries>
+      <InstallRelative Relative="System/Libraries/SharpMedia/Graphics" />
+    </Libraries>
+    
+  </Destinations>
+</InstallPackage>

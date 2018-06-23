@@ -1,0 +1,561 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading;
+using SharpMedia.AspectOriented;
+using System.Runtime.InteropServices;
+using SharpMedia.Math.Matrix;
+
+namespace SharpMedia.Math.Shapes.Storage
+{
+
+    /// <summary>
+    /// A control point buffer view over a mappable buffer. The buffer is mapped 
+    /// </summary>
+    /// <remarks>It must be mapped before any operations that require mapping are used.</remarks>
+    [Serializable]
+    public class ControlPointBufferView : IDisposable, IMapable<byte[]>
+    {
+        #region Private Members
+        object syncRoot = new object();
+        ulong offset = 0;
+        MapOptions mapOptions;
+        ControlPointFormat format;
+        IMapable<byte[]> mappable;
+        byte[] mappedData;
+        UpdateFrequency updateFrequency;
+        uint updateCount;
+        #endregion
+
+        #region Private Members
+
+        ~ControlPointBufferView()
+        {
+            if (mappedData != null)
+            {
+                UnMap();
+            }
+        }
+
+        void AssertMapped()
+        {
+            if (mappedData == null) throw new InvalidOperationException("The buffer is not mapped, operation invalid.");
+        }
+
+        void AssertUnMapped()
+        {
+            if (mappedData != null) throw new InvalidOperationException("The buffer is mapped, operation invalid.");
+        }
+
+        void AssertReadable()
+        {
+            if (mappedData == null || mapOptions == MapOptions.Write)
+            {
+                throw new InvalidOperationException("Buffer must be mapped with read access.");
+            }
+        }
+
+        void AssertWritable()
+        {
+            if (mappedData == null || mapOptions == MapOptions.Read)
+            {
+                throw new InvalidOperationException("Buffer must be mapped with write access.");
+            }
+        }
+
+        void AssertIndex(uint index)
+        {
+            if ((index + 1) * format.ByteSize > mappedData.Length)
+            {
+                throw new InvalidOperationException("Trying to access index out of range.");
+            }
+        }
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// A constructor with format and mapping buffer.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="mappable"></param>
+        /// <param name="offset"></param>
+        public ControlPointBufferView(ControlPointFormat format,
+            IMapable<byte[]> mappable, ulong offset, UpdateFrequency freq, uint updateCount)
+        {
+            this.format = format;
+            this.mappable = mappable;
+            this.offset = offset;
+            this.updateFrequency = freq;
+            this.updateCount = updateCount;
+        }
+
+        /// <summary>
+        /// A constructor with format and mapping buffer.
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="mappable"></param>
+        /// <param name="offset"></param>
+        public ControlPointBufferView(ControlPointFormat format,
+            IMapable<byte[]> mappable, ulong offset)
+            : this(format, mappable, offset, UpdateFrequency.PerVertex, 1)
+        {
+        }
+
+        /// <summary>
+        /// A constructor with format and mapping buffer
+        /// </summary>
+        /// <param name="format"></param>
+        /// <param name="mappable"></param>
+        public ControlPointBufferView(ControlPointFormat format, IMapable<byte[]> mappable)
+            : this(format, mappable, 0)
+        {
+        }
+
+        #endregion
+
+        #region IMapable<byte[]> Members
+
+        public byte[] Map(MapOptions op)
+        {
+            Monitor.Enter(syncRoot);
+
+            try
+            {
+                AssertUnMapped();
+                mappedData = mappable.Map(op);
+                mapOptions = op;
+            }
+            catch (Exception)
+            {
+                Monitor.Exit(syncRoot);
+                throw;
+            }
+            return mappedData;
+        }
+
+        public void UnMap()
+        {
+            AssertMapped();
+            try
+            {
+                mappable.UnMap();
+            }
+            finally
+            {
+                mappedData = null;
+                Monitor.Exit(syncRoot);
+            }
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Returns mapped data.
+        /// </summary>
+        public byte[] MappedData
+        {
+            get
+            {
+                return mappedData;
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of control points.
+        /// </summary>
+        public uint MaxControlPoints
+        {
+            get
+            {
+                if (mappedData == null)
+                {
+                    throw new InvalidOperationException(
+                        "Buffer must be mapped to be able to obtain control points.");
+                }
+                return (uint)(mappedData.Length / format.ByteSize);
+            }
+        }
+
+        /// <summary>
+        /// Returns whether it is mapped.
+        /// </summary>
+        public bool IsMapped
+        {
+            get { return mappedData != null; }
+        }
+
+        /// <summary>
+        /// Mapping options.
+        /// </summary>
+        public MapOptions MapOptions
+        {
+            get
+            {
+                return mapOptions;
+            }
+        }
+
+        /// <summary>
+        /// The format of buffer.
+        /// </summary>
+        public ControlPointFormat Format
+        {
+            get
+            {
+                return format;
+            }
+        }
+
+        /// <summary>
+        /// The underlaying buffer.
+        /// </summary>
+        public IMapable<byte[]> UnderlayingBuffer
+        {
+            get
+            {
+                return mappable;
+            }
+        }
+
+        /// <summary>
+        /// Offset of buffer.
+        /// </summary>
+        public ulong Offset
+        {
+            get
+            {
+                return offset;
+            }
+        }
+
+        /// <summary>
+        /// Update frequency.
+        /// </summary>
+        public UpdateFrequency UpdateFrequency
+        {
+            get
+            {
+                return updateFrequency;
+            }
+        }
+
+        /// <summary>
+        /// Update count.
+        /// </summary>
+        public uint UpdateCount
+        {
+            get
+            {
+                return updateCount;
+            }
+        }
+
+        #endregion
+
+        #region Data Manipulation
+
+        /// <summary>
+        /// Maps buffers, sets data and unmaps it.
+        /// </summary>
+        /// <param name="offset">The element offset.</param>
+        public unsafe void SetData<T>([NotNull] T[] data) where T : struct
+        {
+            lock (syncRoot)
+            {
+                AssertWritable();
+
+                // Validate T.
+                ulong structSize = (ulong)Marshal.SizeOf(typeof(T));
+
+                if (structSize != format.ByteSize)
+                {
+                    throw new ArgumentException("The T is not compatible with vertex format.");
+                }
+
+
+                fixed (byte* p = mappedData)
+                {
+                    Common.Memcpy(data, p, (ulong)data.LongLength);
+                }
+
+
+            }
+
+        }
+
+        /// <summary>
+        /// Reads data to buffer.
+        /// </summary>
+        public unsafe T[] GetData<T>(ulong offset, ulong count) where T : struct
+        {
+            lock (syncRoot)
+            {
+                AssertReadable();
+
+                // Validate T.
+                ulong structSize = (ulong)Marshal.SizeOf(typeof(T));
+
+                if (structSize != format.ByteSize)
+                {
+                    throw new ArgumentException("The T is not compatible with vertex format.");
+                }
+
+                T[] data = new T[count];
+
+
+                fixed (byte* p = mappedData)
+                {
+                    Common.Memcpy(p, data, (ulong)data.LongLength);
+                }
+
+
+                return data;
+            }
+
+
+        }
+
+        #endregion
+
+        #region Read Queries
+
+
+        //#foreach Types
+
+        /// <summary>
+        /// Obtains a @TypeName.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public unsafe @TypeName @Get(string component, uint index)
+        {
+            AssertReadable();
+            AssertIndex(index);
+
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            if (element.Type != typeof(@TypeName))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Type in format is not compatible, expected '{0}', got '{1}'", 
+                    element.Type, typeof(@TypeName)));
+            }
+
+            fixed (byte* p = mappedData)
+            {
+                @TypeName* fp = (@TypeName*)(p + offset + index * format.ByteSize + element.Offset);
+                return *fp;
+            }
+        }
+
+        /// <summary>
+        /// Obtains an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="indices">Indices that must be addressed, no checks are made for in range.</param>
+        /// <param name="data">The data where data will be set.</param>
+        public unsafe void Get(string component, uint[] indices, @TypeName[] data)
+        {
+            AssertReadable();
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            if (element.Type != typeof(@TypeName))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Type in format is not compatible, expected '{0}', got '{1}'",
+                    element.Type, typeof(@TypeName)));
+            }
+
+            fixed (byte* p = mappedData)
+            {
+                for (int i = 0; i < indices.Length; i++)
+                {
+                    data[i] = *((@TypeName*)(p + offset + indices[i] * format.ByteSize + element.Offset));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtains an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">The base index offset, vertices from baseOffset 
+        /// to baseOffset + data.Length-1 will be transfered.</param>
+        /// <param name="data">The data that will be filled.</param>
+        public unsafe void Get(string component, uint baseOffset, uint count, @TypeName[] data)
+        {
+            if (count > data.Length) throw new ArgumentException("Cannot transfer more data than there is space.");
+            AssertReadable();
+            AssertIndex(baseOffset + count - 1);
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            if (element.Type != typeof(@TypeName))
+            {
+                throw new InvalidOperationException(
+                    string.Format("Type in format is not compatible, expected '{0}', got '{1}'",
+                    element.Type, typeof(@TypeName)));
+            }
+
+            fixed (byte* p = mappedData)
+            {
+                for (uint i = 0; i < count; i++)
+                {
+                    data[i] = *((@TypeName*)(p + offset + (baseOffset + i) * format.ByteSize + element.Offset));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtains an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">The base index offset, vertices from baseOffset 
+        /// to baseOffset + data.Length-1 will be transfered.</param>
+        /// <param name="data">The data.</param>
+        public unsafe void Get(string component, uint baseOffset, @TypeName[] data)
+        {
+            Get(component, baseOffset, (uint)data.Length, data);
+        }
+
+        /// <summary>
+        /// Obtains array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">Base offset</param>
+        /// <param name="count">The length of array</param>
+        /// <returns></returns>
+        public unsafe @TypeName[] @Get(string component, uint baseOffset, uint count)
+        {
+            @TypeName[] data = new @TypeName[count];
+            Get(component, baseOffset, data);
+            return data;
+        }
+
+        /// <summary>
+        /// Obtains array of @TypeName
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="indices">Indices.</param>
+        /// <returns></returns>
+        public unsafe @TypeName[] @Get(string component, uint[] indices)
+        {
+            @TypeName[] data = new @TypeName[indices.Length];
+            Get(component, indices, data);
+            return data;
+        }
+
+        //#endfor
+
+        // TODO: add matrix queries
+
+        #endregion
+
+        #region Write Queries
+
+        //#foreach Types
+
+        /// <summary>
+        /// Sets one data to component at specific index.
+        /// </summary>
+        /// <param name="component"></param>
+        /// <param name="index"></param>
+        /// <param name="data"></param>
+        public unsafe void Set(string component, uint index, @TypeName data)
+        {
+            AssertWritable();
+            AssertIndex(index);
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            fixed (byte* p = mappedData)
+            {
+                @TypeName* fp = (@TypeName*)(p + offset + index * format.ByteSize + element.Offset);
+                *fp = data;
+            }
+        }
+
+        /// <summary>
+        /// Sets an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="indices">Indices that must be addressed, no checks are made for in range.</param>
+        /// <param name="data">The data where data will be set.</param>
+        public unsafe void Set(string component, uint[] indices, @TypeName[] data)
+        {
+            AssertWritable();
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            fixed (byte* p = mappedData)
+            {
+                for (int i = 0; i < indices.Length; i++)
+                {
+                    *((@TypeName*)(p + offset + indices[i] * format.ByteSize + element.Offset)) = data[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Sets an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">The base index offset, vertices from baseOffset 
+        /// to baseOffset + data.Length-1 will be transfered.</param>
+        /// <param name="data">The data that will be filled.</param>
+        public unsafe void Set(string component, uint baseOffset, uint count, @TypeName[] data)
+        {
+            if (count > data.Length) throw new ArgumentException("Cannot transfer more data than there is space.");
+            AssertWritable();
+            AssertIndex(baseOffset + count - 1);
+            ControlPointFormat.Element element = format.GetElement(component);
+
+            fixed (byte* p = mappedData)
+            {
+                for (uint i = 0; i < count; i++)
+                {
+                    *((@TypeName*)(p + offset + (baseOffset + i) * format.ByteSize + element.Offset)) = data[i];
+                }
+            }
+        }
+
+        /// <summary>
+        /// Obtains an array of @TypeName.
+        /// </summary>
+        /// <param name="component">The component name.</param>
+        /// <param name="baseOffset">The base index offset, vertices from baseOffset 
+        /// to baseOffset + data.Length-1 will be transfered.</param>
+        /// <param name="data">The data.</param>
+        public unsafe void Set(string component, uint baseOffset, @TypeName[] data)
+        {
+            Set(component, baseOffset, (uint)data.Length, data);
+        }
+
+
+        //#endfor
+
+        // TODO: add matrix queries
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            lock (syncRoot)
+            {
+                if (mappable == null) return;
+                if (IsMapped)
+                {
+                    mappable.UnMap();
+                    mappedData = null;
+                    mappable = null;
+                }
+            }
+        }
+
+        #endregion
+    }
+}

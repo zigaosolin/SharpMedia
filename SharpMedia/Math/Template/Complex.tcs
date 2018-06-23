@@ -1,0 +1,532 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math
+{
+    /// <summary>
+    /// A @TypeName -based complex number.
+    /// </summary>
+    [Serializable]
+    public struct @ClassName : IComparable, IComparable<@ClassName>, IEquatable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// Real part of complex number.
+        /// </summary>
+        public @TypeName Re;
+
+        /// <summary>
+        /// Imagionary part of complex number.
+        /// </summary>
+        public @TypeName Im;
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// A zero complex number.
+        /// </summary>
+        public static @ClassName Zero
+        {
+            get
+            {
+                return new @ClassName(@Zero, @Zero);
+            }
+        }
+
+        /// <summary>
+        /// A unity complex number.
+        /// </summary>
+        public static @ClassName One
+        {
+            get
+            {
+                return new @ClassName(@One, @Zero);
+            }
+        }
+
+        /// <summary>
+        /// Converts to the complex array (expands by filling 0.0 as imagionary component).
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <returns></returns>
+        public static @ClassName[] ToComplexArray(params @TypeName[] array)
+        {
+            @ClassName[] result = new @ClassName[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                result[i] = new @ClassName(array[i], @Zero);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Converts to the scalar array by ignoring imagionary components.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <returns></returns>
+        public static @TypeName[] ToScalarArray(params @ClassName[] array)
+        {
+            @TypeName[] result = new @TypeName[array.Length];
+            for (int i = 0; i < array.Length; i++)
+            {
+                result[i] = array[i].Re;
+            }
+
+            return result;
+        }
+
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Are complex numbers nearly equal.
+        /// </summary>
+        public static bool NearEqual(@ClassName c1, @ClassName c2, @TypeName eps)
+        {
+            return @NearEqual(c1.Re, c2.Re, eps) && @NearEqual(c1.Im, c2.Im, eps);
+        }
+
+        /// <summary>
+        /// Are complex numbers nearly equal.
+        /// </summary>
+        public static bool NearEqual(@ClassName c1, @ClassName c2)
+        {
+            return @NearEqual(c1.Re, c2.Re) && @NearEqual(c1.Im, c2.Im);
+        }
+
+        //#endif
+
+        //#ifdef UniformRandomSupply
+
+        /// <summary>
+        /// Unit random complex supply.
+        /// </summary>
+        public static @ClassName UnitRandom
+        {
+            get
+            {
+                @ClassName cpx = new @ClassName(@UniformRandomSupply, @UniformRandomSupply);
+                return cpx.Unit;
+            }
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Complex multiplication.
+        /// </summary>
+        /// <param name="c1">The first complex.</param>
+        /// <param name="c2">The second complex.</param>
+        /// <returns>The result.</returns>
+        public static @ClassName operator *(@ClassName c1, @ClassName c2)
+        {
+            return new @ClassName(c1.Re * c2.Re - c1.Im * c2.Im, c1.Re * c2.Im + c1.Im * c2.Re);
+        }
+
+        /// <summary>
+        /// The complex-scalar multiplication.
+        /// </summary>
+        /// <param name="c1">The complex.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Complex scaled by f.</returns>
+        public static @ClassName operator *(@ClassName c1, @TypeName f)
+        {
+            return new @ClassName(c1.Re * f, c1.Im * f);
+        }
+
+        /// <summary>
+        /// The complex-scalar multiplication.
+        /// </summary>
+        /// <param name="c1">The complex.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Complex scaled by f.</returns>
+        public static @ClassName operator *(@TypeName f, @ClassName c1)
+        {
+            return new @ClassName(c1.Re * f, c1.Im * f);
+        }
+
+        /// <summary>
+        /// The complex divided by scalar.
+        /// </summary>
+        /// <param name="c1">The complex.</param>
+        /// <param name="f">The scalar.</param>
+        /// <returns>Complex scaled by f.</returns>
+        public static @ClassName operator /(@ClassName c1, @TypeName f)
+        {
+            return new @ClassName(c1.Re / f, c1.Im / f);
+        }
+
+        /// <summary>
+        /// Complex division.
+        /// </summary>
+        public static @ClassName operator /(@ClassName c1, @ClassName c2)
+        {
+            return (c1 * c2.Conjugate) / (c2.Length2);
+        }
+
+        /// <summary>
+        /// Complex addition
+        /// </summary>
+        /// <param name="c1">The first complex.</param>
+        /// <param name="c2">The second complex.</param>
+        /// <returns>The result.</returns>
+        public static @ClassName operator +(@ClassName c1, @ClassName c2)
+        {
+            return new @ClassName(c1.Re + c2.Re, c1.Im + c2.Im);
+        }
+
+        /// <summary>
+        /// Complex substraction.
+        /// </summary>
+        /// <param name="c1">The first complex.</param>
+        /// <param name="c2">The second complex.</param>
+        /// <returns>The result.</returns>
+        public static @ClassName operator -(@ClassName c1, @ClassName c2)
+        {
+            return new @ClassName(c1.Re - c2.Re, c1.Im - c2.Im);
+        }
+
+        /// <summary>
+        /// Checks if complexs are equal.
+        /// </summary>
+        /// <param name="c1">The first complex.</param>
+        /// <param name="c2">The second complex.</param>
+        /// <returns></returns>
+        public static bool operator ==(@ClassName c1, @ClassName c2)
+        {
+            return (c1.Re == c2.Re) && (c1.Im == c2.Im);
+        }
+
+
+        /// <summary>
+        /// Checks complexs if they are equal.
+        /// </summary>
+        /// <param name="c1"></param>
+        /// <param name="c2"></param>
+        /// <returns></returns>
+        public static bool operator !=(@ClassName c1, @ClassName c2)
+        {
+            return !(c1 == c2);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// We check if two complex are equal.
+        /// </summary>
+        /// <param name="obj">The other.</param>
+        /// <returns>Compare value.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return this == (@ClassName)obj;
+            return false;
+        }
+
+        /// <summary>
+        /// Obtains hash code, based on values.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return Re.GetHashCode() ^ Im.GetHashCode();
+        }
+
+        /// <summary>
+        /// Converts complex to string.
+        /// </summary>
+        /// <returns>The complex string.</returns>
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder();
+            builder.Append(Re);
+            if (Im >= @Zero)
+            {
+                builder.Append("+");
+            }
+            builder.Append(Im);
+            builder.Append("i");
+
+            return builder.ToString();
+        }
+
+        #endregion
+
+        #region Properties
+    
+        //#ifdef Vector2ClassName
+
+        /// <summary>
+        /// 2D vector, defined as (Re, Im).
+        /// </summary>
+        public @Vector2ClassName Vec2
+        {
+            set { Re = value.X; Im = value.Y; }
+            get { return new @Vector2ClassName(Re, Im); }
+        }
+
+        //#endif
+
+        /// <summary>
+        /// Is complex number real.
+        /// </summary>
+        public bool IsReal
+        {
+            get { return Im == @Zero; }
+        }
+
+        /// <summary>
+        /// The real part of complex.
+        /// </summary>
+        [Obsolete]
+        public @TypeName re
+        {
+            set { Re = value; }
+            get { return Re; }
+        }
+
+        /// <summary>
+        /// The imagionary part of complex.
+        /// </summary>
+        [Obsolete]
+        public @TypeName im
+        {
+            set { Im = value; }
+            get { return Im; }
+        }
+
+        /// <summary>
+        /// Conversion from quaternion.
+        /// </summary>
+        public Quaterniond Quaternion
+        {
+            get
+            {
+                return new Quaterniond(Re, Im, @Zero, @Zero);
+            }
+        }
+
+        /// <summary>
+        /// Conjugate of complex number.
+        /// </summary>
+        /// <returns>The conjugate.</returns>
+        public @ClassName Conjugate
+        {
+            get
+            {
+                return new @ClassName(Re, -Im);
+            }
+        }
+
+        /// <summary>
+        /// A squared distance.
+        /// </summary>
+        public @TypeName Distance2
+        {
+            get
+            {
+                return Re * Re + Im * Im;
+            }
+        }
+
+        /// <summary>
+        /// Length of complex number.
+        /// </summary>
+        public @TypeName Length2
+        {
+            get
+            {
+                return Re * Re + Im * Im;
+            }
+        }
+
+        /// <summary>
+        /// A unit complex number.
+        /// </summary>
+        public @ClassName Unit
+        {
+            get
+            {
+                return this / Distance;
+            }
+        }
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// A distance from origin.
+        /// </summary>
+        public @TypeName Distance
+        {
+            get
+            {
+                return @Sqrt(Distance2);
+            }
+        }
+
+        /// <summary>
+        /// Length of complex vector.
+        /// </summary>
+        public @TypeName Length
+        {
+            get
+            {
+                return @Sqrt(Length2);
+            }
+        }
+
+        //#endif
+
+        //#ifdef PolarClassName
+
+        /// <summary>
+        /// Returns a polar form of complex number.
+        /// </summary>
+        public @PolarClassName Polar
+        {
+            get
+            {
+                return Vec2.Polar;
+            }
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Additional operations
+
+        //#ifdef Pow && PolarClassName
+
+        /// <summary>
+        /// Computes exponent.
+        /// </summary>
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public static @ClassName Pow(@ClassName cmp, @TypeName f)
+        {
+            @PolarClassName polar = cmp.Polar;
+            return Pow(polar, f);
+        }
+
+        /// <summary>
+        /// Computes exponent of already converted complex number in polar form.
+        /// </summary>
+        /// <param name="polar"></param>
+        /// <param name="f"></param>
+        /// <returns></returns>
+        public static @ClassName Pow(@PolarClassName polar, @TypeName f)
+        {
+            return new @ClassName(@Pow(polar.R, f), polar.Phi * f);
+        }
+
+        /// <summary>
+        /// A square root of complex number.
+        /// </summary>
+        /// <param name="cmp"></param>
+        /// <returns></returns>
+        public @ClassName Sqrt(@ClassName cmp)
+        {
+            return Pow(cmp, @One / 2);
+        }
+
+        //#endif
+
+        // TODO: interpolations
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Complex constructor.
+        /// </summary>
+        /// <param name="re">The real component.</param>
+        /// <param name="im">The imaginary component.</param>
+        public @ClassName(@TypeName re, @TypeName im)
+        {
+            this.Re = re;
+            this.Im = im;
+        }
+
+        /// <summary>
+        /// Copy constructor.
+        /// </summary>
+        /// <param name="cpx"></param>
+        public @ClassName(@ClassName cpx)
+        {
+            this.Re = cpx.Re;
+            this.Im = cpx.Im;
+        }
+
+        //#ifdef PolarClassName && Cos && Sin
+
+        /// <summary>
+        /// A polar conversion constructor.
+        /// </summary>
+        /// <param name="polar"></param>
+        public @ClassName(@PolarClassName polar)
+        {
+            this.Re = polar.R * @Cos(polar.Phi);
+            this.Im = polar.R * @Sin(polar.Phi);
+        }
+
+        //#endif
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType() == GetType())
+            {
+                return CompareTo((@ClassName)obj);
+            }
+            return -1;
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = Re.CompareTo(other.Re);
+            if(cmp != 0) return cmp;
+            return Im.CompareTo(other.Im);
+        }
+
+        #endregion
+    }
+}

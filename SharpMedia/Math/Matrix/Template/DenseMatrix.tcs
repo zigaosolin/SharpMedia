@@ -1,0 +1,717 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.AspectOriented;
+
+namespace SharpMedia.Math.Matrix
+{
+    /// <summary>
+    /// An implementation of general dense matrix.
+    /// </summary>
+    public sealed class @ClassName : @BaseInterface<@ClassName, @ClassName>
+    {
+        #region Private Members
+        /// <summary>
+        /// Elements, held as array.
+        /// </summary>
+        @TypeName[,] elements;
+
+        #endregion
+
+        #region Row/Column Accessors
+
+        /// <summary>
+        /// The n-th row of matrix.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public @VectorClassName Row(uint index)
+        {
+            if (index >= elements.GetLength(0))
+            {
+                throw new ArgumentException("The dense matrix has only " + elements.GetLength(0)
+                            + " rows.");
+            }
+
+            // We construct vector.
+            @VectorClassName vector = new @VectorClassName((uint)elements.GetLength(1));
+            for (int i = 0; i < elements.GetLength(1); i++)
+            {
+                vector[(uint)i] = elements[index, i];
+            }
+
+            return vector;
+        }
+
+        /// <summary>
+        /// The n-th column of vector.
+        /// </summary>
+        /// <param name="index">Column index.</param>
+        /// <returns>Vector.</returns>
+        public @VectorClassName Column(uint index)
+        {
+            if (index >= elements.GetLength(1))
+            {
+                throw new ArgumentException("The dense matrix has only " + elements.GetLength(1)
+                                            + " columns.");
+            }
+
+            // We construct vector.
+            @VectorClassName vector = new @VectorClassName((uint)elements.GetLength(0));
+            for (int i = 0; i < elements.GetLength(0); i++)
+            {
+                vector[(uint)i] = elements[i, index];
+            }
+
+            return vector;
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// A general matrix contructor.
+        /// </summary>
+        /// <param name="data">The data.</param>
+        public @ClassName([NotNull] @TypeName[,] data)
+        {
+            elements = data;
+        }
+
+        /// <summary>
+        /// Matrix is initialized to zeros.
+        /// </summary>
+        /// <param name="rows">The row count.</param>
+        /// <param name="columns">The column count.</param>
+        public @ClassName(uint rows, uint columns)
+        {
+            elements = new @TypeName[rows, columns];
+            elements.Initialize();
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Internal array.
+        /// </summary>
+        public @TypeName[,] Array
+        {
+            get
+            {
+                return elements;
+            }
+        }
+
+        /// <summary>
+        /// Norm1 of this matrix.
+        /// </summary>
+        public @TypeName Norm1
+        {
+            get
+            {
+                return AbsSum;
+            }
+        }
+
+        /// <summary>
+        /// Norm2 of this matrix.
+        /// </summary>
+        public @TypeName Norm2
+        {
+            get
+            {
+                @TypeName sum2 = @Zero;
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        sum2 += elements[i, j] * elements[i, j];
+                    }
+                }
+
+                return @Sqrt(sum2);
+            }
+        }
+
+        /// <summary>
+        /// The infinity norm, same as AbsMax.
+        /// </summary>
+        public @TypeName InfinityNorm
+        {
+            get
+            {
+                return AbsMax;
+            }
+        }
+
+        /// <summary>
+        /// Sum of all elements.
+        /// </summary>
+        public @TypeName Sum
+        {
+            get
+            {
+                @TypeName sum = @Zero;
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        sum += elements[i, j];
+                    }
+                }
+
+                return sum;
+            }
+        }
+
+        /// <summary>
+        /// Sum of absolute elements.
+        /// </summary>
+        public @TypeName AbsSum
+        {
+            get
+            {
+                @TypeName sum = @Zero;
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        sum += @Abs(elements[i, j]);
+                    }
+                }
+
+                return sum;
+            }
+        }
+
+        /// <summary>
+        /// Trace of matrix. If matrix is not square, trace from (0,0) to maximum possible is taken.
+        /// </summary>
+        public @TypeName Trace
+        {
+            get
+            {
+                int min = elements.GetLength(0) > elements.GetLength(1) ?
+                    elements.GetLength(0) : elements.GetLength(1);
+
+                @TypeName trace = @Zero;
+                for (int i = 0; i < min; i++)
+                {
+                    trace += elements[i, i];
+                }
+                return trace;
+            }
+        }
+
+        /// <summary>
+        /// Minimum element of matrix.
+        /// </summary>
+        public @TypeName Min
+        {
+            get
+            {
+                if (elements.GetLength(0) == 0 || elements.GetLength(1) == 0) return @NaN;
+                @TypeName min = elements[0, 0];
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        if (elements[i, j] < min) min = elements[i, j];
+                    }
+                }
+
+                return min;
+            }
+        }
+
+        /// <summary>
+        /// Absolute minimum element of matrix.
+        /// </summary>
+        public @TypeName AbsMin
+        {
+            get
+            {
+                if (elements.GetLength(0) == 0 || elements.GetLength(1) == 0) return @Zero;
+                @TypeName min = elements[0, 0];
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        if (@Abs(elements[i, j]) < min) min = @Abs(elements[i, j]);
+                    }
+                }
+
+                return min;
+            }
+        }
+
+        /// <summary>
+        /// Absolute maximum element of matrix.
+        /// </summary>
+        public @TypeName AbsMax
+        {
+            get
+            {
+                if (elements.GetLength(0) == 0 || elements.GetLength(1) == 0) return @Zero;
+                @TypeName max = elements[0, 0];
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        if (@Abs(elements[i, j]) > max) max = @Abs(elements[i, j]);
+                    }
+                }
+
+                return max;
+            }
+        }
+
+        /// <summary>
+        /// Maximum element of matrix.
+        /// </summary>
+        public @TypeName Max
+        {
+            get
+            {
+                if (elements.GetLength(0) == 0 || elements.GetLength(1) == 0) return @NaN;
+                @TypeName max = elements[0, 0];
+                for (int i = 0; i < elements.GetLength(0); i++)
+                {
+                    for (int j = 0; j < elements.GetLength(1); j++)
+                    {
+                        if (elements[i, j] > max) max = elements[i, j];
+                    }
+                }
+
+                return max;
+            }
+        }
+
+
+        #endregion
+
+        #region Static Members
+
+        /// <summary>
+        /// Gets identity matrix with specific dimension.
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <returns></returns>
+        public static @ClassName GetIdentity(uint dim)
+        {
+            @TypeName[,] data = new @TypeName[dim, dim];
+            for (int i = 0; i < dim; i++)
+            {
+                for (int j = 0; j < dim; j++)
+                {
+                    if (i != j) data[i, j] = @Zero;
+                    else data[i, j] = @One;
+                }
+            }
+
+            return new @ClassName(data);
+        }
+
+        /// <summary>
+        /// Gets a zero matrix.
+        /// </summary>
+        /// <param name="dim"></param>
+        /// <returns></returns>
+        public static @ClassName GetZezo(uint dim)
+        {
+            return new @ClassName(dim, dim);
+        }
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Are near equal.
+        /// </summary>
+        public static bool NearEqual(@ClassName m1, @ClassName m2)
+        {
+            if (m1.elements.GetLength(0) != m2.elements.GetLength(0) ||
+               m1.elements.GetLength(1) != m2.elements.GetLength(1))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < m1.elements.GetLength(0); i++)
+            {
+                for (int j = 0; j < m1.elements.GetLength(1); j++)
+                {
+                    if (!@NearEqual(m1.elements[i, j], m2.elements[i, j])) return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Are near equal.
+        /// </summary>
+        public static bool NearEqual(@ClassName m1, @ClassName m2, @TypeName eps)
+        {
+            if (m1.elements.GetLength(0) != m2.elements.GetLength(0) ||
+               m1.elements.GetLength(1) != m2.elements.GetLength(1))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < m1.elements.GetLength(0); i++)
+            {
+                for (int j = 0; j < m1.elements.GetLength(1); j++)
+                {
+                    if (!@NearEqual(m1.elements[i, j], m2.elements[i, j], eps)) return false;
+                }
+            }
+
+            return true;
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Adds two matrices.
+        /// </summary>
+        public static @ClassName operator +([NotNull] @ClassName m1, [NotNull] @ClassName m2)
+        {
+
+            if (m1.elements.GetLength(0) != m2.elements.GetLength(0) ||
+               m1.elements.GetLength(1) != m2.elements.GetLength(1))
+            {
+                throw new ArgumentException("The matrices do not fit in dimensions, cannot add.");
+            }
+
+            int rows = m1.elements.GetLength(0);
+            int columns = m1.elements.GetLength(1);
+            @TypeName[,] array = new @TypeName[rows, columns];
+
+            // We add.
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < columns; c++)
+                {
+                    array[r, c] = m1.elements[r, c] + m2.elements[r, c];
+                }
+            }
+
+            // Return added matrix.
+            return new @ClassName(array);
+        }
+
+        /// <summary>
+        /// Substracts two matrices.
+        /// </summary>
+        public static @ClassName operator -([NotNull] @ClassName m1, [NotNull] @ClassName m2)
+        {
+
+            if (m1.elements.GetLength(0) != m2.elements.GetLength(0) ||
+               m1.elements.GetLength(1) != m2.elements.GetLength(1))
+            {
+                throw new ArgumentException("The matrices do not fit in dimensions, cannot substract.");
+            }
+
+            int rows = m1.elements.GetLength(0);
+            int columns = m1.elements.GetLength(1);
+            @TypeName[,] array = new @TypeName[rows, columns];
+
+            // We add.
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < columns; c++)
+                {
+                    array[r, c] = m1.elements[r, c] - m2.elements[r, c];
+                }
+            }
+
+            // Return added matrix.
+            return new @ClassName(array);
+        }
+
+        /// <summary>
+        /// Negates matrix.
+        /// </summary>
+        public static @ClassName operator -([NotNull] @ClassName m2)
+        {
+
+
+            int rows = m2.elements.GetLength(0);
+            int columns = m2.elements.GetLength(1);
+            @TypeName[,] array = new @TypeName[rows, columns];
+
+            // We add.
+            for (int r = 0; r < rows; r++)
+            {
+                for (int c = 0; c < columns; c++)
+                {
+                    array[r, c] = -m2.elements[r, c];
+                }
+            }
+
+            // Return added matrix.
+            return new @ClassName(array);
+        }
+
+        /// <summary>
+        /// Multiplication by scalar.
+        /// </summary>
+        public static @ClassName operator *([NotNull] @ClassName m, @TypeName f)
+        {
+            int rows = m.elements.GetLength(0);
+            int columns = m.elements.GetLength(1);
+
+            // Create new matrix.
+            @TypeName[,] array = new @TypeName[rows, columns];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < columns; j++)
+                {
+                    array[i, j] = m.elements[i, j] * f;
+                }
+            }
+
+            // Return multiplicated matrix.
+            return new @ClassName(array);
+
+        }
+
+        /// <summary>
+        /// Division by scalar.
+        /// </summary>
+        public static @ClassName operator /([NotNull] @ClassName m, @TypeName f)
+        {
+            return m * (@One / f);
+        }
+
+        /// <summary>
+        /// Multiplication by scalar.
+        /// </summary>
+        public static @ClassName operator *(@TypeName f, [NotNull] @ClassName m)
+        {
+            return m * f;
+        }
+
+        /// <summary>
+        /// Matrix multiplication.
+        /// </summary>
+        public static @ClassName operator *([NotNull] @ClassName m1, [NotNull] @ClassName m2)
+        {
+            if (m1.ColumnCount != m2.RowCount) throw new ArgumentException("Matrices cannot be multiplicated because sizes do not match.");
+            @ClassName m = new @ClassName(m1.RowCount, m2.ColumnCount);
+
+            for (uint r = 0; r < m1.RowCount; r++)
+            {
+                for (uint c = 0; c < m2.ColumnCount; c++)
+                {
+                    m[r, c] = m1.Row(r) * m2.Column(c);
+                }
+            }
+
+            // Return result.
+            return m;
+        }
+
+        /// <summary>
+        /// Matrix division.
+        /// </summary>
+        public static @ClassName operator /([NotNull] @ClassName m1, [NotNull] @ClassName m2)
+        {
+            return m1 * m2.Inverse;
+        }
+
+        /// <summary>
+        /// Matrix-column vector multiplication.
+        /// </summary>
+        public static @VectorClassName operator *([NotNull] @ClassName m, [NotNull] @VectorClassName v)
+        {
+            if (m.ColumnCount != v.DimensionCount)
+                throw new ArgumentException("Cannot transform vector because sizes do not match.");
+
+            @VectorClassName res = new @VectorClassName(m.RowCount);
+            for (uint r = 0; r < m.RowCount; r++)
+            {
+                res[r] = m.Row(r) * v;
+            }
+
+            return res;
+        }
+
+        /// <summary>
+        /// Row-vector-matrix multiplication.
+        /// </summary>
+        public static @VectorClassName operator *([NotNull] @VectorClassName v, [NotNull] @ClassName m)
+        {
+            if (v.DimensionCount != m.RowCount)
+                throw new ArgumentException("Cannot transform vector because sizes do not match.");
+
+            @VectorClassName res = new @VectorClassName(m.ColumnCount);
+            for (uint c = 0; c < m.ColumnCount; c++)
+            {
+                res[c] = v * m.Column(c);
+            }
+
+            return res;
+        }
+
+        #endregion
+
+        #region Overrides
+
+        public override string ToString()
+        {
+            StringBuilder builder = new StringBuilder((int)RowCount
+                                            * (int)ColumnCount * 3 + 10);
+            for (uint i = 0; i < this.RowCount; i++)
+            {
+                builder.Append("( ");
+                for (uint j = 0; j < ColumnCount; j++)
+                {
+                    builder.Append(elements[i, j]);
+                    if (j != ColumnCount - 1)
+                    {
+                        builder.Append(", ");
+                    }
+                }
+                builder.Append(" )\n");
+            }
+            return builder.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName) return Equals((@ClassName)obj);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region ICloneable<@ClassName> Members
+
+        public @ClassName Clone()
+        {
+            return new @ClassName(elements.Clone() as @TypeName[,]);
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            if (this.elements.GetLength(0) != other.elements.GetLength(0) ||
+               this.elements.GetLength(1) != other.elements.GetLength(1))
+            {
+                return false;
+            }
+
+            for (int i = 0; i < elements.GetLength(0); i++)
+            {
+                for (int j = 0; j < elements.GetLength(1); j++)
+                {
+                    if (elements[i, j] != other.elements[i, j]) return false;
+                }
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region I@ClassName<@ClassName,@ClassName> Members
+
+        public @TypeName Determinant
+        {
+            get { return Algorithms.GaussJordan.Determinant(elements); }
+        }
+
+        public @TypeName[,] ArrayForm
+        {
+            get { return elements; }
+        }
+
+        public @ClassName DenseForm
+        {
+            get { return this; }
+        }
+
+        public @ClassName Transpose
+        {
+            get
+            {
+                int row = elements.GetLength(0), column = elements.GetLength(1);
+                @TypeName[,] array = new @TypeName[column, row];
+
+                // We now transpose it.
+                for (int i = 0; i < row; i++)
+                {
+                    for (int j = 0; j < column; j++)
+                    {
+                        array[j, i] = elements[i, j];
+                    }
+                }
+
+                // We create matrix.
+                return new @ClassName(array);
+            }
+        }
+
+        public @TypeName this[uint row, uint column]
+        {
+            get
+            {
+                return elements[row, column];
+            }
+            set
+            {
+                elements[row, column] = value;
+            }
+        }
+
+        #endregion
+
+        #region IMatrixBase<@ClassName> Members
+
+        public @ClassName Inverse
+        {
+            get { return new @ClassName(Algorithms.GaussJordan.Invert(elements)); }
+        }
+
+        public uint Rank
+        {
+            get { return Algorithms.GaussJordan.GetRank(elements); }
+        }
+
+        public uint RowCount
+        {
+            get { return (uint)elements.GetLength(0); }
+        }
+
+        public uint ColumnCount
+        {
+            get { return (uint)elements.GetLength(1); }
+        }
+
+        #endregion
+    }
+}

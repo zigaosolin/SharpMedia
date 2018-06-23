@@ -1,0 +1,56 @@
+
+A list of TODOs for Math library. Priorities range from 1 to 10, 1 meaning lowest priority.
+
+- rewrite to templates (10) (all float/double/* stuff)
+
+Shapes:
+- support for 2D and 3D shapes (seperate) (10)
+- componed shapes implementation
++ Triangulatiom
++-- with holes (8) - done, still needs refinements
++-- 3d projection (6)
++-- optimisations (5)
+- quad tesselation correction (7)
+- round rect support (9) (at least 2D)
++ Intersection
++-- trinagle-triangle (8)
++-- ray-* (10)
++-- other (6)
+
+Volumes:
+- basic volumes (9)
+- intergration with shapes, conversion (6)
+- much more
+
+
+Matrix:
+- refactor matrix system (10)
+- eigen value/vector support (7)
+- LU decomposition (8)
+- refined Gauss-Jordan (with full support for determinant, inverse and sulotions)
++ sparse matrices
++-- upper tringular (8)
++-- general sparse (6)
++-- vandermonde (3)
+
+
+Other:
+
+- BigNum with FFT calculations (1)
+- Complex support for exponent, functions on complex numbers (sin, cos), power (8)
+- Hashing functions for vectors and other basic types refined (10)
+- Sparse vectors more efficient implementation (4)
+- Spherical harmonics implementation (7)
+- Wavelet transform implementation (8)
+- Wavelets implementation (8)
+- Polynomial root finder (4)
+- Min-max algorithm (1)
+- differenctial equaltion solvers (Runge Kutta ...) (4)
+- minimization (7)
+- integration (7)
+- generic root finder (5)
+- round rect implementation (9)
+- signal functions implementation (7)
+- non-linear solvers (2)
+- statistics - combinatorics (4)
+- FFT with suuport for real only (non-complex) (3)

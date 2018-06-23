@@ -1,0 +1,254 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math
+{
+    /// <summary>
+    /// A cylindrical coordinate is 3D coordinate that tracks x-y as Polar and
+    /// has aditional z component.
+    /// </summary>
+    [Serializable]
+    public struct @ClassName : IEquatable<@ClassName>, IComparable, IComparable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// A Polar components, tracks x-y plane.
+        /// </summary>
+        public @PolarClassName Polar;
+
+        /// <summary>
+        /// The Z component.
+        /// </summary>
+        public @TypeName Z;
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The angle with x-axis in 2D.
+        /// </summary>
+        public @TypeName Phi
+        {
+            get { return Polar.Phi; }
+            set { Polar.Phi = value; }
+        }
+
+        /// <summary>
+        /// The distance in X-Y plane.
+        /// </summary>
+        public @TypeName R
+        {
+            get { return Polar.R; }
+            set { Polar.R = value; }
+        }
+
+        //#ifdef Sqrt
+
+        /// <summary>
+        /// The length of cylindrical coordinate as vector (this is offset
+        /// from center).
+        /// </summary>
+        public @TypeName Length
+        {
+            get { return @Sqrt(Polar.R * Polar.R + Z * Z); }
+        }
+
+        //#endif
+
+        //#ifdef Vector3ClassName && Vector2ClassName
+
+        /// <summary>
+        /// Conversion to cartesian.
+        /// </summary>
+        public @Vector3ClassName Cartesian
+        {
+            get
+            {
+                return new @Vector3ClassName(Polar.Cartesian, Z);
+            }
+            set
+            {
+                Polar.Cartesian = new @Vector2ClassName(value.X, value.Y);
+                Z = value.Z;
+            }
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Constructor using all three parameters.
+        /// </summary>
+        /// <param name="phi">The angle as for normal polar coordinate.</param>
+        /// <param name="r">The distance in X-Y plane.</param>
+        /// <param name="zr">The z offset.</param>
+        public @ClassName(@TypeName phi, @TypeName r, @TypeName z)
+        {
+            this.Polar = new @PolarClassName(phi, r);
+            this.Z = z;
+        }
+
+        /// <summary>
+        /// Constructor using polar + z.
+        /// </summary>
+        /// <param name="p0">The polar coordinate.</param>
+        /// <param name="zr">The z distance.</param>
+        public @ClassName(@PolarClassName p, @TypeName z)
+        {
+            Polar = p;
+            Z = z;
+        }
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// We output the coordinate in degrees because it is better for users to see.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            StringBuilder b = new StringBuilder(20);
+            b.Append("( ");
+            b.Append(Polar.Phi * 180.0 / global::System.Math.PI);
+            b.Append("°, ");
+            b.Append(Polar.R);
+            b.Append(", ");
+            b.Append(Z);
+            b.Append(")");
+            return b.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is @ClassName)
+            {
+                return this == (@ClassName)obj;
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return Polar.GetHashCode() ^ Z.GetHashCode();
+        }
+
+        #endregion
+
+        #region Operators
+
+        public static bool operator ==(@ClassName c1, @ClassName c2)
+        {
+            return c1.Polar == c2.Polar && c1.Z == c2.Z;
+        }
+
+        public static bool operator !=(@ClassName c1, @ClassName c2)
+        {
+            return !(c1 == c2);
+        }
+
+        #endregion
+
+        #region Static Members
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Checks for near equality.
+        /// </summary>
+        /// <param name="c1">The first cylinder.</param>
+        /// <param name="c2">The second cylinder.</param>
+        /// <returns>Are they nearly equal.</returns>
+        public static bool NearEqual(@ClassName c1, @ClassName c2)
+        {
+            return @PolarClassName.NearEqual(c1.Polar, c2.Polar) && @NearEqual(c1.Z, c2.Z);
+        }
+
+        /// <summary>
+        /// Checks for near equality.
+        /// </summary>
+        /// <param name="c1">The first cylinder.</param>
+        /// <param name="c2">The second cylinder.</param>
+        /// <param name="eps">The maximum error tolerance.</param>
+        /// <returns>Are they nearly equal.</returns>
+        public static bool NearEqual(@ClassName c1, @ClassName c2, @TypeName eps)
+        {
+            return @PolarClassName.NearEqual(c1.Polar, c2.Polar, eps) && @NearEqual(c1.Z, c2.Z, eps);
+        }
+
+        //#endif
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj is @ClassName)
+            {
+                return CompareTo((@ClassName)obj);
+            }
+            throw new ArgumentException("Object not cylidricald.");
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            // Can optimize this in future, if needed.
+            return this.Cartesian.CompareTo(other.Cartesian);
+        }
+
+        #endregion
+    }
+
+#if SHARPMEDIA_TESTSUITE
+
+    [TestSuite]
+    internal class Test_@ClassName
+    {
+        //#ifdef NearEqual && Vector3ClassName
+
+        [CorrectnessTest]
+        public void Conversion()
+        {
+            @Vector3ClassName v = new @Vector3ClassName(@One, @One, @One);
+            @ClassName c = v.Cylindrical;
+            Assert.IsTrue(@Vector3ClassName.NearEqual(v, c.Cartesian));
+            Assert.IsTrue(@NearEqual(v.Length, c.Length));
+            Assert.AreEqual(c.Phi, c.Polar.Phi);
+            Assert.AreEqual(c.R, c.Polar.R);
+        }
+
+        //#endif
+    }
+#endif
+}

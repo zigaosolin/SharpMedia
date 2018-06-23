@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- A DFT transform -->
+  <TemplateSet Name="DFT" Extends="CoreMath,Double">
+    <TemplateSet Name="Types">
+      <TemplateLink Name="Float" Link="Float" />
+      <TemplateLink Name="Double" Link ="Double" />
+    </TemplateSet>
+  </TemplateSet>
+
+  <!-- A DWT transform -->
+  <TemplateSet Name="DWT" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateLink Name="Float" Link="Float" />
+      <TemplateLink Name="Double" Link ="Double" />
+    </TemplateSet>
+  </TemplateSet>
+
+  <!-- A linear transform -->
+  <TemplateSet Name="Linear" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateLink Name="Float" Link="Float" />
+      <TemplateLink Name="Double" Link ="Double" />
+    </TemplateSet>
+  </TemplateSet>
+
+</TemplateSets>

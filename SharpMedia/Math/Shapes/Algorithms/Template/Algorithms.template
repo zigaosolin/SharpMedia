@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- Simple templates -->
+  <TemplateSet Name="Intersection" Extends="CoreMath">
+    
+    <!-- Line seg - line seg-->
+    <TemplateSet Name="LineSegmentLineSegmentPair">
+      <TemplateSet Name="2Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Matrix2x2" Value="Matrix2x2f" />
+        <Template Name="LineSegment" Value="LineSegment2f" />
+      </TemplateSet>
+      <TemplateSet Name="2Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Matrix2x2" Value="Matrix2x2d" />
+        <Template Name="LineSegment" Value="LineSegment2d" />
+      </TemplateSet>
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Matrix2x2" Value="Matrix2x2f" />
+        <Template Name="3D" Value="true" />
+        <Template Name="LineSegment" Value="LineSegment3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="Matrix2x2" Value="Matrix2x2d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="LineSegment" Value="LineSegment3d" />
+      </TemplateSet>
+    </TemplateSet>
+    
+    <!-- Line seg - triangle -->
+    <TemplateSet Name="LineSegmentTrianglePair">
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="LineSegment" Value="LineSegment3f" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Triangle" Value="Triangle3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="LineSegment" Value="LineSegment3d" />
+        <Template Name="Triangle" Value="Triangle3d" />
+      </TemplateSet>
+    </TemplateSet>
+      
+     <!-- Triangle - triangle -->
+    <TemplateSet Name="TriangleTrianglePair">
+      <TemplateSet Name="2Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Triangle" Value="Triangle2f" />
+      </TemplateSet>
+      <TemplateSet Name="2Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Triangle" Value="Triangle2d" />
+      </TemplateSet>
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Triangle" Value="Triangle3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Triangle" Value="Triangle3d" />
+      </TemplateSet>
+    </TemplateSet>
+
+    <!-- Ray - triangle -->
+    <TemplateSet Name="TriangleRayPair">
+      <TemplateSet Name="2Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Ray" Value="Ray2f" />
+        <Template Name="Triangle" Value="Triangle2f" />
+      </TemplateSet>
+      <TemplateSet Name="2Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Ray" Value="Ray2d" />
+        <Template Name="Triangle" Value="Triangle2d" />
+      </TemplateSet>
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="3D" Value="true" />
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Ray" Value="Ray3f" />
+        <Template Name="Triangle" Value="Triangle3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Ray" Value="Ray3d" />
+        <Template Name="Triangle" Value="Triangle3d" />
+      </TemplateSet>
+    </TemplateSet>
+
+    <!-- Triangle line pair-->
+    <TemplateSet Name="TriangleLinePair">
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="3D" Value="true" />
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Line" Value="Line3f" />
+        <Template Name="Triangle" Value="Triangle3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Line" Value="Line3d" />
+        <Template Name="Triangle" Value="Triangle3d" />
+      </TemplateSet>
+    </TemplateSet>
+    
+    <!-- Bezier-bezier -->
+    <TemplateSet Name="BezierBezierPair">
+      <TemplateSet Name="2Df" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="Bezier" Value="Bezier2f" />
+      </TemplateSet>
+      <TemplateSet Name="2Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="Bezier" Value="Bezier2d" />
+      </TemplateSet>
+      <TemplateSet Name="3Df" Extends="Float,CoreMath">
+        <Template Name="3D" Value="true" />
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="Bezier" Value="Bezier3f" />
+      </TemplateSet>
+      <TemplateSet Name="3Dd" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="Bezier" Value="Bezier3d" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+    
+    
+  <!-- Extrude -->
+  <TemplateSet Name="Extrude" Extends="CoreMath">
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+    
+    
+  <!-- Outline tesselation-->
+  <TemplateSet Name="OutlineTesselation" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Vector2f" Extends="Float,CoreMath">
+        <Template Name="OutlineTesselationOptions" Value="TesselationOptionsf" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2f" />
+        <Template Name="LineSegment" Value="LineSegment2f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector2d" Extends="Double,CoreMath">
+        <Template Name="OutlineTesselationOptions" Value="TesselationOptionsd" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2d" />
+        <Template Name="LineSegment" Value="LineSegment2d" />
+      </TemplateSet>
+    </TemplateSet>
+
+  </TemplateSet>
+    
+  <!-- Polygon tesselation -->  
+  <TemplateSet Name="PolygonTesselation" Extends="CoreMath">
+    <TemplateSet Name="Types">
+      <TemplateSet Name="Vector2f" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector2f" />
+        <Template Name="2D" Value="true" />
+        <Template Name="TesselationVertexType" Value="TesselationVertexType2f" />
+        <Template Name="TesselationVertex" Value="TesselationVertex2f" />
+        <Template Name="TesselationEdge" Value="TesselationEdge2f" />
+        <Template Name="TesselationSweepEdges" Value="TesselationSweepEdges2f" />
+        <Template Name="RandomizationFactor" Value="RandomizationFactor2f" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector2d" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector2d" />
+        <Template Name="2D" Value="true" />
+        <Template Name="TesselationVertexType" Value="TesselationVertexType2d" />
+        <Template Name="TesselationVertex" Value="TesselationVertex2d" />
+        <Template Name="TesselationEdge" Value="TesselationEdge2d" />
+        <Template Name="TesselationSweepEdges" Value="TesselationSweepEdges2d" />
+        <Template Name="RandomizationFactor" Value="RandomizationFactor2d" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder2d" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3f" Extends="Float,CoreMath">
+        <Template Name="Vector" Value="Vector3f" />
+        <Template Name="3D" Value="true" />
+        <Template Name="TesselationVertexType" Value="TesselationVertexType3f" />
+        <Template Name="TesselationVertex" Value="TesselationVertex3f" />
+        <Template Name="TesselationEdge" Value="TesselationEdge3f" />
+        <Template Name="TesselationSweepEdges" Value="TesselationSweepEdges3f" />
+        <Template Name="RandomizationFactor" Value="RandomizationFactor3f" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder3f" />
+      </TemplateSet>
+      <TemplateSet Name="Vector3d" Extends="Double,CoreMath">
+        <Template Name="Vector" Value="Vector3d" />
+        <Template Name="3D" Value="true" />
+        <Template Name="TesselationVertexType" Value="TesselationVertexType3d" />
+        <Template Name="TesselationVertex" Value="TesselationVertex3d" />
+        <Template Name="TesselationEdge" Value="TesselationEdge3d" />
+        <Template Name="TesselationSweepEdges" Value="TesselationSweepEdges3d" />
+        <Template Name="RandomizationFactor" Value="RandomizationFactor3d" />
+        <Template Name="TriangleBuilder" Value="ITriangleBuilder3d" />
+      </TemplateSet>
+    </TemplateSet>
+  </TemplateSet>
+ 
+  <TemplateSet Name="Tesselation" Extends="CoreMath">
+    <TemplateLink Name="Types" Link="FloatDouble" />
+  </TemplateSet>
+
+
+</TemplateSets>

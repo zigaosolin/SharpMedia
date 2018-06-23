@@ -1,0 +1,58 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SharpMedia.Math.Interpolation
+{
+    /// <summary>
+    /// A linear stepper.
+    /// </summary>
+    public class @LinearStepper : @UniformStepper
+    {
+        public @LinearStepper()
+        {
+        }
+
+        #region @UniformStepper Members
+
+        public @TypeName Interpolate(@TypeName t)
+        {
+            return t;
+        }
+
+        #endregion
+    }
+
+    /// <summary>
+    /// A rational stepper, works as any polynomial stepper.
+    /// </summary>
+    public class @RationalStepper : @UniformStepper
+    {
+        #region Private Members
+        @TypeName power;
+        #endregion
+
+        #region Public Members
+
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <remarks>For square stepper, use power 0.5.</remarks>
+        /// <param name="power"></param>
+        public @RationalStepper(@TypeName power)
+        {
+            this.power = power;
+        }
+
+        #endregion
+
+        #region @UniformStepper Members
+
+        public @TypeName Interpolate(@TypeName t)
+        {
+            return @Pow(power, t);
+        }
+
+        #endregion
+    }
+}

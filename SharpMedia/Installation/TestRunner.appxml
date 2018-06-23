@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="Test Runner"
+	friendly="Testing framework for running tests"
+	id="E0A4ED11-81DC-4d40-8F85-E6B9D2B2B5F3"
+	root="Main"
+	type="SingleDocument">
+
+  <!-- Replication of the application descriptor -->
+	<Components>
+		<Component
+			Id="Main"
+			Type="SharpMedia.Testing.TestRunnerApp" />
+	</Components>
+</Application>
+
+
+  

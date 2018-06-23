@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+
+  <!-- A 2D vector description. -->
+  <TemplateSet Name="Vector2f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector2f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector2d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector2d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector2i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector2i"/>
+  </TemplateSet>
+
+  <!-- A 3D vector description. -->
+  <TemplateSet Name="Vector3f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector3f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector3d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector3d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector3i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector3i"/>
+  </TemplateSet>
+
+  <!-- A 4D vector description. -->
+  <TemplateSet Name="Vector4f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vector4f" />
+  </TemplateSet>
+  <TemplateSet Name="Vector4d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vector4d" />
+  </TemplateSet>
+  <TemplateSet Name="Vector4i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vector4i"/>
+  </TemplateSet>
+  
+  <!-- A complex description. -->
+  <TemplateSet Name="Complexf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Complexf" />
+  </TemplateSet>
+  <TemplateSet Name="Complexd" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Complexd" />
+  </TemplateSet>
+
+  <!-- A cylindrical description. -->
+  <TemplateSet Name="Cylindricalf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Cylindricalf" />
+  </TemplateSet>
+  <TemplateSet Name="Cylindricald" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Cylindricald" />
+  </TemplateSet>
+
+  <!-- A polar description. -->
+  <TemplateSet Name="Polarf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Polarf" />
+  </TemplateSet>
+  <TemplateSet Name="Polard" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Polard" />
+  </TemplateSet>
+
+  <!-- A spherical description. -->
+  <TemplateSet Name="Sphericalf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Sphericalf" />
+  </TemplateSet>
+  <TemplateSet Name="Sphericald" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Sphericald" />
+  </TemplateSet>
+
+  <!-- A quaternion description. -->
+  <TemplateSet Name="Quaternionf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Quaternionf" />
+  </TemplateSet>
+  <TemplateSet Name="Quaterniond" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Quaterniond" />
+  </TemplateSet>
+
+  <!-- An interval description. -->
+  <TemplateSet Name="Intervalf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Intervalf" />
+  </TemplateSet>
+  <TemplateSet Name="Intervald" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Intervald" />
+  </TemplateSet>
+  <TemplateSet Name="Intervali" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Intervali" />
+  </TemplateSet>
+
+  <!-- A region2 description. -->
+  <TemplateSet Name="Region2f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Region2f" />
+  </TemplateSet>
+  <TemplateSet Name="Region2d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Region2d" />
+  </TemplateSet>
+  <TemplateSet Name="Region2i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Region2i" />
+  </TemplateSet>
+
+  <!-- A region3 description. -->
+  <TemplateSet Name="Region3f" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Region3f" />
+  </TemplateSet>
+  <TemplateSet Name="Region3d" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Region3d" />
+  </TemplateSet>
+  <TemplateSet Name="Region3i" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Region3i" />
+  </TemplateSet>
+
+  <!-- A dense vector description. -->
+  <TemplateSet Name="Vectorf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="Vectorf" />
+  </TemplateSet>
+  <TemplateSet Name="Vectord" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="Vectord" />
+  </TemplateSet>
+  <TemplateSet Name="Vectori" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="Vectori" />
+  </TemplateSet>
+
+  <!-- A sparse vector description. -->
+  <TemplateSet Name="SparseVectorf" Extends="Float,CoreMath">
+    <Template Name="ClassName" Value="SparseVectorf" />
+    <Template Name="ElementClassName" Value="SparseElementf" />
+  </TemplateSet>
+  <TemplateSet Name="SparseVectord" Extends="Double,CoreMath">
+    <Template Name="ClassName" Value="SparseVectord" />
+    <Template Name="ElementClassName" Value="SparseElementd" />
+  </TemplateSet>
+  <TemplateSet Name="SparseVectori" Extends="Integer,CoreMath">
+    <Template Name="ClassName" Value="SparseVectori" />
+    <Template Name="ElementClassName" Value="SparseElementi" />
+  </TemplateSet>
+
+</TemplateSets>

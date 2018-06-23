@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+using System.Text;
+using SharpMedia.AspectOriented;
+
+namespace SharpMedia.Math.Integration
+{
+
+    /// <summary>
+    /// A monte-carlo integrator.
+    /// </summary>
+    public class @ClassName //:IIntegrator
+    {
+
+    }
+}

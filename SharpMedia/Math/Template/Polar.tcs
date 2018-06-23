@@ -1,0 +1,251 @@
+// This file constitutes a part of the SharpMedia project, (c) 2007 by the SharpMedia team
+// and is licensed for your use under the conditions of the NDA or other legally binding contract
+// that you or a legal entity you represent has signed with the SharpMedia team.
+// In an event that you have received or obtained this file without such legally binding contract
+// in place, you MUST destroy all files and other content to which this lincese applies and
+// contact the SharpMedia team for further instructions at the internet mail address:
+//
+//    legal@sharpmedia.com
+//
+using System;
+using SharpMedia.Testing;
+
+namespace SharpMedia.Math
+{
+    /// <summary>
+    /// A polar coordinate, represented by an angle and distance.
+    /// </summary>
+    [Serializable]
+    public struct @ClassName : IComparable, IComparable<@ClassName>, IEquatable<@ClassName>
+    {
+        #region Public Members
+
+        /// <summary>
+        /// The angle, in radians.
+        /// </summary>
+        public @TypeName Phi;
+
+        /// <summary>
+        /// The length.
+        /// </summary>
+        public @TypeName R;
+
+        #endregion
+
+        #region Static Members
+
+        //#ifdef NearEqual
+
+        /// <summary>
+        /// Checks if polars near equal.
+        /// </summary>
+        /// <param name="p1">The first polar.</param>
+        /// <param name="p2">The second polar.</param>
+        /// <returns>Do the nearly equal.</returns>
+        public static bool NearEqual(@ClassName p1, @ClassName p2)
+        {
+            if (!@NearEqual(p1.R, p2.R)) return false;
+            if (!@NearEqual(p1.Phi, p2.Phi)) return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Checks if polars near equal.
+        /// </summary>
+        /// <param name="p1">The first polar.</param>
+        /// <param name="p2">The second polar.</param>
+        /// <param name="eps">Epsilon, may difference.</param>
+        /// <returns>Do the nearly equal.</returns>
+        public static bool NearEqual(@ClassName p1, @ClassName p2, @TypeName eps)
+        {
+            if (!@NearEqual(p1.R, p2.R, eps)) return false;
+            if (!@NearEqual(p1.Phi, p2.Phi, eps)) return false;
+            return true;
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// The length, the same as R.
+        /// </summary>
+        public @TypeName Length
+        {
+            get { return R; }
+            set { R = value; }
+        }
+
+        /// <summary>
+        /// A squared length.
+        /// </summary>
+        public @TypeName Length2
+        {
+            get { return R * R; }
+            //#ifdef Sqrt
+            set { R = @Sqrt(value); }
+            //#endif
+        }
+
+        //#ifdef Vector2ClassName && Cos && Sin && Atan && Sqrt
+
+        /// <summary>
+        /// A 2D vector, actually the cartesion coordinate.
+        /// </summary>
+        public @Vector2ClassName Vec2
+        {
+            get { return Cartesian; }
+            set
+            {
+                Cartesian = value;
+            }
+        }
+
+        /// <summary>
+        /// A two dimensional vector.
+        /// </summary>
+        public @Vector2ClassName Cartesian
+        {
+            get { return new @Vector2ClassName(@Cos(Phi) * R, @Sin(Phi) * R); }
+            set
+            {
+                R = value.Length;
+
+                // We must also handle "special" X=0 case.
+                if (value.X != @Zero)
+                {
+                    Phi = @Atan(value.Y / value.X);
+                }
+                else
+                {
+                    Phi = value.Y < @Zero ? 
+                        (@TypeName)(1.5 * global::System.Math.PI) : 
+                        (@TypeName)(0.5 * global::System.Math.PI);
+                }
+            }
+        }
+
+        //#endif
+
+        #endregion
+
+        #region Operators
+
+        /// <summary>
+        /// Compares polars for equality.
+        /// </summary>
+        /// <param name="p1">The first point.</param>
+        /// <param name="p2">The second point.</param>
+        /// <returns>Result of operation.</returns>
+        public static bool operator ==(@ClassName p1, @ClassName p2)
+        {
+            return (p1.Phi == p2.Phi) && (p1.R == p2.R);
+        }
+
+        /// <summary>
+        /// Compares polars for difference.
+        /// </summary>
+        /// <param name="p1">The first point.</param>
+        /// <param name="p2">The second point.</param>
+        /// <returns>Result of operation.</returns>
+        public static bool operator !=(@ClassName p1, @ClassName p2)
+        {
+            return !(p1 == p2);
+        }
+
+        #endregion
+
+        #region Overrides
+
+        /// <summary>
+        /// Checks if polard are equal.
+        /// </summary>
+        /// <param name="obj">The object to compare to.</param>
+        /// <returns>Tells if objects are equal.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return (@ClassName)obj == this;
+            return false;
+        }
+
+        /// <summary>
+        /// Outputs @ClassName.
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return "(" + (Phi * 180.0 / global::System.Math.PI).ToString()
+                + "° ," + R.ToString() + ")";
+        }
+
+        /// <summary>
+        /// Obtains hash code.
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
+        #endregion
+
+        #region Constructors
+
+        /// <summary>
+        /// Polar construction.
+        /// </summary>
+        /// <param name="phi">The phi angle.</param>
+        /// <param name="r">The r value.</param>
+        public @ClassName(@TypeName phi, @TypeName r)
+        {
+            this.Phi = phi;
+            this.R = r;
+        }
+
+        #endregion
+
+        #region IEquatable<@ClassName> Members
+
+        public bool Equals(@ClassName other)
+        {
+            return this == other;
+        }
+
+        #endregion
+
+        #region IComparable<@ClassName> Members
+
+        public int CompareTo(@ClassName other)
+        {
+            int cmp = R.CompareTo(other.R);
+            if (cmp != 0) return cmp;
+            return Phi.CompareTo(other.Phi);
+        }
+
+        #endregion
+
+        #region IComparable Members
+
+        public int CompareTo(object obj)
+        {
+            if (obj.GetType() == this.GetType()) return CompareTo((@ClassName)obj);
+            return -1;
+        }
+
+        #endregion
+    }
+
+#if SHARPMEDIA_TESTSUITE
+
+    /// <summary>
+    /// A polar coordinate test.
+    /// </summary>
+    [TestSuite]
+    internal class Test_@ClassName 
+    {
+
+    }
+#endif
+}

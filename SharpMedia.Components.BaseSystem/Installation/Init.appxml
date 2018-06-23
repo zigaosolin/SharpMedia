@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="System Init"
+	friendly="Application that initializes the System to a pre-configured state"
+	id="6dc19b33-9b18-417a-bab8-6605c3e32b67"
+	root="Main"
+	type="SingleDocument">
+	
+	<!-- Replication of the application descriptor -->
+	<Components>
+		<Component
+			Id="Main"
+			Type="SharpMedia.Components.BaseSystem.Init.InitApp" />
+	</Components>
+</Application>

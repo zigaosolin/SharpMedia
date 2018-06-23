@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Application
+	xversion="1.0.0"
+	name="RunTool"
+	friendly="A run tool application"
+	id="D00E9BD7-2ADC-4d71-B150-1E1DB8288F2D"
+	root="Main"
+	type="SingleDocument">
+
+  <!-- Replication of the application descriptor -->
+  <Components>
+    <Component
+			Id="Main"
+			Type="SharpMedia.Tools.RunTool">
+    </Component>
+  </Components>
+</Application>

@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<TemplateSets>
+  
+  <!-- Shape interfaces -->
+  <TemplateSet Name="ShapeInterfacesd" Extends="CoreMath,Double">
+    <Template Name="AABoxBoundable" Value="IAABoxBoundabled" />
+    <Template Name="AABox" Value="AABoxd" />
+    <Template Name="SphereBoundable" Value="ISphereBoundabled" />
+    <Template Name="Sphere" Value="Sphered" />
+    <Template Name="Outline" Value="IOutlined" />
+    <Template Name="Outline2" Value="IOutline2d" />
+    <Template Name="Outline3" Value="IOutline3d" />
+    <Template Name="ContainsPoint2" Value="IContainsPoint2d" />
+    <Template Name="ContainsPoint3" Value="IContainsPoint3d" />
+    <Template Name="ControlPoints" Value="IControlPointsd" />
+    <Template Name="ControlPoints2" Value="IControlPoints2d" />
+    <Template Name="ControlPoints3" Value="IControlPoints3d" />
+    <Template Name="Area" Value="IAread" />
+    <Template Name="Area2" Value="IArea2d" />
+    <Template Name="Area3" Value="IArea3d" />
+    <Template Name="WeightedControlPoints" Value="IWeightedControlPointsd" />
+    <Template Name="Transformable2" Value="ITransformable2d" />
+    <Template Name="Transformable3" Value="ITransformable3d" />
+    <Template Name="TriangleBuilder2" Value="ITriangleBuilder2d" />
+    <Template Name="TriangleBuilder3" Value="ITriangleBuilder3d" />
+    <Template Name="LineBuilder2" Value="ILineBuilder2d" />
+    <Template Name="LineBuilder3" Value="ILineBuilder3d" />
+  </TemplateSet>
+  <TemplateSet Name="ShapeInterfacesf" Extends="CoreMath,Float">
+    <Template Name="AABoxBoundable" Value="IAABoxBoundablef" />
+    <Template Name="AABox" Value="AABoxf" />
+    <Template Name="SphereBoundable" Value="ISphereBoundablef" />
+    <Template Name="Sphere" Value="Spheref" />
+    <Template Name="Outline" Value="IOutlinef" />
+    <Template Name="Outline2" Value="IOutline2f" />
+    <Template Name="Outline3" Value="IOutline3f" />
+    <Template Name="ContainsPoint2" Value="IContainsPoint2f" />
+    <Template Name="ContainsPoint3" Value="IContainsPoint3f" />
+    <Template Name="ControlPoints" Value="IControlPointsf" />
+    <Template Name="ControlPoints2" Value="IControlPoints2f" />
+    <Template Name="ControlPoints3" Value="IControlPoints3f" />
+    <Template Name="Area" Value="IAreaf" />
+    <Template Name="Area2" Value="IArea2f" />
+    <Template Name="Area3" Value="IArea3f" />
+    <Template Name="WeightedControlPoints" Value="IWeightedControlPointsf" />
+    <Template Name="Transformable2" Value="ITransformable2f" />
+    <Template Name="Transformable3" Value="ITransformable3f" />
+    <Template Name="TriangleBuilder2" Value="ITriangleBuilder2f" />
+    <Template Name="TriangleBuilder3" Value="ITriangleBuilder3f" />
+    <Template Name="LineBuilder2" Value="ILineBuilder2f" />
+    <Template Name="LineBuilder3" Value="ILineBuilder3f" />
+  </TemplateSet>
+
+  <!-- Shape base classes -->
+  <TemplateSet Name="Shape2Df">
+    <Template Name="OutlineD" Value="IOutline2f" />
+    <Template Name="TransformableD" Value="ITransformable2f" />
+    <Template Name="ControlPointsD" Value="IControlPoints2f" />
+    <Template Name="ContainsPointD" Value="IContainsPoint2f" />
+    <Template Name="AreaD" Value="IArea2f" />
+    <Template Name="Matrix" Value="Matrix3x3f" />
+    <Template Name="Vector" Value="Vector2f" />
+    <Template Name="Dim" Value="2D" />
+    <Template Name="2D" Value="true" />
+    <Template Name="LineBuilder" Value="ILineBuilder2f" />
+    <Template Name="TriangleBuilder" Value="ITriangleBuilder2f" />
+  </TemplateSet>
+  <TemplateSet Name="Shape3Df">
+    <Template Name="OutlineD" Value="IOutline3f" />
+    <Template Name="TransformableD" Value="ITransformable3f" />
+    <Template Name="ControlPointsD" Value="IControlPoints3f" />
+    <Template Name="ContainsPointD" Value="IContainsPoint3f" />
+    <Template Name="AreaD" Value="IArea3f" />
+    <Template Name="Matrix" Value="Matrix4x4f" />
+    <Template Name="Vector" Value="Vector3f" />
+    <Template Name="Dim" Value="3D" />
+    <Template Name="3D" Value="true" />
+    <Template Name="LineBuilder" Value="ILineBuilder3f" />
+    <Template Name="TriangleBuilder" Value="ITriangleBuilder3f" />
+  </TemplateSet>
+  <TemplateSet Name="Shape2Dd">
+    <Template Name="OutlineD" Value="IOutline2d" />
+    <Template Name="TransformableD" Value="ITransformable2d" />
+    <Template Name="ControlPointsD" Value="IControlPoints2d" />
+    <Template Name="ContainsPointD" Value="IContainsPoint2d" />
+    <Template Name="AreaD" Value="IArea2d" />
+    <Template Name="Matrix" Value="Matrix3x3d" />
+    <Template Name="Vector" Value="Vector2d" />
+    <Template Name="Dim" Value="2D" />
+    <Template Name="2D" Value="true" />
+    <Template Name="LineBuilder" Value="ILineBuilder2d" />
+    <Template Name="TriangleBuilder" Value="ITriangleBuilder2d" />
+  </TemplateSet>
+  <TemplateSet Name="Shape3Dd" >
+    <Template Name="OutlineD" Value="IOutline3d" />
+    <Template Name="TransformableD" Value="ITransformable3d" />
+    <Template Name="ControlPointsD" Value="IControlPoints3d" />
+    <Template Name="ContainsPointD" Value="IContainsPoint3d" />
+    <Template Name="AreaD" Value="IArea3d" />
+    <Template Name="Matrix" Value="Matrix4x4d" />
+    <Template Name="Vector" Value="Vector3d" />
+    <Template Name="Dim" Value="3D" />
+    <Template Name="3D" Value="true" />
+    <Template Name="LineBuilder" Value="ILineBuilder3d" />
+    <Template Name="TriangleBuilder" Value="ITriangleBuilder3d" />
+  </TemplateSet>
+  
+  
+  <!-- Triangles -->
+  <TemplateSet Name="Triangle2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Triangle2d" />
+  </TemplateSet>
+  <TemplateSet Name="Triangle2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Triangle2f" />
+  </TemplateSet>
+   <TemplateSet Name="Triangle3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Triangle3d" />
+    <Template Name="PlaneClassName" Value="Plane3d" />
+  </TemplateSet>
+  <TemplateSet Name="Triangle3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Triangle3f" />
+    <Template Name="PlaneClassName" Value="Plane3f" />
+  </TemplateSet>
+
+  <!-- Line segments -->
+  <TemplateSet Name="LineSegment2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="LineSegment2d" />
+  </TemplateSet>
+  <TemplateSet Name="LineSegment2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="LineSegment2f" />
+  </TemplateSet>
+   <TemplateSet Name="LineSegment3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="LineSegment3d" />
+  </TemplateSet>
+  <TemplateSet Name="LineSegment3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="LineSegment3f" />
+  </TemplateSet>
+
+ <!-- Line -->
+  <TemplateSet Name="Line2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Line2d" />
+  </TemplateSet>
+  <TemplateSet Name="Line2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Line2f" />
+  </TemplateSet>
+   <TemplateSet Name="Line3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Line3d" />
+  </TemplateSet>
+  <TemplateSet Name="Line3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Line3f" />
+  </TemplateSet>
+
+ <!-- Quad -->
+  <TemplateSet Name="Quad2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Quad2d" />
+    <Template Name="Triangle" Value="Triangle2d" />
+  </TemplateSet>
+  <TemplateSet Name="Quad2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Quad2f" />
+    <Template Name="Triangle" Value="Triangle2f" />
+  </TemplateSet>
+   <TemplateSet Name="Quad3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Quad3d" />
+    <Template Name="Triangle" Value="Triangle3d" />
+  </TemplateSet>
+  <TemplateSet Name="Quad3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Quad3f" />
+    <Template Name="Triangle" Value="Triangle3f" />
+  </TemplateSet>
+
+  <!-- Ray -->
+  <TemplateSet Name="Ray2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Ray2d" />
+  </TemplateSet>
+  <TemplateSet Name="Ray2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Ray2f" />
+  </TemplateSet>
+  <TemplateSet Name="Ray3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Ray3d" />
+  </TemplateSet>
+  <TemplateSet Name="Ray3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Ray3f" />
+  </TemplateSet>
+
+  <!-- Bezier -->
+  <TemplateSet Name="Bezier2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Bezier2d" />
+  </TemplateSet>
+  <TemplateSet Name="Bezier2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Bezier2f" />
+  </TemplateSet>
+  <TemplateSet Name="Bezier3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Bezier3d" />
+  </TemplateSet>
+  <TemplateSet Name="Bezier3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Bezier3f" />
+  </TemplateSet>
+
+  <!-- Ellipse -->
+  <TemplateSet Name="Ellipse2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Ellipse2d" />
+  </TemplateSet>
+  <TemplateSet Name="Ellipse2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Ellipse2f" />
+  </TemplateSet>
+  <TemplateSet Name="Ellipse3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Ellipse3d" />
+  </TemplateSet>
+  <TemplateSet Name="Ellipse3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Ellipse3f" />
+  </TemplateSet>
+
+  <!-- Polygon -->
+  <TemplateSet Name="Polygon2d" Extends="ShapeInterfacesd,Shape2Dd">
+    <Template Name="ClassName" Value="Polygon2d" />
+    <Template Name="RegionClassName" Value="Region2d" />
+    <Template Name="OutlineTesselationOptions" Value="TesselationOptionsd" />
+  </TemplateSet>
+  <TemplateSet Name="Polygon2f" Extends="ShapeInterfacesf,Shape2Df">
+    <Template Name="ClassName" Value="Polygon2f" />
+    <Template Name="RegionClassName" Value="Region2f" />
+    <Template Name="OutlineTesselationOptions" Value="TesselationOptionsf" />
+  </TemplateSet>
+  <TemplateSet Name="Polygon3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Polygon3d" />
+    <Template Name="RegionClassName" Value="Region3d" />
+  </TemplateSet>
+  <TemplateSet Name="Polygon3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Polygon3f" />
+    <Template Name="RegionClassName" Value="Region3f" />
+  </TemplateSet>
+  
+  <!-- Plane -->
+  <TemplateSet Name="Plane3d" Extends="ShapeInterfacesd,Shape3Dd">
+    <Template Name="ClassName" Value="Plane3d" />
+  </TemplateSet>
+  <TemplateSet Name="Plane3f" Extends="ShapeInterfacesf,Shape3Df">
+    <Template Name="ClassName" Value="Plane3f" />
+  </TemplateSet>
+
+
+</TemplateSets>

@@ -1,0 +1,13 @@
+﻿* copying data more efficiently (done)
+* disposing thread safe (if out of thread), also make sure graphics device does not
+lock when not rendering (partly)
+* more events
+* shared resources
+* metadata swizzles (done)
+* metadata contructors (compounds) (done)
+* texture 2D full implementation
+* texture 1D full implementation
+* texture 2D array full implementation
+* texture 3D full implementation
+* texture 1D array full implementation
+* tests
